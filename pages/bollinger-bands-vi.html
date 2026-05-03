@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bollinger Bands Bounce — Chiến Lược 3 Bước | Hướng Dẫn Toàn Diện</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800;900&family=Barlow+Condensed:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --ink:        #0C0E14;
+  --ink-2:      #131720;
+  --ink-3:      #1A1F2E;
+  --ink-4:      #232840;
+  --border:     #252B3D;
+  --border-lo:  #1C2030;
+  --gold:       #F0B429;
+  --gold-dim:   #C48F18;
+  --gold-glow:  rgba(240,180,41,0.15);
+  --cyan:       #2DD4BF;
+  --red:        #F87171;
+  --green:      #34D399;
+  --slate:      #94A3B8;
+  --slate-lo:   #64748B;
+  --white:      #F1F5F9;
+  --white-dim:  #CBD5E1;
+  --r4: 4px; --r8: 8px; --r12: 12px; --r16: 16px; --r24: 24px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Barlow',sans-serif;
+  background:var(--ink);
+  color:var(--white);
+  line-height:1.65;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink-2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+h1,h2,h3,h4{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-0.01em;
+}
+h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800}
+h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700}
+h3{font-size:clamp(1.1rem,2vw,1.35rem)}
+
+p{color:var(--slate);font-size:0.9375rem;line-height:1.7}
+a{color:var(--gold);text-decoration:none}
+strong{color:var(--white-dim);font-weight:600}
+
+.mono{font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+
+/* ─── LAYOUT ─── */
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+section{padding:88px 0}
+
+/* ─── NAV ─── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(12,14,20,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:14px 0;
+}
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.nav-brand{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--gold);text-transform:uppercase;white-space:nowrap;
+}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:0.8rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--slate-lo);transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-btn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;
+  background:var(--gold);color:var(--ink);
+  padding:9px 22px;border-radius:var(--r4);
+  transition:background .2s,transform .2s;white-space:nowrap;
+}
+.nav-btn:hover{background:#e0a820;transform:translateY(-1px)}
+
+/* ─── HERO ─── */
+#hero{
+  padding:100px 0 80px;
+  position:relative;overflow:hidden;
+  background:var(--ink);
+}
+
+/* grid lines background */
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border-lo) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border-lo) 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:0.4;pointer-events:none;
+}
+#hero::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to top,var(--ink) 0%,transparent 100%);
+}
+
+.hero-inner{position:relative;z-index:1}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:20px;
+}
+.eyebrow-line{width:32px;height:2px;background:var(--gold)}
+.eyebrow-text{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:600;font-size:0.8rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold);
+}
+
+.hero-title{
+  margin-bottom:16px;
+  max-width:860px;
+}
+.hero-title em{
+  font-style:normal;
+  color:var(--gold);
+  -webkit-text-stroke:0;
+}
+
+.hero-sub{
+  font-size:1.05rem;max-width:580px;margin-bottom:40px;
+  color:var(--slate);line-height:1.7;
+}
+
+/* ticker row */
+.ticker-row{
+  display:flex;gap:0;overflow:hidden;
+  border:1px solid var(--border);border-radius:var(--r8);
+  margin-bottom:44px;
+  max-width:700px;
+}
+.ticker-cell{
+  flex:1;padding:14px 18px;
+  border-right:1px solid var(--border);
+  background:var(--ink-2);
+}
+.ticker-cell:last-child{border-right:none}
+.tc-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--slate-lo);margin-bottom:4px}
+.tc-val{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:500;color:var(--white)}
+.tc-val.gold{color:var(--gold)}
+.tc-val.green{color:var(--green)}
+.tc-val.red{color:var(--red)}
+.tc-val.cyan{color:var(--cyan)}
+
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:var(--r4);
+  border:1px solid var(--border);background:var(--ink-3);
+  font-size:0.78rem;font-weight:500;color:var(--slate);
+}
+.chip-dot{width:5px;height:5px;border-radius:50%}
+.cd-gold{background:var(--gold)}
+.cd-green{background:var(--green)}
+.cd-red{background:var(--red)}
+.cd-cyan{background:var(--cyan)}
+
+/* ─── SECTION HEADER ─── */
+.sec-header{margin-bottom:48px}
+.sec-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-bottom:12px;
+}
+.kicker-bar{width:24px;height:2px;background:var(--gold)}
+.kicker-txt{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--gold);
+}
+.sec-title{margin-bottom:10px}
+.sec-title em{font-style:normal;color:var(--gold)}
+.sec-rule{width:48px;height:2px;background:var(--border);margin:14px 0 0}
+.sec-desc{color:var(--slate);font-size:0.9rem;max-width:560px;margin-top:12px}
+
+/* ─── CARDS ─── */
+.card{
+  background:var(--ink-2);
+  border:1px solid var(--border);
+  border-radius:var(--r12);
+  padding:24px;
+  transition:border-color .25s,background .25s;
+}
+.card:hover{border-color:rgba(240,180,41,0.3);background:var(--ink-3)}
+
+/* ─── OVERVIEW ─── */
+#overview{background:var(--ink-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border)}
+.ov-cell{
+  background:var(--ink-2);padding:28px 24px;
+  transition:background .2s;
+}
+.ov-cell:hover{background:var(--ink-3)}
+.ov-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2.4rem;font-weight:800;line-height:1;
+  color:var(--gold);margin-bottom:8px;
+}
+.ov-label{font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--slate-lo);margin-bottom:8px}
+.ov-desc{font-size:0.875rem;color:var(--slate);line-height:1.55;margin:0}
+
+/* ─── HOW IT WORKS ─── */
+#how{background:var(--ink)}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+
+.formula-panel{
+  background:var(--ink-2);border:1px solid var(--border);
+  border-radius:var(--r12);padding:28px;
+}
+.formula-title{
+  font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--slate-lo);margin-bottom:20px;
+}
+.band-row{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--border-lo);
+}
+.band-row:last-child{border-bottom:none}
+.band-swatch{width:32px;height:32px;border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
+.bs-upper{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+.bs-mid{background:rgba(240,180,41,0.12);border:1px solid rgba(240,180,41,0.25);color:var(--gold)}
+.bs-lower{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.25);color:var(--green)}
+.band-info h4{font-size:0.875rem;font-family:'Barlow',sans-serif;font-weight:600;margin-bottom:2px;color:var(--white-dim)}
+.band-info p{font-size:0.82rem;color:var(--slate);margin:0}
+.band-formula{
+  margin-left:auto;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  padding:3px 8px;border-radius:var(--r4);
+}
+.bf-u{background:rgba(248,113,113,0.1);color:var(--red)}
+.bf-m{background:rgba(240,180,41,0.1);color:var(--gold)}
+.bf-l{background:rgba(52,211,153,0.1);color:var(--green)}
+
+.settings-card{background:var(--ink-2);border:1px solid var(--border);border-radius:var(--r12);padding:28px}
+.settings-title{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--slate-lo);margin-bottom:16px}
+.settings-table{width:100%;border-collapse:collapse}
+.settings-table th,.settings-table td{padding:9px 12px;font-size:0.82rem;text-align:left;border-bottom:1px solid var(--border-lo)}
+.settings-table th{font-weight:600;color:var(--slate-lo);font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase}
+.settings-table td{color:var(--slate)}
+.settings-table td:first-child{color:var(--white-dim);font-weight:500}
+.settings-table tr:last-child td{border-bottom:none}
+.td-mono{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold) !important}
+
+.warning-box{
+  margin-top:20px;display:flex;gap:12px;align-items:flex-start;
+  background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.18);
+  border-radius:var(--r8);padding:14px 16px;
+}
+.warn-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.warn-txt{font-size:0.82rem;color:var(--slate);margin:0;line-height:1.55}
+.warn-txt strong{color:rgba(248,113,113,0.9)}
+
+/* ─── BANDS SECTION ─── */
+#bands{background:var(--ink-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.bands-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.band-card{
+  border-radius:var(--r12);padding:28px 22px;
+  background:var(--ink-3);
+  position:relative;overflow:hidden;
+}
+.band-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.bc-upper::before{background:var(--red)}
+.bc-mid::before{background:var(--gold)}
+.bc-lower::before{background:var(--green)}
+.band-card-icon{font-size:1.5rem;margin-bottom:14px}
+.band-card h3{font-size:1.05rem;margin-bottom:8px;font-family:'Barlow',sans-serif;font-weight:700}
+.band-card p{font-size:0.85rem;margin:0 0 14px}
+.band-tag{
+  display:inline-block;padding:3px 10px;border-radius:var(--r4);
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+.bt-upper{background:rgba(248,113,113,0.12);color:var(--red)}
+.bt-mid{background:rgba(240,180,41,0.12);color:var(--gold)}
+.bt-lower{background:rgba(52,211,153,0.12);color:var(--green)}
+
+/* ─── STRATEGY RULES ─── */
+#strategy{background:var(--ink)}
+.rules-stack{display:flex;flex-direction:column;gap:0}
+.rule-item{
+  display:grid;grid-template-columns:80px 1fr;
+  border-bottom:1px solid var(--border);
+}
+.rule-item:last-child{border-bottom:none}
+.rule-num-col{
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 0;border-right:1px solid var(--border);
+  gap:8px;
+}
+.rule-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2.2rem;font-weight:900;line-height:1;
+  color:var(--gold);
+}
+.rule-num-label{
+  font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--slate-lo);
+}
+.rule-body{padding:28px 28px}
+.rule-body h3{font-size:1.05rem;font-family:'Barlow',sans-serif;font-weight:700;margin-bottom:10px;color:var(--white)}
+.rule-body p{font-size:0.875rem;margin-bottom:10px}
+.rule-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.rule-list li{
+  display:flex;gap:10px;font-size:0.875rem;color:var(--slate);
+}
+.rule-list li::before{content:'→';color:var(--gold);flex-shrink:0;font-weight:700}
+.rule-badge{
+  display:inline-block;margin-top:12px;
+  padding:4px 12px;border-radius:var(--r4);
+  font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+}
+.rb-buy{background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.2)}
+.rb-sell{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+.rb-info{background:rgba(240,180,41,0.1);color:var(--gold);border:1px solid rgba(240,180,41,0.2)}
+.rb-risk{background:rgba(45,212,191,0.1);color:var(--cyan);border:1px solid rgba(45,212,191,0.2)}
+
+/* ─── CHARTS SECTION ─── */
+#charts{background:var(--ink-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.chart-wrap{background:var(--ink-3);border:1px solid var(--border);border-radius:var(--r12);overflow:hidden}
+.chart-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  background:var(--ink-2);
+}
+.chart-head-title{font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:0.02em;color:var(--white-dim)}
+.chart-badge{
+  font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--r4);
+}
+.cb-buy{background:rgba(52,211,153,0.12);color:var(--green)}
+.cb-sell{background:rgba(248,113,113,0.12);color:var(--red)}
+.cb-squeeze{background:rgba(240,180,41,0.12);color:var(--gold)}
+.cb-dbl{background:rgba(45,212,191,0.12);color:var(--cyan)}
+.chart-body{padding:4px 0 0;background:#090C14}
+.chart-cap{padding:10px 18px 14px;font-size:0.78rem;color:var(--slate-lo);display:flex;gap:8px;align-items:flex-start}
+.chart-cap::before{content:'◎';color:var(--gold);font-size:0.7rem;flex-shrink:0;margin-top:1px}
+
+/* ─── TRADING STYLES ─── */
+#styles{background:var(--ink)}
+.styles-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.style-card{padding:32px 28px}
+.style-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.style-icon{
+  width:40px;height:40px;border-radius:var(--r8);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.si-swing{background:rgba(240,180,41,0.12);border:1px solid rgba(240,180,41,0.2)}
+.si-day{background:rgba(45,212,191,0.12);border:1px solid rgba(45,212,191,0.2)}
+.style-card h3{font-size:1rem;font-family:'Barlow',sans-serif;font-weight:700}
+.style-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin:0}
+.style-list li{font-size:0.875rem;color:var(--slate);padding-left:16px;position:relative;line-height:1.55}
+.style-list li::before{content:'·';position:absolute;left:0;color:var(--gold);font-size:1.2rem;line-height:1.2}
+
+/* ─── DOUBLE BB ─── */
+#doublebb{background:var(--ink-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dbb-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.dbb-card{padding:28px}
+.dbb-card h3{font-size:1rem;font-family:'Barlow',sans-serif;margin-bottom:16px;color:var(--white)}
+.dbb-row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-lo)}
+.dbb-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.dbb-tag{
+  flex-shrink:0;padding:4px 10px;border-radius:var(--r4);
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:500;
+  align-self:flex-start;margin-top:2px;
+}
+.dt-1{background:rgba(240,180,41,0.12);color:var(--gold)}
+.dt-2{background:rgba(45,212,191,0.12);color:var(--cyan)}
+.dbb-text h4{font-size:0.875rem;font-family:'Barlow',sans-serif;font-weight:600;margin-bottom:4px;color:var(--white-dim)}
+.dbb-text p{font-size:0.835rem;color:var(--slate);margin:0}
+
+/* ─── FAQ ─── */
+#faq{background:var(--ink)}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.faq-item{padding:22px 24px}
+.faq-q{font-family:'Barlow',sans-serif;font-size:0.875rem;font-weight:700;margin-bottom:8px;color:var(--white-dim);line-height:1.4}
+.faq-a{font-size:0.835rem;color:var(--slate);margin:0;line-height:1.6}
+
+/* ─── CONCLUSION ─── */
+#conclusion{background:var(--ink-2);border-top:1px solid var(--border)}
+.concl-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+
+.summary-list{display:flex;flex-direction:column;gap:0}
+.sl-item{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:18px 0;border-bottom:1px solid var(--border-lo);
+}
+.sl-item:last-child{border-bottom:none}
+.sl-idx{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:1.4rem;font-weight:800;color:var(--ink-4);
+  flex-shrink:0;line-height:1;margin-top:2px;
+  -webkit-text-stroke:1px var(--border);
+}
+.sl-txt h4{font-size:0.875rem;font-family:'Barlow',sans-serif;font-weight:700;margin-bottom:4px;color:var(--white-dim)}
+.sl-txt p{font-size:0.835rem;color:var(--slate);margin:0}
+
+.cta-panel{
+  background:var(--ink-3);
+  border:1px solid var(--border);
+  border-radius:var(--r16);
+  padding:36px 30px;
+  position:relative;overflow:hidden;
+}
+.cta-panel::before{
+  content:'';position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(240,180,41,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;margin-bottom:10px;color:var(--white)}
+.cta-panel p{font-size:0.875rem;margin-bottom:24px}
+.cta-btn{
+  display:inline-block;
+  background:var(--gold);color:var(--ink);
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:0.95rem;letter-spacing:0.06em;text-transform:uppercase;
+  padding:13px 28px;border-radius:var(--r4);
+  box-shadow:0 4px 24px rgba(240,180,41,0.25);
+  transition:background .2s,transform .2s;
+}
+.cta-btn:hover{background:#e0a820;transform:translateY(-2px)}
+
+.checklist{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
+.cl-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:8px 0;border-bottom:1px solid var(--border-lo);
+  font-size:0.835rem;color:var(--slate);
+}
+.cl-item:last-child{border-bottom:none}
+.cl-check{color:var(--green);flex-shrink:0;font-size:0.75rem;margin-top:3px}
+
+/* markets strip */
+.mkt-strip{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;
+}
+.mkt-tag{
+  font-size:0.75rem;font-weight:600;letter-spacing:0.04em;
+  padding:5px 12px;border-radius:var(--r4);
+  border:1px solid var(--border);background:var(--ink-4);color:var(--slate);
+}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--ink-2);border-top:1px solid var(--border);
+  padding:32px 0;text-align:center;
+}
+.footer-brand{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:1rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:10px;
+}
+footer p{font-size:0.78rem;color:var(--slate-lo);margin:4px 0 0}
+
+/* ─── REVEAL ANIMATION ─── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.rv.in{opacity:1;transform:none}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  section{padding:60px 0}
+  .how-grid,.bands-trio,.charts-grid,.styles-grid,.dbb-grid,.faq-grid,.concl-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .rule-item{grid-template-columns:60px 1fr}
+  .rule-num-col{padding:20px 0}
+  .rule-num{font-size:1.6rem}
+  .rule-body{padding:20px 20px}
+  .ticker-row{flex-wrap:wrap}
+  .ticker-cell{min-width:50%;border-bottom:1px solid var(--border)}
+}
+@media(max-width:480px){
+  .bands-trio{grid-template-columns:1fr}
+  .ov-num{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="wrap nav-row">
+    <div class="nav-brand">BB · Bounce Strategy</div>
+    <ul class="nav-links">
+      <li><a href="#how">Cấu Trúc</a></li>
+      <li><a href="#strategy">Quy Tắc</a></li>
+      <li><a href="#charts">Biểu Đồ</a></li>
+      <li><a href="#styles">Phong Cách</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#conclusion" class="nav-btn">Xem Checklist</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Chiến Lược 3 Bước · Bollinger Bands + RSI</span>
+    </div>
+    <h1 class="hero-title">
+      Cách Sử Dụng<br>
+      <em>Bollinger Bands</em><br>
+      Hiệu Quả Trong Giao Dịch
+    </h1>
+    <p class="hero-sub">
+      Kết hợp Bollinger Bands và RSI để xác định chính xác các điểm Bounce trong xu hướng chính — áp dụng được cho Day Trading, Swing Trading và Scalping.
+    </p>
+
+    <div class="ticker-row">
+      <div class="ticker-cell">
+        <div class="tc-label">Chỉ Báo #1</div>
+        <div class="tc-val gold">BB (20, 2)</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="tc-label">Chỉ Báo #2</div>
+        <div class="tc-val cyan">RSI (14)</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="tc-label">Khung Tốt Nhất</div>
+        <div class="tc-val">H1 / H4</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="tc-label">RSI Vùng Mua</div>
+        <div class="tc-val green">30 – 50 ↑</div>
+      </div>
+      <div class="ticker-cell">
+        <div class="tc-label">Stop Loss</div>
+        <div class="tc-val red">30 – 50 pip</div>
+      </div>
+    </div>
+
+    <div class="hero-chips">
+      <span class="chip"><span class="chip-dot cd-gold"></span>Bollinger Bands</span>
+      <span class="chip"><span class="chip-dot cd-cyan"></span>RSI Momentum</span>
+      <span class="chip"><span class="chip-dot cd-green"></span>Bounce Signal</span>
+      <span class="chip"><span class="chip-dot cd-red"></span>Overbought / Oversold</span>
+      <span class="chip">Forex · Stocks · Crypto</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OVERVIEW METRICS ═══ -->
+<section id="overview" style="padding:0">
+  <div class="overview-grid">
+    <div class="ov-cell rv">
+      <div class="ov-label">Chu Kỳ Mặc Định</div>
+      <div class="ov-num">20</div>
+      <p class="ov-desc">Cài đặt SMA mặc định theo chuẩn John Bollinger — điểm khởi đầu cho mọi phong cách giao dịch.</p>
+    </div>
+    <div class="ov-cell rv">
+      <div class="ov-label">Độ Lệch Chuẩn</div>
+      <div class="ov-num">×2σ</div>
+      <p class="ov-desc">Dải trên và dải dưới nằm cách SMA 2 standard deviation — bao phủ 90–95% biến động giá trong ngày.</p>
+    </div>
+    <div class="ov-cell rv">
+      <div class="ov-label">RSI Buy Zone</div>
+      <div class="ov-num">30–50</div>
+      <p class="ov-desc">RSI phải trong vùng 30–50 và đang tăng khi giá chạm Dải Dưới — xác nhận tín hiệu BUY hợp lệ.</p>
+    </div>
+    <div class="ov-cell rv">
+      <div class="ov-label">Khoảng Cách Tối Đa</div>
+      <div class="ov-num">5 pip</div>
+      <p class="ov-desc">Giá phải chạm hoặc trong vòng 5 pip so với dải — vượt quá ngưỡng này không được coi là tín hiệu hợp lệ.</p>
+    </div>
+    <div class="ov-cell rv">
+      <div class="ov-label">Scalping Period</div>
+      <div class="ov-num">9</div>
+      <p class="ov-desc">Scalper nên dùng 9 period thay vì 20 để nhạy hơn với biến động ngắn hạn trên các khung nhỏ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Cấu Trúc Chỉ Báo</span></div>
+      <h2 class="sec-title">Bollinger Bands <em>Hoạt Động Như Thế Nào?</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">Được phát triển bởi John Bollinger vào đầu thập niên 1980 — công cụ định nghĩa vùng giá cao/thấp tương đối dựa trên biến động thực tế.</p>
+    </div>
+
+    <div class="how-grid">
+      <div class="rv">
+        <div class="formula-panel">
+          <p class="formula-title">Cấu Trúc 3 Dải Bollinger Bands</p>
+          <div class="band-row">
+            <div class="band-swatch bs-upper">▲</div>
+            <div class="band-info">
+              <h4>Dải Trên (Upper Band)</h4>
+              <p>Vùng giá cao — tín hiệu Overbought khi giá tiếp cận</p>
+            </div>
+            <div class="band-formula bf-u">MA+2σ</div>
+          </div>
+          <div class="band-row">
+            <div class="band-swatch bs-mid">─</div>
+            <div class="band-info">
+              <h4>Dải Giữa (Middle Band)</h4>
+              <p>SMA 20 period — baseline của toàn hệ thống BB</p>
+            </div>
+            <div class="band-formula bf-m">SMA(20)</div>
+          </div>
+          <div class="band-row">
+            <div class="band-swatch bs-lower">▼</div>
+            <div class="band-info">
+              <h4>Dải Dưới (Lower Band)</h4>
+              <p>Vùng giá thấp — tín hiệu Oversold khi giá tiếp cận</p>
+            </div>
+            <div class="band-formula bf-l">MA−2σ</div>
+          </div>
+        </div>
+        <div class="warning-box" style="margin-top:16px">
+          <span class="warn-icon">⚠</span>
+          <p class="warn-txt"><strong>Không giao dịch mù quáng:</strong> Xu hướng mạnh có thể kéo giá men theo dải trong thời gian dài — luôn cần RSI xác nhận trước khi vào lệnh.</p>
+        </div>
+      </div>
+
+      <div class="rv">
+        <div class="settings-card">
+          <p class="settings-title">Cài Đặt Tốt Nhất Theo Khung Thời Gian</p>
+          <table class="settings-table">
+            <thead>
+              <tr><th>Khung</th><th>Period</th><th>StdDev</th><th>Phong Cách</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1 Phút</td><td class="td-mono">20</td><td class="td-mono">0.5–0.75</td><td>Scalping</td></tr>
+              <tr><td>5 Phút</td><td class="td-mono">9–20</td><td class="td-mono">1–1.5</td><td>Scalping/Day</td></tr>
+              <tr><td>15 Phút</td><td class="td-mono">20</td><td class="td-mono">2.5–3</td><td>Day Trading</td></tr>
+              <tr><td>1 Giờ</td><td class="td-mono">20</td><td class="td-mono">2</td><td>Day/Swing</td></tr>
+              <tr><td>4 Giờ</td><td class="td-mono">20</td><td class="td-mono">2</td><td>Swing</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-top:16px;padding:20px 22px">
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--slate-lo);margin-bottom:12px">Chỉ Báo Kết Hợp Tốt Nhất</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li style="display:flex;gap:10px;font-size:0.875rem;color:var(--slate)"><span style="color:var(--gold);font-weight:700">→</span> <strong>BB (20, 2):</strong> Trend-following — xác định xu hướng và vùng giá</li>
+            <li style="display:flex;gap:10px;font-size:0.875rem;color:var(--slate)"><span style="color:var(--gold);font-weight:700">→</span> <strong>RSI (14):</strong> Momentum — đo sức mạnh/yếu của xu hướng</li>
+            <li style="display:flex;gap:10px;font-size:0.875rem;color:var(--slate)"><span style="color:var(--gold);font-weight:700">→</span> Vẽ đường ngang tại mức 50 trên RSI làm mốc tham chiếu</li>
+            <li style="display:flex;gap:10px;font-size:0.875rem;color:var(--slate)"><span style="color:var(--gold);font-weight:700">→</span> Dùng cài đặt mặc định — không cần điều chỉnh thêm</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3 BANDS ═══ -->
+<section id="bands">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">3 Dải Bollinger</span></div>
+      <h2 class="sec-title">Vai Trò <em>Từng Dải</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">Mỗi dải có chức năng riêng biệt — hiểu chính xác từng dải là nền tảng để áp dụng chiến lược đúng hướng.</p>
+    </div>
+    <div class="bands-trio">
+      <div class="band-card bc-upper rv">
+        <div class="band-card-icon">🔴</div>
+        <h3>Dải Trên</h3>
+        <p>Vùng giá cao tương đối — nằm 2 độ lệch chuẩn trên SMA. Khi giá chạm dải trên trong downtrend → cơ hội SELL.</p>
+        <div class="band-tag bt-upper">MA(20) + 2σ · Overbought</div>
+      </div>
+      <div class="band-card bc-mid rv">
+        <div class="band-card-icon">🟡</div>
+        <h3>Dải Giữa</h3>
+        <p>SMA 20 period — baseline của hệ thống. Khi giá chạm dải giữa trong xu hướng mạnh → cơ hội thêm lệnh thứ hai (second entry).</p>
+        <div class="band-tag bt-mid">SMA(20) · Baseline</div>
+      </div>
+      <div class="band-card bc-lower rv">
+        <div class="band-card-icon">🟢</div>
+        <h3>Dải Dưới</h3>
+        <p>Vùng giá thấp tương đối — nằm 2 độ lệch chuẩn dưới SMA. Khi giá chạm dải dưới trong uptrend → cơ hội BUY.</p>
+        <div class="band-tag bt-lower">MA(20) − 2σ · Oversold</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STRATEGY RULES ═══ -->
+<section id="strategy">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Quy Tắc Giao Dịch</span></div>
+      <h2 class="sec-title">5 Quy Tắc <em>Bollinger Bands Bounce</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">Ví dụ thực tế trên GBPUSD khung H4 — lệnh BUY. Áp dụng ngược lại cho lệnh SELL.</p>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden" >
+      <div class="rules-stack">
+
+        <div class="rule-item rv">
+          <div class="rule-num-col">
+            <div class="rule-num">01</div>
+            <div class="rule-num-label">Bước</div>
+          </div>
+          <div class="rule-body">
+            <h3>Xác Định Xu Hướng Rõ Ràng</h3>
+            <p>Thị trường phải đang trong <strong>Uptrend hoặc Downtrend</strong> — tuyệt đối không giao dịch trong thị trường sideway.</p>
+            <ul class="rule-list">
+              <li>Dùng Price Channel, Trend Line hoặc Fibonacci để xác nhận xu hướng</li>
+              <li>Uptrend: Higher Highs + Higher Lows → vẽ trend line hướng lên</li>
+              <li>Downtrend: Lower Highs + Lower Lows → vẽ trend line hướng xuống</li>
+              <li>Không chấp nhận sideway — bỏ qua cặp nếu giá di chuyển ngang</li>
+            </ul>
+            <span class="rule-badge rb-info">📈 Lọc Xu Hướng</span>
+          </div>
+        </div>
+
+        <div class="rule-item rv">
+          <div class="rule-num-col">
+            <div class="rule-num">02</div>
+            <div class="rule-num-label">Bước</div>
+          </div>
+          <div class="rule-body">
+            <h3>Giá Pullback Và Chạm Gần Dải Dưới</h3>
+            <p>Trong uptrend, chờ giá kéo ngược và tiếp cận <strong>Dải Dưới Bollinger</strong>.</p>
+            <ul class="rule-list">
+              <li>Giá phải chạm hoặc trong vòng 5 pip so với Dải Dưới</li>
+              <li>Xa hơn 5 pip → không hợp lệ, chờ lần tiếp theo</li>
+              <li>Với lệnh SELL: giá rally và tiếp cận Dải Trên</li>
+              <li>Không ép buộc tín hiệu — kỷ luật là yếu tố quyết định lâu dài</li>
+            </ul>
+            <span class="rule-badge rb-buy">🟢 Pullback To Band</span>
+          </div>
+        </div>
+
+        <div class="rule-item rv">
+          <div class="rule-num-col">
+            <div class="rule-num">03</div>
+            <div class="rule-num-label">Bước</div>
+          </div>
+          <div class="rule-body">
+            <h3>Kiểm Tra RSI — Vùng 30–50 Và Đang Tăng</h3>
+            <p>Khi giá chạm Dải Dưới, mở RSI và kiểm tra ngay lập tức.</p>
+            <ul class="rule-list">
+              <li><strong>BUY:</strong> RSI phải trong vùng 30–50 và đang có xu hướng tăng</li>
+              <li><strong>SELL:</strong> RSI phải trong vùng 50–70 và đang có xu hướng giảm</li>
+              <li>RSI ở 80 khi giá chạm dải dưới → bỏ qua, không vào lệnh</li>
+              <li>Vẽ đường ngang mức 50 để quan sát hướng di chuyển rõ hơn</li>
+            </ul>
+            <span class="rule-badge rb-info">📊 RSI Confirmation</span>
+          </div>
+        </div>
+
+        <div class="rule-item rv">
+          <div class="rule-num-col">
+            <div class="rule-num">04</div>
+            <div class="rule-num-label">Bước</div>
+          </div>
+          <div class="rule-body">
+            <h3>Vào Lệnh Khi Nến Xác Nhận Đảo Chiều</h3>
+            <p>Sau BB + RSI đều xác nhận, chờ thêm tín hiệu nến để vào lệnh chính xác nhất.</p>
+            <ul class="rule-list">
+              <li>Nến Bullish mạnh hướng lên (strong bullish candle) → vào BUY ngay</li>
+              <li>Nhiều nến đảo chiều liên tiếp hướng lên → xác nhận bổ sung</li>
+              <li>Mô hình nến đảo chiều (Hammer, Engulfing, Morning Star...) → tín hiệu mạnh</li>
+              <li>Chuyển xuống H1 để tìm điểm vào chi tiết hơn trong setup H4</li>
+              <li><strong>Không vào lệnh</strong> nếu nến tiếp tục tạo đáy thấp mới (new lows)</li>
+            </ul>
+            <span class="rule-badge rb-buy">🕯 Candle Confirmation</span>
+          </div>
+        </div>
+
+        <div class="rule-item rv">
+          <div class="rule-num-col">
+            <div class="rule-num">05</div>
+            <div class="rule-num-label">Bước</div>
+          </div>
+          <div class="rule-body">
+            <h3>Stop Loss & Take Profit</h3>
+            <p>Quản lý rủi ro nghiêm túc — không bao giờ giao dịch không có Stop Loss.</p>
+            <ul class="rule-list">
+              <li><strong>Stop Loss:</strong> 30–50 pip (khuyến nghị cho chiến lược này)</li>
+              <li><strong>Take Profit:</strong> khi giá chạm Dải Bollinger đối diện</li>
+              <li>Cân nhắc thêm lệnh thứ hai tại Dải Giữa (Middle Band) khi xu hướng còn mạnh</li>
+              <li>Middle Band = cơ hội "press your winners" — tiềm năng nhân đôi lợi nhuận</li>
+            </ul>
+            <span class="rule-badge rb-risk">🛡 Risk Management</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHARTS (Dedicated section) ═══ -->
+<section id="charts">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Biểu Đồ Minh Họa</span></div>
+      <h2 class="sec-title">Các Mô Hình <em>Quan Trọng Trên Chart</em></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-desc">4 tình huống giao dịch điển hình được trực quan hóa — từ Bounce cơ bản đến Squeeze và Double BB.</p>
+    </div>
+
+    <div class="charts-grid">
+
+      <!-- Chart 1: BB Bounce BUY -->
+      <div class="chart-wrap rv">
+        <div class="chart-head">
+          <span class="chart-head-title">BB Bounce — Tín Hiệu BUY</span>
+          <span class="chart-badge cb-buy">Bounce · Long</span>
+        </div>
+        <div class="chart-body">
+          <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <defs>
+              <linearGradient id="priceUp" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#34D399" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <rect width="480" height="220" fill="#090C14"/>
+            <!-- grid -->
+            <line x1="0" y1="44" x2="480" y2="44" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="88" x2="480" y2="88" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="132" x2="480" y2="132" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="176" x2="480" y2="176" stroke="#1C2030" stroke-width="1"/>
+            <line x1="120" y1="0" x2="120" y2="220" stroke="#1C2030" stroke-width="1"/>
+            <line x1="240" y1="0" x2="240" y2="220" stroke="#1C2030" stroke-width="1"/>
+            <line x1="360" y1="0" x2="360" y2="220" stroke="#1C2030" stroke-width="1"/>
+            <!-- Upper Band -->
+            <polyline points="20,40 90,36 160,33 230,30 300,34 370,38 440,32 480,28" fill="none" stroke="#F87171" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+            <!-- Middle Band -->
+            <polyline points="20,98 90,95 160,92 230,90 300,93 370,96 440,90 480,86" fill="none" stroke="#F0B429" stroke-width="1.8"/>
+            <!-- Lower Band -->
+            <polyline points="20,158 90,153 160,150 230,150 300,152 370,154 440,148 480,144" fill="none" stroke="#34D399" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+            <!-- Price path area -->
+            <polygon points="20,148 58,132 95,112 130,95 165,110 198,145 232,152 256,142 280,118 315,96 352,76 390,60 425,44 460,30 480,24 480,220 20,220" fill="url(#priceUp)" opacity="0.3"/>
+            <!-- Price line -->
+            <polyline points="20,148 58,132 95,112 130,95 165,110 198,145 232,152 256,142 280,118 315,96 352,76 390,60 425,44 460,30" fill="none" stroke="#F1F5F9" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Bounce point -->
+            <circle cx="232" cy="152" r="7" fill="none" stroke="#34D399" stroke-width="2"/>
+            <circle cx="232" cy="152" r="3" fill="#34D399"/>
+            <!-- Entry up arrow -->
+            <line x1="256" y1="142" x2="256" y2="114" stroke="#34D399" stroke-width="2"/>
+            <polygon points="250,114 256,100 262,114" fill="#34D399"/>
+            <!-- Labels -->
+            <text x="14" y="14" fill="#F87171" font-size="8.5" font-family="JetBrains Mono" font-weight="500">UPPER BAND</text>
+            <text x="14" y="26" fill="#F0B429" font-size="8.5" font-family="JetBrains Mono" font-weight="500">MIDDLE BAND</text>
+            <text x="14" y="38" fill="#34D399" font-size="8.5" font-family="JetBrains Mono" font-weight="500">LOWER BAND</text>
+            <text x="200" y="170" fill="#34D399" font-size="8" font-family="JetBrains Mono">BOUNCE</text>
+            <text x="264" y="111" fill="#34D399" font-size="8" font-family="JetBrains Mono">ENTRY ↑</text>
+          </svg>
+        </div>
+        <p class="chart-cap">Giá pullback trong uptrend, chạm Dải Dưới (xanh lá) → tín hiệu bounce. Kết hợp RSI 30–50 để xác nhận trước khi vào BUY.</p>
+      </div>
+
+      <!-- Chart 2: RSI Split View -->
+      <div class="chart-wrap rv">
+        <div class="chart-head">
+          <span class="chart-head-title">RSI Xác Nhận Tín Hiệu Bounce</span>
+          <span class="chart-badge cb-buy">RSI · 30–50 Zone</span>
+        </div>
+        <div class="chart-body">
+          <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="480" height="220" fill="#090C14"/>
+            <!-- Price section top -->
+            <line x1="0" y1="30" x2="480" y2="30" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="65" x2="480" y2="65" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="100" x2="480" y2="100" stroke="#1C2030" stroke-width="1"/>
+            <!-- Divider -->
+            <line x1="0" y1="128" x2="480" y2="128" stroke="#252B3D" stroke-width="2"/>
+            <text x="8" y="122" fill="#64748B" font-size="7.5" font-family="JetBrains Mono">PRICE</text>
+            <!-- RSI section bottom -->
+            <line x1="0" y1="162" x2="480" y2="162" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="155" x2="480" y2="155" stroke="#252B3D" stroke-width="0.8" stroke-dasharray="3,3"/><!-- 50 -->
+            <line x1="0" y1="175" x2="480" y2="175" stroke="#252B3D" stroke-width="0.8" stroke-dasharray="3,3"/><!-- 30 -->
+            <text x="8" y="149" fill="#F0B429" font-size="7" font-family="JetBrains Mono">50</text>
+            <text x="8" y="179" fill="#34D399" font-size="7" font-family="JetBrains Mono">30</text>
+            <text x="8" y="210" fill="#64748B" font-size="7.5" font-family="JetBrains Mono">RSI(14)</text>
+            <!-- BB lines (price section) -->
+            <polyline points="20,20 480,17" fill="none" stroke="#F87171" stroke-width="1" stroke-dasharray="4,2" opacity="0.6"/>
+            <polyline points="20,100 480,97" fill="none" stroke="#34D399" stroke-width="1" stroke-dasharray="4,2" opacity="0.6"/>
+            <polyline points="20,60 480,57" fill="none" stroke="#F0B429" stroke-width="1.5"/>
+            <!-- Price -->
+            <polyline points="20,95 55,82 90,66 125,58 160,72 192,96 222,104 248,96 278,78 310,64 345,50 380,38 415,27 450,19" fill="none" stroke="#F1F5F9" stroke-width="2" stroke-linejoin="round"/>
+            <!-- RSI line -->
+            <polyline points="20,158 55,155 90,148 125,143 160,150 192,168 222,176 248,165 278,154 310,148 345,143 380,138 415,133 450,128" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linejoin="round"/>
+            <!-- RSI valid zone highlight -->
+            <rect x="188" y="155" width="65" height="22" fill="rgba(52,211,153,0.07)" rx="3"/>
+            <text x="196" y="204" fill="#34D399" font-size="7.5" font-family="JetBrains Mono">RSI 30–50 ↑ VALID</text>
+          </svg>
+        </div>
+        <p class="chart-cap">RSI (ungu) phải trong vùng 30–50 và đang tăng khi giá chạm Dải Dưới — vùng highlight xanh = tín hiệu BUY hợp lệ.</p>
+      </div>
+
+      <!-- Chart 3: BB Squeeze -->
+      <div class="chart-wrap rv">
+        <div class="chart-head">
+          <span class="chart-head-title">BB Squeeze — Báo Hiệu Breakout</span>
+          <span class="chart-badge cb-squeeze">Squeeze · Volatility</span>
+        </div>
+        <div class="chart-body">
+          <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="480" height="220" fill="#090C14"/>
+            <line x1="0" y1="55" x2="480" y2="55" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="110" x2="480" y2="110" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="165" x2="480" y2="165" stroke="#1C2030" stroke-width="1"/>
+            <!-- squeeze divider -->
+            <line x1="220" y1="0" x2="220" y2="220" stroke="#252B3D" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <!-- Upper band: wide then squeeze then wide -->
+            <polyline points="20,38 70,46 120,58 160,74 200,88 220,94 240,84 280,62 330,36 380,15 440,8 480,5" fill="none" stroke="#F87171" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.75"/>
+            <!-- Lower band: mirror -->
+            <polyline points="20,178 70,170 120,158 160,143 200,128 220,122 240,132 280,152 330,176 380,198 440,205 480,208" fill="none" stroke="#34D399" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.75"/>
+            <!-- Middle band flat -->
+            <polyline points="20,108 480,108" fill="none" stroke="#F0B429" stroke-width="1.8"/>
+            <!-- Price: range then breakout -->
+            <polyline points="20,120 45,108 70,118 100,106 130,116 160,105 190,114 210,108 220,106 240,98 268,80 300,58 335,38 368,22 400,12" fill="none" stroke="#F1F5F9" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Squeeze annotation -->
+            <text x="148" y="16" fill="#F0B429" font-size="8" font-family="JetBrains Mono" font-weight="600">◄ SQUEEZE ►</text>
+            <line x1="120" y1="88" x2="148" y2="20" stroke="#F0B429" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+            <line x1="222" y1="84" x2="252" y2="20" stroke="#F0B429" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+            <!-- Breakout annotation -->
+            <text x="310" y="42" fill="#34D399" font-size="8.5" font-family="JetBrains Mono" font-weight="600">BREAKOUT ↑</text>
+            <text x="50" y="210" fill="#64748B" font-size="7.5" font-family="JetBrains Mono">LOW VOLATILITY PHASE</text>
+            <text x="300" y="210" fill="#64748B" font-size="7.5" font-family="JetBrains Mono">HIGH VOL. PHASE</text>
+          </svg>
+        </div>
+        <p class="chart-cap">Dải thu hẹp (Squeeze) = biến động thấp. Squeeze càng dài → breakout sau đó càng mạnh. Swing trader tìm cơ hội sau giai đoạn này.</p>
+      </div>
+
+      <!-- Chart 4: Double BB -->
+      <div class="chart-wrap rv">
+        <div class="chart-head">
+          <span class="chart-head-title">Double Bollinger Bands — Kỹ Thuật Nâng Cao</span>
+          <span class="chart-badge cb-dbl">Double BB</span>
+        </div>
+        <div class="chart-body">
+          <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="480" height="220" fill="#090C14"/>
+            <line x1="0" y1="44" x2="480" y2="44" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="88" x2="480" y2="88" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="132" x2="480" y2="132" stroke="#1C2030" stroke-width="1"/>
+            <line x1="0" y1="176" x2="480" y2="176" stroke="#1C2030" stroke-width="1"/>
+            <line x1="240" y1="0" x2="240" y2="220" stroke="#1C2030" stroke-width="1"/>
+            <!-- BB1 Upper 2σ -->
+            <line x1="20" y1="30" x2="480" y2="26" stroke="#F87171" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.8"/>
+            <!-- BB2 Upper 1σ -->
+            <line x1="20" y1="68" x2="480" y2="65" stroke="#F0B429" stroke-width="1.2" stroke-dasharray="3,2" opacity="0.8"/>
+            <!-- Middle SMA -->
+            <line x1="20" y1="110" x2="480" y2="107" stroke="#2DD4BF" stroke-width="2"/>
+            <!-- BB2 Lower 1σ -->
+            <line x1="20" y1="150" x2="480" y2="150" stroke="#F0B429" stroke-width="1.2" stroke-dasharray="3,2" opacity="0.8"/>
+            <!-- BB1 Lower 2σ -->
+            <line x1="20" y1="186" x2="480" y2="186" stroke="#34D399" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.8"/>
+            <!-- Zones -->
+            <rect x="0" y="26" width="480" height="42" fill="rgba(248,113,113,0.05)"/>
+            <rect x="0" y="150" width="480" height="38" fill="rgba(52,211,153,0.05)"/>
+            <!-- Price in buy zone trending up -->
+            <polyline points="20,178 50,165 80,155 115,150 150,158 185,162 215,155 250,148 280,136 315,122 350,108 385,94 420,78 460,62" fill="none" stroke="#F1F5F9" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Zone labels -->
+            <text x="14" y="53" fill="#F87171" font-size="7.5" font-family="JetBrains Mono">SELL ZONE (BB1 Upper 2σ)</text>
+            <text x="14" y="83" fill="#F0B429" font-size="7.5" font-family="JetBrains Mono">BB2 Upper (1σ)</text>
+            <text x="14" y="105" fill="#2DD4BF" font-size="7.5" font-family="JetBrains Mono">MIDDLE (SMA)</text>
+            <text x="14" y="147" fill="#F0B429" font-size="7.5" font-family="JetBrains Mono">BB2 Lower (1σ)</text>
+            <text x="14" y="200" fill="#34D399" font-size="7.5" font-family="JetBrains Mono">BUY ZONE (BB1 Lower 2σ)</text>
+          </svg>
+        </div>
+        <p class="chart-cap">Double BB: BB1 (2σ) + BB2 (1σ). Vùng giữa 1σ–2σ phía dưới = Buy Zone. Tín hiệu giao dịch mạnh gấp đôi BB đơn lẻ.</p>
+      </div>
+
+    </div><!-- /charts-grid -->
+  </div>
+</section>
+
+<!-- ═══ TRADING STYLES ═══ -->
+<section id="styles">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Phong Cách Giao Dịch</span></div>
+      <h2 class="sec-title">Swing Trading <em>vs</em> Day Trading</h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="styles-grid">
+      <div class="card rv" style="padding:28px">
+        <div class="style-header">
+          <div class="style-icon si-swing">📊</div>
+          <div>
+            <h3 style="font-family:'Barlow',sans-serif;font-size:1rem">Swing Trading</h3>
+            <p style="font-size:0.78rem;margin:0;color:var(--slate-lo)">Khung H4 · Daily</p>
+          </div>
+        </div>
+        <ul class="style-list">
+          <li>Cơ hội tốt nhất xuất hiện sau khi hai dải tiến lại gần nhau (<strong>BB Squeeze</strong>)</li>
+          <li>Squeeze = giá đang ranging, biến động thấp — sắp có đợt tăng/giảm mạnh</li>
+          <li>Quy tắc "Hooks": nếu một dải hướng lên và dải kia hướng xuống → swing entry</li>
+          <li>Nếu chỉ một dải "hook", dải kia nằm phẳng → <strong>không có cơ hội swing</strong></li>
+          <li>Vào lệnh theo hướng breakout khỏi vùng Squeeze</li>
+          <li>Squeeze càng dài → xác suất breakout mạnh càng cao</li>
+        </ul>
+      </div>
+      <div class="card rv" style="padding:28px">
+        <div class="style-header">
+          <div class="style-icon si-day">⚡</div>
+          <div>
+            <h3 style="font-family:'Barlow',sans-serif;font-size:1rem">Day Trading</h3>
+            <p style="font-size:0.78rem;margin:0;color:var(--slate-lo)">Khung M5 · M15 · H1</p>
+          </div>
+        </div>
+        <ul class="style-list">
+          <li>Dùng <strong>Double BB Strategy</strong>: hai bộ BB (2σ và 1σ) cho tín hiệu rõ hơn</li>
+          <li>Vùng 1σ–2σ dưới + giá hướng lên → <strong>Buy Zone</strong> — theo trend</li>
+          <li>Vùng 1σ–2σ trên + giá hướng xuống → <strong>Sell Zone</strong> — theo trend</li>
+          <li>BB nằm phẳng + giá trong vùng 1–2σ → giao dịch đảo chiều (reversal)</li>
+          <li>Dùng khung H1 để vào lệnh sau phân tích trên H4</li>
+          <li>Cài đặt ngắn hơn (9 period) cho scalping và chart 5 phút</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOUBLE BB ═══ -->
+<section id="doublebb">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Kỹ Thuật Nâng Cao</span></div>
+      <h2 class="sec-title">Double Bollinger Bands — <em>Cấu Hình & Ứng Dụng</em></h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="dbb-grid">
+      <div class="card rv">
+        <div class="dbb-card">
+          <h3>Cấu Hình Hai Bộ BB</h3>
+          <div class="dbb-row">
+            <div class="dbb-tag dt-1">BB #1</div>
+            <div class="dbb-text">
+              <h4>Period 20 · StdDev 2</h4>
+              <p>Bộ BB chính — dải ngoài cùng. Xác định vùng giá cực trị. Màu đỏ (trên) và xanh lá (dưới).</p>
+            </div>
+          </div>
+          <div class="dbb-row">
+            <div class="dbb-tag dt-2">BB #2</div>
+            <div class="dbb-text">
+              <h4>Period 20 · StdDev 1</h4>
+              <p>Bộ BB phụ — dải trong. Cùng period, chỉ khác standard deviation. Tạo thêm Buy/Sell Zone.</p>
+            </div>
+          </div>
+          <div class="warning-box" style="margin-top:4px">
+            <span class="warn-icon">💡</span>
+            <p class="warn-txt">90–95% biến động giá xảy ra trong phạm vi 2 độ lệch chuẩn — vùng giữa 1σ và 2σ tạo ra nhiều tín hiệu Buy/Sell mạnh nhất trong ngày.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card rv">
+        <div class="dbb-card">
+          <h3>Hai Cách Giao Dịch với Double BB</h3>
+          <div class="dbb-row">
+            <div class="dbb-tag dt-1">Reversal</div>
+            <div class="dbb-text">
+              <h4>Đảo Chiều (BB Nằm Phẳng)</h4>
+              <p>BUY nếu giá dao động giữa Lower BB1 và BB2 (BB nằm phẳng). SELL nếu giá giữa Upper BB1 và BB2. Áp dụng khi thị trường ranging.</p>
+            </div>
+          </div>
+          <div class="dbb-row">
+            <div class="dbb-tag dt-2">Trend</div>
+            <div class="dbb-text">
+              <h4>Theo Xu Hướng (BB Mở Rộng)</h4>
+              <p>Giá di chuyển trong vùng 1–2σ hướng lên → BUY theo trend. Giá di chuyển trong vùng 1–2σ hướng xuống → SELL theo trend.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Câu Hỏi Thường Gặp</span></div>
+      <h2 class="sec-title">FAQ — <em>Bollinger Bands</em></h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="faq-grid">
+      <div class="card faq-item rv">
+        <p class="faq-q">Chiến lược Bollinger Bands Bounce là gì?</p>
+        <p class="faq-a">Kỹ thuật dùng BB để tìm cơ hội giao dịch: BUY khi giá chạm Dải Dưới, SELL khi giá chạm Dải Trên — kết hợp RSI để lọc tín hiệu giả.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Bollinger Bands hoạt động như thế nào?</p>
+        <p class="faq-a">Gồm 3 dải: SMA (20), Upper (SMA+2σ), Lower (SMA−2σ). Dải nở rộng = biến động cao. Thu hẹp = biến động thấp (Squeeze).</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Cài đặt tốt nhất cho Bollinger Bands?</p>
+        <p class="faq-a">Mặc định 20 period, 2 StdDev là điểm khởi đầu phổ biến nhất. Scalper dùng 9 period để nhạy hơn với biến động ngắn hạn.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Lợi ích của chiến lược này là gì?</p>
+        <p class="faq-a">Xác định cơ hội mua/bán dựa trên biến động thực tế — đặc biệt hiệu quả trong thị trường có biến động cao và xu hướng rõ ràng.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Rủi ro chính khi dùng chiến lược này?</p>
+        <p class="faq-a">Tín hiệu giả (false signals) — giá có thể vượt dải ngắn rồi tiếp tục đi ngược. RSI xác nhận và Stop Loss là lá chắn quan trọng nhất.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Cài đặt cho biểu đồ 5 phút?</p>
+        <p class="faq-a">SMA 20, StdDev 1–1.5 là điểm khởi đầu. Cũng phù hợp để dùng 9 period, StdDev 2 cho scalping nhanh trên khung M5.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Cài đặt cho biểu đồ 1 phút?</p>
+        <p class="faq-a">SMA 20, StdDev 0.5–0.75. Khung 1 phút rất nhạy — nhiều tín hiệu nhưng cũng nhiều nhiễu hơn, cần kỷ luật cao.</p>
+      </div>
+      <div class="card faq-item rv">
+        <p class="faq-q">Cài đặt cho biểu đồ 15 phút?</p>
+        <p class="faq-a">SMA 20, StdDev 2.5–3. Khung 15 phút cân bằng giữa độ nhạy và độ chính xác — ít nhiễu hơn khung 1 và 5 phút.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONCLUSION ═══ -->
+<section id="conclusion">
+  <div class="wrap">
+    <div class="sec-header rv">
+      <div class="sec-kicker"><div class="kicker-bar"></div><span class="kicker-txt">Kết Luận</span></div>
+      <h2 class="sec-title">Tổng Kết — <em>Điều Cần Nhớ</em></h2>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="concl-grid">
+      <div class="summary-list rv">
+        <div class="sl-item">
+          <div class="sl-idx">01</div>
+          <div class="sl-txt">
+            <h4>Combo BB + RSI là Bất Khả Chiến Bại</h4>
+            <p>BB (trend-following) + RSI (momentum) bổ sung cho nhau hoàn hảo — giảm false signal và tăng xác suất thắng đáng kể.</p>
+          </div>
+        </div>
+        <div class="sl-item">
+          <div class="sl-idx">02</div>
+          <div class="sl-txt">
+            <h4>H1 & H4 Cho Tín Hiệu Mạnh Nhất</h4>
+            <p>Tín hiệu trên khung cao hơn ít hơn nhưng chất lượng vượt trội — ít nhiễu hơn, xác suất thành công cao hơn.</p>
+          </div>
+        </div>
+        <div class="sl-item">
+          <div class="sl-idx">03</div>
+          <div class="sl-txt">
+            <h4>5 Pip — Ngưỡng Kỷ Luật Không Thể Bỏ Qua</h4>
+            <p>Giá phải chạm hoặc trong 5 pip so với dải. Xa hơn = không hợp lệ. Không ép tín hiệu.</p>
+          </div>
+        </div>
+        <div class="sl-item">
+          <div class="sl-idx">04</div>
+          <div class="sl-txt">
+            <h4>Second Entry tại Middle Band</h4>
+            <p>Khi xu hướng còn mạnh, thêm lệnh tại Dải Giữa — tiềm năng nhân đôi lợi nhuận từ cùng một setup.</p>
+          </div>
+        </div>
+        <div class="sl-item">
+          <div class="sl-idx">05</div>
+          <div class="sl-txt">
+            <h4>Đa Thị Trường & Đa Phong Cách</h4>
+            <p>Áp dụng được trên Forex, Stocks, Crypto, Commodities — cả Day Trading lẫn Swing Trading đều phù hợp.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rv">
+        <div class="cta-panel">
+          <h3>Checklist Vào Lệnh</h3>
+          <p>Kiểm tra đủ 6 điều kiện trước mỗi giao dịch:</p>
+          <a href="#strategy" class="cta-btn">Xem Lại 5 Quy Tắc →</a>
+          <div class="checklist">
+            <div class="cl-item"><span class="cl-check">✔</span>Thêm BB (20, 2) và RSI (14) vào chart</div>
+            <div class="cl-item"><span class="cl-check">✔</span>Xác nhận xu hướng rõ — không sideways</div>
+            <div class="cl-item"><span class="cl-check">✔</span>Giá pullback và chạm dải (trong 5 pip)</div>
+            <div class="cl-item"><span class="cl-check">✔</span>RSI trong vùng 30–50 và đang tăng (BUY)</div>
+            <div class="cl-item"><span class="cl-check">✔</span>Chờ nến xác nhận đảo chiều rõ ràng</div>
+            <div class="cl-item"><span class="cl-check">✔</span>Đặt SL 30–50 pip · TP tại dải đối diện</div>
+          </div>
+        </div>
+        <div class="mkt-strip">
+          <span class="mkt-tag">💱 Forex</span>
+          <span class="mkt-tag">📈 Stocks</span>
+          <span class="mkt-tag">₿ Crypto</span>
+          <span class="mkt-tag">🛢 Commodity</span>
+          <span class="mkt-tag">📊 Options</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-brand">Bollinger Bands · Bounce Strategy</div>
+    <p>Tài liệu giáo dục về phân tích kỹ thuật · Không phải khuyến nghị đầu tư</p>
+    <p style="margin-top:6px">⚠ Giao dịch tài chính có rủi ro cao — luôn sử dụng Stop Loss và quản lý vốn nghiêm túc trước khi vào lệnh bất kỳ</p>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+
+document.querySelectorAll('.rv').forEach((el, i) => {
+  el.style.transitionDelay = (i % 4) * 60 + 'ms';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>

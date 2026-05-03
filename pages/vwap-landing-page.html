@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chiến Lược Chỉ Báo VWAP Tối Thượng | Hướng Dẫn Giao Dịch Intraday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A0F1E;
+    --navy-mid: #111827;
+    --navy-card: #151D2E;
+    --navy-border: #1E293B;
+    --accent: #00D4FF;
+    --accent-green: #00E5A0;
+    --accent-amber: #FFB547;
+    --accent-red: #FF5A5A;
+    --text-primary: #F0F4FF;
+    --text-secondary: #94A3B8;
+    --text-muted: #4A5568;
+    --gradient-hero: linear-gradient(135deg, #0A0F1E 0%, #0D1B35 50%, #091628 100%);
+    --gradient-accent: linear-gradient(90deg, #00D4FF, #00E5A0);
+    --gradient-card: linear-gradient(145deg, #151D2E, #111827);
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+    --shadow-glow: 0 0 40px rgba(0,212,255,0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--navy);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  h1, h2, h3, h4 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+  h2 { font-size: clamp(1.5rem, 3.5vw, 2.4rem); }
+  h3 { font-size: clamp(1.1rem, 2.5vw, 1.5rem); }
+
+  p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+  a { color: var(--accent); text-decoration: none; }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { padding: 80px 0; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 16px 0;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .nav-logo {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--gradient-accent);
+    color: var(--navy) !important;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  #hero {
+    background: var(--gradient-hero);
+    padding: 100px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero-title {
+    margin-bottom: 20px;
+    max-width: 780px;
+  }
+
+  .hero-title span {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    max-width: 620px;
+    margin-bottom: 36px;
+    color: var(--text-secondary);
+  }
+
+  .hero-note {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(255,181,71,0.08);
+    border: 1px solid rgba(255,181,71,0.2);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 0.875rem;
+    color: var(--accent-amber);
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+
+  .hero-note-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .stat-item { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num {
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title { margin-bottom: 12px; }
+  .section-title span {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section-desc { color: var(--text-secondary); max-width: 600px; margin-bottom: 48px; }
+
+  .divider {
+    width: 48px; height: 3px;
+    background: var(--gradient-accent);
+    border-radius: 2px;
+    margin: 16px 0 40px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--gradient-card);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,212,255,0.3);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-3px);
+  }
+
+  /* ─── OVERVIEW GRID ─── */
+  #overview { background: var(--navy-mid); }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .overview-card { text-align: left; }
+
+  .overview-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+
+  .icon-blue { background: rgba(0,212,255,0.12); }
+  .icon-green { background: rgba(0,229,160,0.12); }
+  .icon-amber { background: rgba(255,181,71,0.12); }
+  .icon-red { background: rgba(255,90,90,0.12); }
+
+  .overview-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .overview-card p { font-size: 0.9rem; margin: 0; }
+
+  /* ─── HOW VWAP WORKS ─── */
+  #how-it-works { background: var(--navy); }
+
+  .vwap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .info-block { margin-bottom: 24px; }
+  .info-block h3 { font-size: 1rem; color: var(--accent); margin-bottom: 6px; }
+  .info-block p { font-size: 0.9rem; margin: 0; }
+
+  .formula-box {
+    background: rgba(0,212,255,0.05);
+    border: 1px solid rgba(0,212,255,0.15);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .formula-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .formula-text {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .bullet-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .bullet-list li::before {
+    content: '▸';
+    color: var(--accent);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  /* ─── STRATEGY RULES ─── */
+  #strategy { background: var(--navy-mid); }
+
+  .rules-timeline { display: flex; flex-direction: column; gap: 32px; }
+
+  .rule-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .rule-num {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .rule-content h3 { margin-bottom: 10px; font-size: 1.15rem; }
+  .rule-content p { font-size: 0.9rem; margin-bottom: 8px; }
+
+  .rule-sub-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .rule-sub-list li {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+  .rule-sub-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent-green);
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.2);
+    color: var(--accent-green);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  /* ─── VWAP BANDS ─── */
+  #bands { background: var(--navy); }
+
+  .bands-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .band-card { text-align: center; padding: 32px 24px; }
+  .band-icon { font-size: 2rem; margin-bottom: 16px; }
+  .band-card h3 { font-size: 1rem; margin-bottom: 8px; }
+  .band-card p { font-size: 0.875rem; margin: 0; }
+
+  .band-upper { border-top: 3px solid var(--accent-red); }
+  .band-center { border-top: 3px solid var(--accent); }
+  .band-lower { border-top: 3px solid var(--accent-green); }
+
+  /* ─── CHARTS SECTION ─── */
+  #charts { background: var(--navy-mid); }
+
+  .charts-intro { margin-bottom: 40px; }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .chart-card { overflow: hidden; }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .chart-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .chart-tag-bull { background: rgba(0,229,160,0.12); color: var(--accent-green); }
+  .chart-tag-bear { background: rgba(255,90,90,0.12); color: var(--accent-red); }
+  .chart-tag-neutral { background: rgba(0,212,255,0.12); color: var(--accent); }
+  .chart-tag-exit { background: rgba(255,181,71,0.12); color: var(--accent-amber); }
+
+  .chart-viz { border-radius: 8px; overflow: hidden; background: #0D1520; border: 1px solid var(--navy-border); }
+
+  /* SVG Charts */
+  svg text { font-family: 'DM Sans', sans-serif; }
+
+  /* Chart 1: Trend identification */
+  /* Chart 2: Support / resistance */
+  /* Chart 3: Triangle breakout */
+  /* Chart 4: Entry & exit */
+
+  .chart-caption {
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .chart-caption::before { content: 'ℹ'; color: var(--accent); flex-shrink: 0; }
+
+  /* ─── INSTITUTIONAL SECTION ─── */
+  #institutional { background: var(--navy); }
+
+  .inst-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .inst-card { padding: 24px 24px; }
+  .inst-icon { font-size: 1.5rem; margin-bottom: 12px; }
+  .inst-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .inst-card p { font-size: 0.875rem; margin: 0; }
+
+  /* ─── CONCLUSION ─── */
+  #conclusion { background: var(--navy-mid); }
+
+  .conclusion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .conclusion-points { display: flex; flex-direction: column; gap: 16px; }
+  .cp-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .cp-num {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: rgba(0,212,255,0.12);
+    border: 1px solid rgba(0,212,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .cp-text h4 { font-size: 0.95rem; margin-bottom: 4px; }
+  .cp-text p { font-size: 0.875rem; margin: 0; }
+
+  .cta-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,229,160,0.06));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    text-align: center;
+  }
+
+  .cta-box h3 { margin-bottom: 12px; }
+  .cta-box p { font-size: 0.9rem; margin-bottom: 24px; }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--gradient-accent);
+    color: var(--navy);
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 32px;
+    border-radius: 10px;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+  .markets-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .market-chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--navy-border);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy);
+    border-top: 1px solid var(--navy-border);
+    padding: 32px 0;
+    text-align: center;
+  }
+
+  footer p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    section { padding: 60px 0; }
+    .vwap-grid, .bands-grid, .charts-grid, .conclusion-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+    .nav-links { display: none; }
+    .rule-item { grid-template-columns: 48px 1fr; gap: 16px; }
+    .rule-num { width: 48px; height: 48px; font-size: 1rem; }
+    .inst-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-stats { flex-direction: column; gap: 16px; }
+    .bands-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-logo">VWAP PRO STRATEGY</div>
+    <ul class="nav-links">
+      <li><a href="#overview">Tổng Quan</a></li>
+      <li><a href="#how-it-works">Cách Hoạt Động</a></li>
+      <li><a href="#strategy">Quy Tắc</a></li>
+      <li><a href="#charts">Biểu Đồ</a></li>
+      <li><a href="#institutional">Tổ Chức</a></li>
+    </ul>
+    <a href="#conclusion" class="nav-cta">Bắt Đầu Ngay</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">📊 Chỉ Báo Intraday Tối Thượng</div>
+    <h1 class="hero-title">
+      Chiến Lược Chỉ Báo<br>
+      <span>VWAP Tối Thượng</span>
+    </h1>
+    <p class="hero-subtitle">
+      Volume Weighted Average Price — công cụ được các nhà giao dịch tổ chức và hệ thống algo tin dùng hàng đầu. Nắm vững VWAP để ra quyết định giao dịch chính xác và hiệu quả hơn.
+    </p>
+    <div class="hero-note">
+      <span class="hero-note-icon">⚠️</span>
+      <span><strong>Lưu ý quan trọng:</strong> VWAP chỉ hiển thị trên biểu đồ Intraday. Không sử dụng trên khung thời gian Daily hoặc cao hơn vì chỉ báo này reset vào đầu mỗi phiên giao dịch.</span>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">M15</span>
+        <span class="stat-label">Khung Thời Gian Tối Ưu</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">Quy Tắc Chiến Lược</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">4+</span>
+        <span class="stat-label">Loại Tài Sản Hỗ Trợ</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Dữ Liệu Volume & Giá</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Tổng Quan</span>
+      <h2 class="section-title">VWAP Là Gì & Tại Sao Nó Quan Trọng?</h2>
+      <div class="divider"></div>
+      <p class="section-desc">VWAP cung cấp cái nhìn toàn diện hơn đường trung bình động thông thường bằng cách tích hợp cả giá lẫn khối lượng giao dịch — phản ánh giá trị thực sự của thị trường.</p>
+    </div>
+    <div class="overview-grid">
+      <div class="card overview-card reveal">
+        <div class="overview-icon icon-blue">📈</div>
+        <h3>Xác Định Xu Hướng</h3>
+        <p>Giá trên VWAP → xu hướng tăng (Bullish). Giá dưới VWAP → xu hướng giảm (Bearish). Đơn giản và hiệu quả.</p>
+      </div>
+      <div class="card overview-card reveal">
+        <div class="overview-icon icon-green">🎯</div>
+        <h3>Hỗ Trợ & Kháng Cự Động</h3>
+        <p>VWAP hoạt động như vùng hỗ trợ/kháng cự năng động. Giá thường bounce hoặc pullback khi chạm đường VWAP.</p>
+      </div>
+      <div class="card overview-card reveal">
+        <div class="overview-icon icon-amber">⚡</div>
+        <h3>Điểm Vào/Ra Tối Ưu</h3>
+        <p>Nhà giao dịch tổ chức mua dưới VWAP, bán trên VWAP để đạt được mức giá thực thi tốt hơn, giảm tác động thị trường.</p>
+      </div>
+      <div class="card overview-card reveal">
+        <div class="overview-icon icon-red">📊</div>
+        <h3>Phân Tích Khối Lượng</h3>
+        <p>Tích hợp volume giúp đánh giá liệu một đợt tăng/giảm có được hỗ trợ bởi khối lượng lớn hay chỉ là biến động ngẫu nhiên.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Cơ Chế Hoạt Động</span>
+      <h2 class="section-title">Hiểu VWAP <span>Trên Biểu Đồ</span></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="vwap-grid">
+      <div class="reveal">
+        <div class="formula-box">
+          <p class="formula-label">Công Thức VWAP</p>
+          <p class="formula-text">VWAP = Σ(Giá × Khối Lượng) ÷ Σ(Khối Lượng)</p>
+        </div>
+        <br>
+        <div class="info-block">
+          <h3>Khác Biệt vs. Moving Average</h3>
+          <p>Đường trung bình động chỉ tính giá. VWAP tính theo trọng số khối lượng — phản ánh chính xác hơn giá trị thực của tài sản trong phiên giao dịch.</p>
+        </div>
+        <div class="info-block">
+          <h3>Reset Mỗi Phiên</h3>
+          <p>VWAP tính lại từ đầu mỗi phiên giao dịch. Chỉ có ý nghĩa trên biểu đồ intraday (1 phút, 5 phút, 15 phút...).</p>
+        </div>
+        <div class="info-block">
+          <h3>Nền Tảng Sử Dụng</h3>
+          <p>Có trên hầu hết các nền tảng giao dịch. TradingView: vào <em>Indicators → Technicals → tìm "VWAP" → Volume Weighted Average Price</em>.</p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="card">
+          <h3 style="margin-bottom:20px;">4 Ứng Dụng Chính Của VWAP</h3>
+          <ul class="bullet-list">
+            <li><strong>Xác định xu hướng:</strong> Giá liên tục trên VWAP = Bullish. Liên tục dưới = Bearish. Dùng để lọc hướng giao dịch.</li>
+            <li><strong>Hỗ trợ & kháng cự:</strong> Giá thường phản ứng khi tiếp cận VWAP. Là điểm ra quyết định quan trọng.</li>
+            <li><strong>Thực thi lệnh:</strong> Tổ chức mua dưới VWAP / bán trên VWAP để giảm market impact và đạt giá tốt hơn.</li>
+            <li><strong>Trailing stop loss:</strong> VWAP là đường dừng lỗ lý tưởng. Khi giá quay lại chạm VWAP sau breakout, đó là tín hiệu thoát lệnh.</li>
+            <li><strong>Lọc tín hiệu:</strong> Không giao dịch ngược xu hướng VWAP. Chỉ giao dịch theo hướng VWAP để tăng xác suất thắng.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGY RULES -->
+<section id="strategy">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Chiến Lược Giao Dịch</span>
+      <h2 class="section-title">3 Quy Tắc <span>VWAP Triangle Breakout</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">Kết hợp VWAP với mô hình giá Triangle Breakout để xác định các cơ hội giao dịch xác suất cao trên khung M15.</p>
+    </div>
+    <div class="rules-timeline">
+      <div class="rule-item reveal">
+        <div class="rule-num">1</div>
+        <div class="card rule-content" style="width:100%">
+          <h3>Thêm Chỉ Báo VWAP Vào Biểu Đồ</h3>
+          <p>Đây là bước quan trọng nhất — phải có VWAP trên chart trước khi phân tích.</p>
+          <ul class="rule-sub-list">
+            <li>Mở TradingView → Click <em>Indicators</em> → <em>Technicals</em> → Tìm <em>"VWAP"</em></li>
+            <li>Chọn <em>Volume Weighted Average Price</em> (phiên bản mặc định của TradingView)</li>
+            <li>Vào Settings → Style → <strong>Bỏ chọn Upper Band #1 và Upper Band #2</strong></li>
+            <li>Giữ nguyên đường VWAP trung tâm — đủ cho chiến lược này</li>
+          </ul>
+          <span class="tag">✅ Bắt Buộc</span>
+        </div>
+      </div>
+      <div class="rule-item reveal">
+        <div class="rule-num">2</div>
+        <div class="card rule-content" style="width:100%">
+          <h3>Triangle Breakout Entry — Khung M15</h3>
+          <p>Không bao giờ chỉ dựa vào một chỉ báo. Kết hợp VWAP với mô hình giá Triangle là cách dùng tối ưu nhất.</p>
+          <ul class="rule-sub-list">
+            <li>Tìm mô hình Triangle (Ascending / Descending / Symmetrical) trên khung <strong>M15</strong></li>
+            <li>Chờ giá breakout khỏi tam giác — xác nhận tín hiệu</li>
+            <li>Vào lệnh theo hướng breakout, đảm bảo cùng hướng với VWAP</li>
+            <li><strong>Options trader:</strong> lệnh ngắn hạn 1–7 ngày (call/put at-the-money)</li>
+            <li><strong>Stock trader:</strong> mua số lượng cổ phiếu theo khẩu vị rủi ro cá nhân</li>
+          </ul>
+          <span class="tag">📐 Khung M15</span>
+        </div>
+      </div>
+      <div class="rule-item reveal">
+        <div class="rule-num">3</div>
+        <div class="card rule-content" style="width:100%">
+          <h3>VWAP Là Trailing Stop Loss Tối Thượng</h3>
+          <p>Sau khi vào lệnh, dùng VWAP để quản lý giao dịch và biết chính xác khi nào cần thoát.</p>
+          <ul class="rule-sub-list">
+            <li>Giữ lệnh khi giá duy trì trên VWAP (Long) hoặc dưới VWAP (Short)</li>
+            <li>Khi giá bắt đầu quay lại chạm đường VWAP → tín hiệu momentum đang đảo chiều</li>
+            <li><strong>Thoát lệnh khi giá chạm VWAP</strong> — không chờ giá phá qua</li>
+            <li>Stop Loss: đặt dưới swing low trước khi breakout tam giác</li>
+            <li>Mục đích: thoát lệnh đúng lúc momentum đảo chiều, không để lãi thành lỗ</li>
+          </ul>
+          <span class="tag">🛡️ Quản Lý Rủi Ro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VWAP BANDS -->
+<section id="bands">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">VWAP Bands</span>
+      <h2 class="section-title">Các <span>Dải VWAP</span> Được Giải Thích</h2>
+      <div class="divider"></div>
+      <p class="section-desc">VWAP Bands hoạt động tương tự Bollinger Bands — xác định vùng giá kỳ vọng và các mức hỗ trợ/kháng cự tiềm năng.</p>
+    </div>
+    <div class="bands-grid">
+      <div class="card band-card band-upper reveal">
+        <div class="band-icon">🔴</div>
+        <h3>Dải Trên (Upper Band)</h3>
+        <p>1–2 độ lệch chuẩn trên VWAP. Chỉ báo kháng cự tiềm năng. Giá chạm dải trên → tín hiệu <strong>overbought</strong>, tài sản đang giao dịch cao hơn mức trung bình có trọng số khối lượng.</p>
+      </div>
+      <div class="card band-card band-center reveal">
+        <div class="band-icon">🔵</div>
+        <h3>Đường Trung Tâm (VWAP)</h3>
+        <p>Giá trung bình có trọng số khối lượng của phiên giao dịch. Đường benchmark quan trọng nhất — phản ánh giá "công bằng" (fair price) của tài sản trong ngày.</p>
+      </div>
+      <div class="card band-card band-lower reveal">
+        <div class="band-icon">🟢</div>
+        <h3>Dải Dưới (Lower Band)</h3>
+        <p>1–2 độ lệch chuẩn dưới VWAP. Chỉ báo hỗ trợ tiềm năng. Giá chạm dải dưới → tín hiệu <strong>oversold</strong>, tài sản đang giao dịch thấp hơn mức trung bình khối lượng.</p>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:24px; padding:20px 24px; display:flex; gap:14px; align-items:flex-start;">
+      <span style="font-size:1.2rem; flex-shrink:0;">💡</span>
+      <div>
+        <strong style="color:var(--accent-amber);">Trong chiến lược này:</strong>
+        <p style="margin:4px 0 0; font-size:0.875rem;">Chúng ta sẽ <strong>ẩn Upper Band #1 và #2</strong> vì không cần thiết cho phương pháp Triangle Breakout. Chỉ giữ đường VWAP trung tâm để giảm nhiễu và tập trung vào tín hiệu quan trọng.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARTS SECTION -->
+<section id="charts">
+  <div class="container">
+    <div class="reveal charts-intro">
+      <span class="section-label">Minh Họa Biểu Đồ</span>
+      <h2 class="section-title">Biểu Đồ <span>Minh Họa Chiến Lược</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">Các mô hình VWAP điển hình trong thực tế — từ xác định xu hướng, hỗ trợ/kháng cự đến điểm vào/ra lệnh tối ưu trên khung M15.</p>
+    </div>
+
+    <div class="charts-grid">
+
+      <!-- Chart 1: Trend Identification -->
+      <div class="card chart-card reveal">
+        <div class="chart-header">
+          <h3 style="font-size:1rem;">Xác Định Xu Hướng VWAP</h3>
+          <span class="chart-tag chart-tag-bull">Bullish</span>
+        </div>
+        <div class="chart-viz">
+          <svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="460" height="220" fill="#0D1520"/>
+            <!-- Grid -->
+            <line x1="0" y1="55" x2="460" y2="55" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="110" x2="460" y2="110" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="165" x2="460" y2="165" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="115" y1="0" x2="115" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="230" y1="0" x2="230" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="345" y1="0" x2="345" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <!-- VWAP Line -->
+            <polyline points="20,160 80,148 140,138 200,125 260,118 320,108 380,95 440,85" fill="none" stroke="#00D4FF" stroke-width="2" stroke-dasharray="6,3"/>
+            <!-- Price candles (bullish - above VWAP) -->
+            <!-- Candle bodies -->
+            <rect x="30" y="130" width="10" height="22" fill="#00E5A0" rx="1"/>
+            <line x1="35" y1="124" x2="35" y2="130" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="35" y1="152" x2="35" y2="157" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="55" y="118" width="10" height="24" fill="#00E5A0" rx="1"/>
+            <line x1="60" y1="112" x2="60" y2="118" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="60" y1="142" x2="60" y2="148" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="80" y="108" width="10" height="20" fill="#00E5A0" rx="1"/>
+            <line x1="85" y1="102" x2="85" y2="108" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="85" y1="128" x2="85" y2="134" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="105" y="100" width="10" height="22" fill="#00E5A0" rx="1"/>
+            <line x1="110" y1="93" x2="110" y2="100" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="110" y1="122" x2="110" y2="128" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="130" y="90" width="10" height="25" fill="#00E5A0" rx="1"/>
+            <line x1="135" y1="84" x2="135" y2="90" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="135" y1="115" x2="135" y2="121" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="155" y="80" width="10" height="28" fill="#00E5A0" rx="1"/>
+            <line x1="160" y1="74" x2="160" y2="80" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="160" y1="108" x2="160" y2="114" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="180" y="72" width="10" height="22" fill="#00E5A0" rx="1"/>
+            <line x1="185" y1="66" x2="185" y2="72" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="185" y1="94" x2="185" y2="100" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="205" y="64" width="10" height="24" fill="#00E5A0" rx="1"/>
+            <line x1="210" y1="58" x2="210" y2="64" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="210" y1="88" x2="210" y2="95" stroke="#00E5A0" stroke-width="1.5"/>
+            <rect x="230" y="56" width="10" height="20" fill="#00E5A0" rx="1"/>
+            <line x1="235" y1="50" x2="235" y2="56" stroke="#00E5A0" stroke-width="1.5"/>
+            <line x1="235" y1="76" x2="235" y2="83" stroke="#00E5A0" stroke-width="1.5"/>
+            <!-- Labels -->
+            <text x="20" y="12" fill="#00D4FF" font-size="9" font-weight="600">VWAP</text>
+            <text x="20" y="26" fill="#94A3B8" font-size="8">— — Đường VWAP</text>
+            <text x="200" y="12" fill="#00E5A0" font-size="9" font-weight="600">GIÁ TRÊN VWAP = XU HƯỚNG TĂNG ↑</text>
+            <!-- Arrow -->
+            <path d="M250 190 L420 90" stroke="#00E5A0" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>
+            <text x="290" y="200" fill="#00E5A0" font-size="8">Bullish Trend</text>
+          </svg>
+        </div>
+        <p class="chart-caption">Giá duy trì liên tục trên đường VWAP (xanh lam) → xác nhận xu hướng tăng. Người mua đang kiểm soát thị trường.</p>
+      </div>
+
+      <!-- Chart 2: Support & Resistance -->
+      <div class="card chart-card reveal">
+        <div class="chart-header">
+          <h3 style="font-size:1rem;">VWAP Hỗ Trợ & Kháng Cự</h3>
+          <span class="chart-tag chart-tag-neutral">Pullback</span>
+        </div>
+        <div class="chart-viz">
+          <svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="460" height="220" fill="#0D1520"/>
+            <line x1="0" y1="55" x2="460" y2="55" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="110" x2="460" y2="110" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="165" x2="460" y2="165" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="115" y1="0" x2="115" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="230" y1="0" x2="230" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="345" y1="0" x2="345" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <!-- VWAP flat support line -->
+            <line x1="20" y1="130" x2="440" y2="130" stroke="#00D4FF" stroke-width="2" stroke-dasharray="6,3"/>
+            <!-- Price: goes up, pulls back to VWAP, bounces -->
+            <polyline points="20,180 60,155 100,120 140,90 180,75 220,65 240,80 260,110 280,128 300,132 320,125 350,108 380,88 420,72" fill="none" stroke="#00E5A0" stroke-width="2"/>
+            <!-- Pullback zone highlight -->
+            <rect x="255" y="110" width="70" height="40" fill="rgba(0,212,255,0.06)" rx="4"/>
+            <text x="260" y="156" fill="#00D4FF" font-size="8">Pullback Zone</text>
+            <!-- Bounce arrow -->
+            <path d="M295 128 Q295 115 310 108" stroke="#00E5A0" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+            <!-- Labels -->
+            <text x="20" y="12" fill="#00D4FF" font-size="9" font-weight="600">VWAP = Hỗ Trợ Động</text>
+            <text x="20" y="125" fill="#00D4FF" font-size="8">VWAP</text>
+            <text x="350" y="78" fill="#00E5A0" font-size="8">Bounce ↑</text>
+            <defs>
+              <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" fill="#00E5A0"/>
+              </marker>
+            </defs>
+          </svg>
+        </div>
+        <p class="chart-caption">Giá pullback về VWAP sau đà tăng → VWAP đóng vai hỗ trợ → giá bounce và tiếp tục xu hướng tăng.</p>
+      </div>
+
+      <!-- Chart 3: Triangle Breakout -->
+      <div class="card chart-card reveal">
+        <div class="chart-header">
+          <h3 style="font-size:1rem;">Triangle Breakout — M15</h3>
+          <span class="chart-tag chart-tag-bull">Entry Signal</span>
+        </div>
+        <div class="chart-viz">
+          <svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="460" height="220" fill="#0D1520"/>
+            <line x1="0" y1="55" x2="460" y2="55" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="110" x2="460" y2="110" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="165" x2="460" y2="165" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="230" y1="0" x2="230" y2="220" stroke="#1E293B" stroke-width="0.5"/>
+            <!-- VWAP line -->
+            <polyline points="20,175 100,168 180,158 260,148 340,138 420,128" fill="none" stroke="#00D4FF" stroke-width="2" stroke-dasharray="6,3"/>
+            <!-- Triangle pattern: converging lines -->
+            <line x1="50" y1="110" x2="220" y2="118" stroke="#FFB547" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.8"/>
+            <line x1="50" y1="155" x2="220" y2="118" stroke="#FFB547" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.8"/>
+            <!-- Price inside triangle -->
+            <polyline points="55,150 80,125 110,145 140,122 170,140 200,120 220,118" fill="none" stroke="#94A3B8" stroke-width="1.5"/>
+            <!-- Breakout above -->
+            <polyline points="220,118 250,98 280,80 320,65 370,52 420,40" fill="none" stroke="#00E5A0" stroke-width="2.5"/>
+            <!-- Entry arrow -->
+            <line x1="225" y1="118" x2="225" y2="85" stroke="#00E5A0" stroke-width="1.5"/>
+            <polygon points="220,85 225,70 230,85" fill="#00E5A0"/>
+            <!-- Labels -->
+            <text x="90" y="100" fill="#FFB547" font-size="8" font-weight="600">Triangle</text>
+            <text x="280" y="78" fill="#00E5A0" font-size="9" font-weight="600">BREAKOUT ↑</text>
+            <text x="235" y="115" fill="#00E5A0" font-size="8">ENTRY</text>
+            <text x="20" y="12" fill="#00D4FF" font-size="9">VWAP — — —</text>
+            <text x="20" y="26" fill="#FFB547" font-size="8">Triangle ----</text>
+          </svg>
+        </div>
+        <p class="chart-caption">Mô hình Triangle hội tụ → giá breakout lên trên → vào lệnh Long khi giá phá vỡ tam giác và cùng hướng VWAP.</p>
+      </div>
+
+      <!-- Chart 4: Entry & Exit -->
+      <div class="card chart-card reveal">
+        <div class="chart-header">
+          <h3 style="font-size:1rem;">Điểm Vào & Thoát Lệnh</h3>
+          <span class="chart-tag chart-tag-exit">Exit @ VWAP</span>
+        </div>
+        <div class="chart-viz">
+          <svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <rect width="460" height="220" fill="#0D1520"/>
+            <line x1="0" y1="55" x2="460" y2="55" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="110" x2="460" y2="110" stroke="#1E293B" stroke-width="0.5"/>
+            <line x1="0" y1="165" x2="460" y2="165" stroke="#1E293B" stroke-width="0.5"/>
+            <!-- VWAP line (rises then flatter) -->
+            <polyline points="20,190 80,180 140,165 200,148 260,140 320,138 380,140 430,142" fill="none" stroke="#00D4FF" stroke-width="2" stroke-dasharray="6,3"/>
+            <!-- Price: enters, goes up, comes back to VWAP -->
+            <polyline points="80,178 110,155 145,125 180,100 220,80 260,68 300,72 330,88 360,108 390,132 420,142" fill="none" stroke="#00E5A0" stroke-width="2.5"/>
+            <!-- Entry marker -->
+            <circle cx="80" cy="178" r="6" fill="none" stroke="#00E5A0" stroke-width="2"/>
+            <text x="50" y="175" fill="#00E5A0" font-size="8" font-weight="600">ENTRY</text>
+            <!-- Profit zone shading -->
+            <polygon points="80,178 260,68 260,140 80,190" fill="rgba(0,229,160,0.05)"/>
+            <!-- Exit marker -->
+            <circle cx="420" cy="142" r="6" fill="none" stroke="#FFB547" stroke-width="2"/>
+            <text x="390" y="158" fill="#FFB547" font-size="8" font-weight="600">EXIT</text>
+            <!-- Stop loss line -->
+            <line x1="20" y1="205" x2="200" y2="205" stroke="#FF5A5A" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.7"/>
+            <text x="20" y="215" fill="#FF5A5A" font-size="8">SL — Below Swing Low</text>
+            <!-- Labels -->
+            <text x="20" y="12" fill="#00D4FF" font-size="9">VWAP — — —</text>
+            <text x="200" y="60" fill="#00E5A0" font-size="9" font-weight="600">PROFIT ZONE</text>
+          </svg>
+        </div>
+        <p class="chart-caption">Vào lệnh khi Triangle breakout → giữ lệnh khi giá trên VWAP → thoát lệnh khi giá chạm lại đường VWAP. Stop Loss dưới swing low trước breakout.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INSTITUTIONAL -->
+<section id="institutional">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Vì Sao VWAP Được Tôn Trọng</span>
+      <h2 class="section-title">Lý Do Nhà Đầu Tư Tổ Chức <span>Dùng VWAP</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">Sức mạnh của VWAP nằm ở chỗ hàng triệu dollar của các tổ chức lớn và hệ thống algo đều được giao dịch xung quanh đường này.</p>
+    </div>
+    <div class="inst-grid">
+      <div class="card inst-card reveal">
+        <div class="inst-icon">🏦</div>
+        <h3>Giảm Tác Động Thị Trường</h3>
+        <p>Tổ chức xử lý lệnh lớn có thể làm giá biến động mạnh. VWAP giúp chia nhỏ lệnh và rải đều trong phiên để giảm thiểu market impact.</p>
+      </div>
+      <div class="card inst-card reveal">
+        <div class="inst-icon">⚖️</div>
+        <h3>Giá Công Bằng (Fair Price)</h3>
+        <p>VWAP là thước đo giá công bằng được trọng số theo khối lượng. Được tin cậy vì phản ánh cả price lẫn volume — không thể bị manipulate dễ dàng.</p>
+      </div>
+      <div class="card inst-card reveal">
+        <div class="inst-icon">🤖</div>
+        <h3>Tích Hợp Vào Algo Trading</h3>
+        <p>Nhiều hệ thống thuật toán được lập trình để thực thi lệnh theo VWAP. Algo chia nhỏ lệnh lớn và khớp dần trong ngày để đạt giá gần VWAP.</p>
+      </div>
+      <div class="card inst-card reveal">
+        <div class="inst-icon">💧</div>
+        <h3>Xác Định Thanh Khoản Cao</h3>
+        <p>VWAP tự nhiên phản ánh các giai đoạn thanh khoản cao. Tổ chức ưu tiên giao dịch khi thanh khoản cao để giảm slippage và chi phí giao dịch.</p>
+      </div>
+      <div class="card inst-card reveal">
+        <div class="inst-icon">📋</div>
+        <h3>Tuân Thủ Quy Định</h3>
+        <p>Nhiều quy định và yêu cầu từ khách hàng tổ chức đòi hỏi giao dịch phải được thực thi gần mức VWAP để đảm bảo best execution practices.</p>
+      </div>
+      <div class="card inst-card reveal">
+        <div class="inst-icon">🌐</div>
+        <h3>Phổ Dụng Đa Thị Trường</h3>
+        <p>VWAP áp dụng được trên mọi loại tài sản và thị trường — Stocks, Forex, Crypto, Commodities, Futures — tạo tính linh hoạt vượt trội.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section id="conclusion">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Kết Luận</span>
+      <h2 class="section-title">VWAP Triangle Breakout — <span>Tổng Kết</span></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="conclusion-grid">
+      <div class="conclusion-points reveal">
+        <div class="cp-item">
+          <div class="cp-num">01</div>
+          <div class="cp-text">
+            <h4>Kết Hợp Đa Yếu Tố</h4>
+            <p>VWAP + Triangle Breakout tạo ra tín hiệu xác suất cao. Không bao giờ chỉ dựa vào một chỉ báo duy nhất.</p>
+          </div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-num">02</div>
+          <div class="cp-text">
+            <h4>Phát Hiện Thời Điểm Vàng</h4>
+            <p>Sự kết hợp xác định chính xác các thời điểm hoạt động thị trường tăng cao và potential breakout.</p>
+          </div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-num">03</div>
+          <div class="cp-text">
+            <h4>Xác Nhận Từ Volume</h4>
+            <p>Khi giá breakout tam giác và cùng hướng VWAP → tín hiệu có xác suất cao, giảm thiểu false breakout.</p>
+          </div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-num">04</div>
+          <div class="cp-text">
+            <h4>Đồng Hành Với Tổ Chức</h4>
+            <p>Giao dịch theo VWAP nghĩa là bạn đang align với hành động của institutional traders và algo systems.</p>
+          </div>
+        </div>
+        <div class="cp-item">
+          <div class="cp-num">05</div>
+          <div class="cp-text">
+            <h4>Linh Hoạt Đa Thị Trường</h4>
+            <p>Chiến lược hoạt động trên Stocks, Forex, Commodity và Crypto. Tối ưu nhất trên khung Intraday.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="cta-box">
+          <h3>Bắt Đầu Áp Dụng Ngay Hôm Nay</h3>
+          <p>Thêm VWAP vào biểu đồ của bạn, tìm mô hình Triangle trên M15, và để VWAP làm trailing stop loss cho bạn.</p>
+          <a href="#strategy" class="btn-primary">Xem Lại 3 Quy Tắc →</a>
+          <div class="markets-row">
+            <span class="market-chip">📈 Stocks</span>
+            <span class="market-chip">💱 Forex</span>
+            <span class="market-chip">₿ Crypto</span>
+            <span class="market-chip">🛢️ Commodity</span>
+            <span class="market-chip">📊 Options</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px; padding:20px 24px;">
+          <h4 style="font-size:0.95rem; margin-bottom:12px; color:var(--accent-amber);">⚡ Checklist Trước Khi Vào Lệnh</h4>
+          <ul class="bullet-list">
+            <li>VWAP đã được thêm vào chart, Upper Bands đã ẩn</li>
+            <li>Xác định xu hướng qua vị trí giá so với VWAP</li>
+            <li>Nhận diện mô hình Triangle đang hình thành (M15)</li>
+            <li>Chờ giá breakout khỏi tam giác theo hướng VWAP</li>
+            <li>Đặt SL dưới swing low, TP khi giá chạm VWAP</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <span style="background:linear-gradient(90deg,#00D4FF,#00E5A0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-family:'Sora',sans-serif; font-weight:700;">VWAP PRO STRATEGY</span>
+    </p>
+    <p>Chiến lược giao dịch dành cho intraday traders · Tài liệu chỉ mang tính chất giáo dục, không phải khuyến nghị đầu tư</p>
+    <p style="margin-top:8px;">⚠️ Giao dịch tài chính có rủi ro. Hãy quản lý rủi ro nghiêm túc trước khi áp dụng bất kỳ chiến lược nào.</p>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
