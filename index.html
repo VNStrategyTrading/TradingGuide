@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Trading Guide | Chiến Lược Đầu Tư Chứng Khoán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:          #070C18;
+  --bg-2:        #0B1120;
+  --bg-3:        #0F1629;
+  --surface:     #131B2E;
+  --surface-2:   #19243C;
+  --border:      rgba(255,255,255,0.07);
+  --border-2:    rgba(255,255,255,0.12);
+  --text:        #EDF2FF;
+  --text-2:      #8B97B8;
+  --text-3:      #4E5D78;
+  --gold:        #F0B429;
+  --gold-dim:    #B8891E;
+  --teal:        #00D4AA;
+  --teal-dim:    rgba(0,212,170,0.15);
+  --blue:        #3B82F6;
+  --blue-dim:    rgba(59,130,246,0.15);
+  --cyan:        #06B6D4;
+  --cyan-dim:    rgba(6,182,212,0.15);
+  --red:         #F87171;
+  --green:       #34D399;
+  --r4:4px; --r8:8px; --r12:12px; --r16:16px; --r24:24px;
+  --shadow:      0 4px 32px rgba(0,0,0,0.5);
+  --nav-h:       64px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+h1,h2,h3,h4 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+/* ─── NAVIGATION ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: var(--nav-h);
+  background: rgba(7,12,24,0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+  justify-content: space-between;
+  transition: background 0.3s;
+}
+nav.scrolled {
+  background: rgba(7,12,24,0.97);
+  border-bottom-color: var(--border-2);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-links {
+  display: flex; gap: 0.25rem; list-style: none;
+  align-items: center;
+}
+.nav-links a {
+  font-size: 13px; font-weight: 500;
+  color: var(--text-2); text-decoration: none;
+  padding: 6px 14px; border-radius: var(--r8);
+  letter-spacing: 0.02em;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+.nav-links .nav-cta {
+  background: var(--teal);
+  color: var(--bg) !important;
+  font-weight: 600;
+  padding: 7px 18px;
+  margin-left: 8px;
+}
+.nav-links .nav-cta:hover {
+  background: #00efc0;
+  color: var(--bg) !important;
+}
+
+.nav-mobile-btn {
+  display: none;
+  background: none; border: none;
+  cursor: pointer; color: var(--text);
+  padding: 8px;
+}
+.nav-mobile-btn svg { display: block; }
+
+/* ─── MOBILE MENU ─── */
+.mobile-menu {
+  display: none;
+  position: fixed; top: var(--nav-h); left: 0; right: 0;
+  background: rgba(11,17,32,0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 999;
+  padding: 1rem clamp(1rem,4vw,2.5rem);
+  flex-direction: column; gap: 4px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: var(--text-2); text-decoration: none;
+  font-size: 15px; font-weight: 500;
+  padding: 12px 16px; border-radius: var(--r8);
+  transition: background 0.2s, color 0.2s;
+}
+.mobile-menu a:hover { background: var(--surface); color: var(--text); }
+.mobile-menu .nav-cta {
+  background: var(--teal); color: var(--bg) !important;
+  font-weight: 600; margin-top: 8px;
+  text-align: center;
+}
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  display: flex; align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,212,170,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(59,130,246,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 10%, rgba(240,180,41,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: clamp(3rem,8vw,6rem) clamp(1rem,4vw,2.5rem);
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal);
+  background: var(--teal-dim);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 20px; padding: 5px 14px;
+  margin-bottom: 1.5rem;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%,100% { opacity:1; } 50% { opacity:0.3; }
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+.hero-title .accent { color: var(--teal); }
+.hero-title .gold { color: var(--gold); }
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--text-2);
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+}
+
+.hero-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px;
+  background: var(--teal);
+  color: var(--bg);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 700;
+  border-radius: var(--r12);
+  text-decoration: none; border: none; cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 4px 20px rgba(0,212,170,0.3);
+}
+.btn-primary:hover {
+  background: #00efc0;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,212,170,0.4);
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 14px; font-weight: 500;
+  border: 1px solid var(--border-2);
+  border-radius: var(--r12);
+  text-decoration: none; cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+
+.hero-stats {
+  display: flex; gap: 2rem;
+}
+.stat-item {}
+.stat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px; font-weight: 500;
+  color: var(--text);
+  display: block;
+}
+.stat-label {
+  font-size: 11px; font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Hero right: live chart mockup */
+.hero-visual {
+  position: relative;
+}
+.hero-card {
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r16);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--blue), var(--gold));
+}
+.hc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.hc-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hc-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600;
+  color: var(--green);
+}
+.hc-live::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: blink 1.5s infinite;
+}
+.hc-price {
+  font-family: 'DM Mono', monospace;
+  font-size: 32px; font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.hc-change {
+  font-size: 13px; font-weight: 600;
+  color: var(--green);
+  margin-bottom: 20px;
+}
+
+.hc-chart {
+  height: 120px;
+  position: relative;
+  margin: 0 -4px 20px;
+}
+.hc-chart svg { width: 100%; height: 100%; }
+
+.hc-metrics {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.hc-metric-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.hc-metric-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+}
+.hc-metric-val.up { color: var(--green); }
+.hc-metric-val.down { color: var(--red); }
+
+/* Strategy cards below hero */
+.hc-signals {
+  margin-top: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.signal-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-2);
+  border-radius: var(--r8);
+  border: 1px solid var(--border);
+}
+.sig-label { font-size: 12px; color: var(--text-2); }
+.sig-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 10px; border-radius: 20px;
+  letter-spacing: 0.06em;
+}
+.sig-badge.long { background: rgba(52,211,153,0.15); color: var(--green); }
+.sig-badge.short { background: rgba(248,113,113,0.15); color: var(--red); }
+.sig-badge.wait { background: rgba(240,180,41,0.15); color: var(--gold); }
+
+/* ─── SECTION WRAPPER ─── */
+.section {
+  max-width: 1200px; margin: 0 auto;
+  padding: clamp(3rem,6vw,5rem) clamp(1rem,4vw,2.5rem);
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  max-width: 1200px; margin: 0 auto;
+}
+
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.section-sub {
+  font-size: 16px; color: var(--text-2);
+  max-width: 560px; line-height: 1.75;
+  margin-bottom: 3rem;
+}
+
+/* ─── STRATEGY CARDS ─── */
+.strategy-grid {
+  display: grid; gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+.strat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r16);
+  overflow: hidden;
+  display: grid; grid-template-columns: 1fr 1fr;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  text-decoration: none;
+  cursor: default;
+}
+.strat-card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+}
+
+.strat-card-main {
+  padding: clamp(1.5rem,3vw,2.5rem);
+  display: flex; flex-direction: column;
+}
+
+.strat-card-side {
+  background: var(--bg-2);
+  border-left: 1px solid var(--border);
+  padding: clamp(1.5rem,3vw,2rem);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.strat-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.strat-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 1.25rem; align-self: flex-start;
+}
+
+.strat-badge.vn30 {
+  background: rgba(0,212,170,0.12);
+  border: 1px solid rgba(0,212,170,0.2);
+  color: var(--teal);
+}
+.strat-badge.vwap {
+  background: rgba(6,182,212,0.12);
+  border: 1px solid rgba(6,182,212,0.2);
+  color: var(--cyan);
+}
+.strat-badge.bb {
+  background: rgba(240,180,41,0.1);
+  border: 1px solid rgba(240,180,41,0.2);
+  color: var(--gold);
+}
+
+.strat-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  line-height: 1.1;
+}
+
+.strat-desc {
+  font-size: 14px; color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.catalyst-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 2rem;
+}
+.catalyst-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text-2);
+  line-height: 1.5;
+}
+.catalyst-list .ci {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+.catalyst-list .ci.teal { background: var(--teal-dim); color: var(--teal); }
+.catalyst-list .ci.cyan { background: var(--cyan-dim); color: var(--cyan); }
+.catalyst-list .ci.gold { background: rgba(240,180,41,0.12); color: var(--gold); }
+
+.catalyst-list strong { color: var(--text); }
+
+.strat-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: var(--r8);
+  font-size: 13px; font-weight: 600;
+  text-decoration: none; align-self: flex-start;
+  transition: transform 0.2s, box-shadow 0.2s, gap 0.2s;
+  letter-spacing: 0.02em;
+}
+.strat-link:hover { transform: translateX(3px); }
+.strat-link .arr { font-size: 16px; }
+
+.strat-link.teal {
+  background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,212,170,0.08));
+  border: 1px solid rgba(0,212,170,0.25);
+  color: var(--teal);
+}
+.strat-link.teal:hover { background: linear-gradient(135deg, rgba(0,212,170,0.28), rgba(0,212,170,0.14)); }
+
+.strat-link.cyan {
+  background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.08));
+  border: 1px solid rgba(6,182,212,0.25);
+  color: var(--cyan);
+}
+.strat-link.cyan:hover { background: linear-gradient(135deg, rgba(6,182,212,0.28), rgba(6,182,212,0.14)); }
+
+.strat-link.gold {
+  background: linear-gradient(135deg, rgba(240,180,41,0.16), rgba(240,180,41,0.06));
+  border: 1px solid rgba(240,180,41,0.22);
+  color: var(--gold);
+}
+.strat-link.gold:hover { background: linear-gradient(135deg, rgba(240,180,41,0.24), rgba(240,180,41,0.12)); }
+
+/* Side metrics */
+.side-metric {
+  text-align: center;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--r12);
+  border: 1px solid var(--border);
+}
+.side-metric-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px; font-weight: 500;
+  display: block; margin-bottom: 4px;
+}
+.side-metric-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--text-3); letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.side-metrics-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 1rem;
+}
+
+.side-bar-chart { margin-bottom: 1rem; }
+.sbc-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-3);
+  margin-bottom: 6px;
+}
+.sbc-track {
+  height: 6px; background: var(--surface-2);
+  border-radius: 3px; overflow: hidden;
+}
+.sbc-fill {
+  height: 100%; border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.side-tag-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.side-tag {
+  font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--bg-3); border: 1px solid var(--border);
+  color: var(--text-2);
+}
+
+/* ─── CHART SECTION ─── */
+.chart-section {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.chart-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.chart-toggle {
+  display: flex; gap: 4px;
+  background: var(--bg); border-radius: var(--r8);
+  padding: 4px; border: 1px solid var(--border);
+}
+.chart-toggle button {
+  padding: 5px 14px; border-radius: 6px;
+  font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer;
+  background: transparent; color: var(--text-2);
+  transition: all 0.2s;
+  letter-spacing: 0.04em;
+}
+.chart-toggle button.active {
+  background: var(--surface);
+  color: var(--text);
+}
+#comparison-chart { width: 100%; height: 260px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: clamp(2rem,5vw,4rem) clamp(1rem,4vw,2.5rem);
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+}
+
+.footer-logo {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+.footer-logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+
+.footer-desc {
+  font-size: 13px; color: var(--text-3);
+  line-height: 1.75; margin-bottom: 1.25rem;
+}
+
+.footer-disclaimer {
+  font-size: 11px; color: var(--text-3);
+  line-height: 1.6;
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.12);
+  border-radius: var(--r8);
+  padding: 10px 14px;
+}
+
+.footer-col-title {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 1rem;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-links a {
+  font-size: 13px; color: var(--text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--teal); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  max-width: 1200px; margin: 0 auto;
+  padding: 1.25rem clamp(1rem,4vw,2.5rem);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-bottom-text {
+  font-size: 12px; color: var(--text-3);
+}
+.footer-bottom-links {
+  display: flex; gap: 1.5rem;
+}
+.footer-bottom-links a {
+  font-size: 12px; color: var(--text-3);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-bottom-links a:hover { color: var(--text-2); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .hero-visual { order: -1; }
+  .hero-title { font-size: clamp(2rem, 5vw, 2.8rem); }
+  .strat-card { grid-template-columns: 1fr; }
+  .strat-card-side { border-left: none; border-top: 1px solid var(--border); }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .nav-mobile-btn { display: flex; }
+  .hero-stats { gap: 1.25rem; }
+  .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .side-metrics-grid { grid-template-columns: repeat(2,1fr); }
+  .chart-toggle { flex-wrap: wrap; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+
+/* ─── ANIMATIONS ─── */
+.fade-in {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+.fade-in-d1 { transition-delay: 0.1s; }
+.fade-in-d2 { transition-delay: 0.2s; }
+.fade-in-d3 { transition-delay: 0.3s; }
+.fade-in-d4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">S</div>
+    Stock<span>Guide</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#strategies">Strategy</a></li>
+    <li><a href="#analysis">Technical Analysis</a></li>
+    <li><a href="#risk">Risk Management</a></li>
+    <li><a href="#chart-section">Dashboard</a></li>
+    <li><a href="#strategies" class="nav-cta">Xem Chiến Lược</a></li>
+  </ul>
+  <button class="nav-mobile-btn" id="mobile-toggle" aria-label="Toggle menu">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <rect y="4" width="22" height="2" rx="1" fill="currentColor"/>
+      <rect y="10" width="22" height="2" rx="1" fill="currentColor"/>
+      <rect y="16" width="22" height="2" rx="1" fill="currentColor"/>
+    </svg>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#">Home</a>
+  <a href="#strategies">Strategy</a>
+  <a href="#analysis">Technical Analysis</a>
+  <a href="#risk">Risk Management</a>
+  <a href="#chart-section">Dashboard</a>
+  <a href="#strategies" class="nav-cta">Xem Chiến Lược →</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">Hệ thống giao dịch chuyên nghiệp</div>
+      <h1 class="hero-title fade-in">
+        Stock Trading<br>
+        <span class="accent">Guide</span> —<br>
+        <span class="gold">Vietnam</span>
+      </h1>
+      <p class="hero-sub fade-in fade-in-d1">
+        Nghiên cứu chuyên sâu 3 chiến lược giao dịch chứng khoán phái sinh Việt Nam. Được xây dựng dựa trên phân tích kỹ thuật, dữ liệu thực tế, và phương pháp quản lý rủi ro chặt chẽ.
+      </p>
+      <div class="hero-actions fade-in fade-in-d2">
+        <a href="#strategies" class="btn-primary">
+          Khám Phá Chiến Lược
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#chart-section" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="10" width="3" height="4" rx="1" fill="currentColor"/><rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor" opacity=".7"/><rect x="11" y="2" width="3" height="12" rx="1" fill="currentColor" opacity=".4"/></svg>
+          Dashboard
+        </a>
+      </div>
+      <div class="hero-stats fade-in fade-in-d3">
+        <div class="stat-item">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Chiến lược</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">VN30</span>
+          <span class="stat-label">Thị trường</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">Intraday</span>
+          <span class="stat-label">Khung thời gian</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" style="color:var(--green)">Live</span>
+          <span class="stat-label">Cập nhật</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual / chart card -->
+    <div class="hero-visual fade-in fade-in-d2">
+      <div class="hero-card">
+        <div class="hc-header">
+          <span class="hc-title">VN30F1M · Realtime</span>
+          <span class="hc-live">Live</span>
+        </div>
+        <div class="hc-price">1,274.5</div>
+        <div class="hc-change">▲ +12.3 pts &nbsp;(+0.97%)</div>
+        <div class="hc-chart">
+          <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00D4AA" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#00D4AA" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80 L20,75 L40,82 L60,70 L80,60 L100,65 L120,55 L140,48 L160,52 L180,42 L200,38 L220,45 L240,35 L260,28 L280,32 L300,22 L320,18 L340,12 L360,8 L360,120 L0,120 Z" fill="url(#chartGrad)"/>
+            <path d="M0,80 L20,75 L40,82 L60,70 L80,60 L100,65 L120,55 L140,48 L160,52 L180,42 L200,38 L220,45 L240,35 L260,28 L280,32 L300,22 L320,18 L340,12 L360,8" fill="none" stroke="#00D4AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- VWAP line -->
+            <path d="M0,85 L60,78 L120,68 L180,58 L240,48 L300,35 L360,20" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+            <!-- BB upper -->
+            <path d="M0,65 L60,60 L120,50 L180,40 L240,30 L300,18 L360,5" fill="none" stroke="#F0B429" stroke-width="1" stroke-dasharray="2,4" opacity="0.5"/>
+            <!-- BB lower -->
+            <path d="M0,95 L60,88 L120,80 L180,72 L240,62 L300,50 L360,36" fill="none" stroke="#F0B429" stroke-width="1" stroke-dasharray="2,4" opacity="0.5"/>
+            <!-- Signal dots -->
+            <circle cx="80" cy="60" r="4" fill="#34D399"/>
+            <circle cx="180" cy="42" r="4" fill="#34D399"/>
+            <circle cx="300" cy="22" r="4" fill="#F87171"/>
+          </svg>
+        </div>
+        <div class="hc-metrics">
+          <div>
+            <div class="hc-metric-label">VWAP</div>
+            <div class="hc-metric-val">1,268.2</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">Win Rate</div>
+            <div class="hc-metric-val up">72.4%</div>
+          </div>
+          <div>
+            <div class="hc-metric-label">RR Ratio</div>
+            <div class="hc-metric-val up">1:2.5</div>
+          </div>
+        </div>
+        <div class="hc-signals">
+          <div class="signal-row">
+            <span class="sig-label">VN30F1M Scalping</span>
+            <span class="sig-badge long">LONG ▲</span>
+          </div>
+          <div class="signal-row">
+            <span class="sig-label">VWAP Strategy</span>
+            <span class="sig-badge long">BUY</span>
+          </div>
+          <div class="signal-row">
+            <span class="sig-label">BB Bounce</span>
+            <span class="sig-badge wait">WAIT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STRATEGIES ─── -->
+<section id="strategies">
+  <div class="section">
+    <div class="fade-in">
+      <div class="section-label" style="color:var(--teal)">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--teal)"><rect width="12" height="12" rx="2"/></svg>
+        Chiến Lược Giao Dịch
+      </div>
+      <h2 class="section-title">Ba Hệ Thống Giao Dịch<br>Được Nghiên Cứu Chuyên Sâu</h2>
+      <p class="section-sub">Mỗi chiến lược được xây dựng dựa trên phân tích kỹ thuật định lượng, kiểm thử backtesting nghiêm ngặt và phương pháp quản lý vốn chuyên nghiệp.</p>
+    </div>
+
+    <div class="strategy-grid" id="analysis">
+
+      <!-- ── STRATEGY 1: VN30F1M ── -->
+      <div class="strat-card fade-in">
+        <div class="strat-card-main">
+          <div class="strat-num">01 / 03</div>
+          <div class="strat-badge vn30">● VN30 Futures · Scalping</div>
+          <h3 class="strat-title">VN30F1M<br>Scalping System</h3>
+          <p class="strat-desc">
+            Hệ thống scalping intraday tốc độ cao trên hợp đồng tương lai VN30, tận dụng biến động giá trong các khung thời gian ngắn M1–M5. Tích hợp bộ lọc xu hướng đa khung và hệ thống điểm vào lệnh chính xác.
+          </p>
+          <ul class="catalyst-list">
+            <li>
+              <span class="ci teal">1</span>
+              <span><strong>Momentum Breakout Engine</strong> — Phát hiện điểm phá vỡ vùng tích lũy với xác nhận từ Volume Profile và Order Flow, lọc tín hiệu giả thông qua ATR động.</span>
+            </li>
+            <li>
+              <span class="ci teal">2</span>
+              <span><strong>Multi-Timeframe Confluence</strong> — Đồng bộ tín hiệu từ M1, M5 và D1; chỉ vào lệnh khi cả 3 khung xác nhận cùng hướng, tăng xác suất thành công lên >70%.</span>
+            </li>
+            <li>
+              <span class="ci teal">3</span>
+              <span><strong>Dynamic Risk Protocol</strong> — Cơ chế trailing stop thích ứng theo biến động ATR, đặt stoploss tự động theo cấu trúc swing, bảo toàn vốn trong mọi điều kiện thị trường.</span>
+            </li>
+          </ul>
+          <a href="pages/vn30f1m-scalping-strategy.html" class="strat-link teal">
+            Xem Chi Tiết Hệ Thống <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="strat-card-side">
+          <div>
+            <div class="side-metrics-grid">
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--green)">72%</span>
+                <span class="side-metric-label">Win Rate</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--teal)">1:2.5</span>
+                <span class="side-metric-label">R:R Ratio</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val">M1–M5</span>
+                <span class="side-metric-label">Timeframe</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--gold)">High</span>
+                <span class="side-metric-label">Frequency</span>
+              </div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Accuracy</span><span style="color:var(--green)">72%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:72%;background:var(--teal)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Risk Control</span><span style="color:var(--teal)">88%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:88%;background:var(--blue)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Consistency</span><span style="color:var(--gold)">65%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:65%;background:var(--gold)"></div></div>
+            </div>
+          </div>
+          <div class="side-tag-row" style="margin-top:1rem">
+            <span class="side-tag">Scalping</span>
+            <span class="side-tag">Intraday</span>
+            <span class="side-tag">VN30</span>
+            <span class="side-tag">Volume Profile</span>
+            <span class="side-tag">ATR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STRATEGY 2: VWAP ── -->
+      <div class="strat-card fade-in fade-in-d1">
+        <div class="strat-card-main">
+          <div class="strat-num">02 / 03</div>
+          <div class="strat-badge vwap">● VWAP · Trend Following</div>
+          <h3 class="strat-title">VWAP Pro<br>Strategy</h3>
+          <p class="strat-desc">
+            Chiến lược giao dịch theo xu hướng intraday sử dụng VWAP (Volume Weighted Average Price) làm trục định giá động. Xác định vùng giá trị, điểm vào lệnh xác suất cao và phân tích cấu trúc thị trường tổng hợp.
+          </p>
+          <ul class="catalyst-list">
+            <li>
+              <span class="ci cyan">1</span>
+              <span><strong>VWAP Anchor Framework</strong> — Sử dụng VWAP làm đường phân định Bull/Bear intraday; giao dịch theo phía so với VWAP chuẩn anchored và SD bands để xác định vùng value/overextended.</span>
+            </li>
+            <li>
+              <span class="ci cyan">2</span>
+              <span><strong>Institutional Flow Detection</strong> — Phân tích lực mua/bán tổ chức qua Volume Delta và VWAP deviation; nhận biết tín hiệu accumulation/distribution của smart money trong phiên.</span>
+            </li>
+            <li>
+              <span class="ci cyan">3</span>
+              <span><strong>Session-Based Entry Logic</strong> — Tận dụng 3 phiên giao dịch đặc trưng của HOSE (ATO, liên tục, ATC); chiến lược entry/exit khác nhau cho từng phase, tối ưu theo liquidity.</span>
+            </li>
+          </ul>
+          <a href="pages/vwap-landing-page.html" class="strat-link cyan">
+            Xem Chi Tiết Chiến Lược <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="strat-card-side">
+          <div>
+            <div class="side-metrics-grid">
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--green)">68%</span>
+                <span class="side-metric-label">Win Rate</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--cyan)">1:3.0</span>
+                <span class="side-metric-label">R:R Ratio</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val">M5–M15</span>
+                <span class="side-metric-label">Timeframe</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--gold)">Med</span>
+                <span class="side-metric-label">Frequency</span>
+              </div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Accuracy</span><span style="color:var(--green)">68%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:68%;background:var(--cyan)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Profit Factor</span><span style="color:var(--cyan)">2.04</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:78%;background:var(--blue)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Max Drawdown</span><span style="color:var(--red)">-8.2%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:18%;background:var(--red)"></div></div>
+            </div>
+          </div>
+          <div class="side-tag-row" style="margin-top:1rem">
+            <span class="side-tag">VWAP</span>
+            <span class="side-tag">Trend</span>
+            <span class="side-tag">HOSE</span>
+            <span class="side-tag">Smart Money</span>
+            <span class="side-tag">SD Bands</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STRATEGY 3: BOLLINGER BANDS ── -->
+      <div class="strat-card fade-in fade-in-d2" id="risk">
+        <div class="strat-card-main">
+          <div class="strat-num">03 / 03</div>
+          <div class="strat-badge bb">● Bollinger Bands · Mean Reversion</div>
+          <h3 class="strat-title">BB · Bounce<br>Strategy</h3>
+          <p class="strat-desc">
+            Chiến lược mean-reversion 3 bước sử dụng Bollinger Bands để xác định vùng giá quá mua/bán cực đoan và bắt nhịp hồi phục về đường trung bình. Phù hợp cho cổ phiếu và phái sinh trong thị trường sideway-volatile.
+          </p>
+          <ul class="catalyst-list">
+            <li>
+              <span class="ci gold">1</span>
+              <span><strong>Band Squeeze & Expansion Detection</strong> — Nhận diện giai đoạn nén dải BB (squeeze) báo hiệu sắp bùng phát biến động; xác nhận hướng breakout bằng Bandwidth và %B indicator.</span>
+            </li>
+            <li>
+              <span class="ci gold">2</span>
+              <span><strong>3-Step Bounce Protocol</strong> — Quy trình 3 bước: (1) giá chạm dải ngoài, (2) nến xác nhận đảo chiều hình thành trong band, (3) volume spike; tất cả 3 điều kiện phải cùng xuất hiện.</span>
+            </li>
+            <li>
+              <span class="ci gold">3</span>
+              <span><strong>Target & Stop Calibration</strong> — Take profit tại đường trung bình MA20 (band giữa) và dải đối diện; stoploss ngoài band, tính toán position size theo % rủi ro tối đa trên tài khoản.</span>
+            </li>
+          </ul>
+          <a href="pages/bollinger-bands-vi.html" class="strat-link gold">
+            Xem Chi Tiết Chiến Lược <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="strat-card-side">
+          <div>
+            <div class="side-metrics-grid">
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--green)">65%</span>
+                <span class="side-metric-label">Win Rate</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--gold)">1:2.8</span>
+                <span class="side-metric-label">R:R Ratio</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val">H1–D1</span>
+                <span class="side-metric-label">Timeframe</span>
+              </div>
+              <div class="side-metric">
+                <span class="side-metric-val" style="color:var(--text-2)">Low</span>
+                <span class="side-metric-label">Frequency</span>
+              </div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Accuracy</span><span style="color:var(--green)">65%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:65%;background:var(--gold)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Signal Clarity</span><span style="color:var(--gold)">82%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:82%;background:var(--gold-dim)"></div></div>
+            </div>
+            <div class="side-bar-chart">
+              <div class="sbc-label"><span>Max Drawdown</span><span style="color:var(--red)">-11.4%</span></div>
+              <div class="sbc-track"><div class="sbc-fill" style="width:22%;background:var(--red)"></div></div>
+            </div>
+          </div>
+          <div class="side-tag-row" style="margin-top:1rem">
+            <span class="side-tag">Bollinger Bands</span>
+            <span class="side-tag">Mean Reversion</span>
+            <span class="side-tag">Swing</span>
+            <span class="side-tag">Squeeze</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPARISON CHART ─── -->
+<section class="chart-section" id="chart-section">
+  <div class="section">
+    <div class="chart-header fade-in">
+      <div>
+        <div class="section-label" style="color:var(--blue)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--blue)"><rect width="12" height="12" rx="2"/></svg>
+          Performance Dashboard
+        </div>
+        <h2 class="section-title" style="font-size:clamp(1.4rem,3vw,2rem);margin-bottom:0">So Sánh Hiệu Suất Chiến Lược</h2>
+      </div>
+      <div class="chart-toggle">
+        <button class="active" id="btn-winrate">Win Rate</button>
+        <button id="btn-rr">R:R Ratio</button>
+        <button id="btn-drawdown">Drawdown</button>
+      </div>
+    </div>
+    <canvas id="comparison-chart"></canvas>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="#" class="footer-logo">
+        <div class="footer-logo-icon">S</div>
+        StockGuide
+      </a>
+      <p class="footer-desc">Nền tảng nghiên cứu chiến lược giao dịch chứng khoán Việt Nam. Cung cấp phân tích kỹ thuật, hệ thống giao dịch và hướng dẫn quản lý rủi ro cho nhà đầu tư chuyên nghiệp.</p>
+      <div class="footer-disclaimer">
+        ⚠ Nội dung mang tính tham khảo, không phải tư vấn đầu tư. Giao dịch chứng khoán và phái sinh tiềm ẩn rủi ro cao. Nhà đầu tư tự chịu trách nhiệm quyết định của mình.
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Chiến Lược</div>
+      <ul class="footer-links">
+        <li><a href="pages/vn30f1m-scalping-strategy.html">VN30F1M Scalping</a></li>
+        <li><a href="pages/vwap-landing-page.html">VWAP Pro Strategy</a></li>
+        <li><a href="pages/bollinger-bands-vi.html">BB Bounce Strategy</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Phân Tích</div>
+      <ul class="footer-links">
+        <li><a href="#analysis">Technical Analysis</a></li>
+        <li><a href="#risk">Risk Management</a></li>
+        <li><a href="#chart-section">Performance</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Tài Nguyên</div>
+      <ul class="footer-links">
+        <li><a href="#">Hướng Dẫn Cơ Bản</a></li>
+        <li><a href="#">Glossary</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-text">© 2025 StockGuide Vietnam. Nghiên cứu chiến lược giao dịch chuyên nghiệp.</span>
+    <div class="footer-bottom-links">
+      <a href="#">Chính Sách Bảo Mật</a>
+      <a href="#">Điều Khoản Sử Dụng</a>
+      <a href="#">Liên Hệ</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ─── NAV SCROLL ─── */
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ─── MOBILE TOGGLE ─── */
+document.getElementById('mobile-toggle').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.toggle('open');
+});
+document.querySelectorAll('.mobile-menu a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+});
+
+/* ─── SCROLL REVEAL ─── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+/* ─── CHART ─── */
+const datasets = {
+  winrate: {
+    label: 'Win Rate (%)',
+    data: [72, 68, 65],
+    color: ['#00D4AA', '#06B6D4', '#F0B429'],
+  },
+  rr: {
+    label: 'R:R Ratio (x10)',
+    data: [25, 30, 28],
+    color: ['#00D4AA', '#06B6D4', '#F0B429'],
+  },
+  drawdown: {
+    label: 'Max Drawdown (%)',
+    data: [6.5, 8.2, 11.4],
+    color: ['rgba(248,113,113,0.8)', 'rgba(248,113,113,0.65)', 'rgba(248,113,113,0.5)'],
+  },
+};
+
+const labels = ['VN30F1M Scalping', 'VWAP Pro Strategy', 'BB Bounce Strategy'];
+
+const ctx = document.getElementById('comparison-chart').getContext('2d');
+let currentKey = 'winrate';
+
+const chart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: datasets.winrate.label,
+      data: datasets.winrate.data,
+      backgroundColor: datasets.winrate.color,
+      borderRadius: 8,
+      borderSkipped: false,
+      barThickness: 56,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#131B2E',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#EDF2FF',
+        bodyColor: '#8B97B8',
+        padding: 12,
+        cornerRadius: 10,
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#8B97B8', font: { size: 12, family: 'DM Sans' } },
+        border: { display: false }
+      },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        ticks: { color: '#4E5D78', font: { size: 11, family: 'DM Mono' } },
+        border: { display: false }
+      }
+    },
+    animation: { duration: 600, easing: 'easeInOutQuart' }
+  }
+});
+
+function switchChart(key) {
+  currentKey = key;
+  const d = datasets[key];
+  chart.data.datasets[0].label = d.label;
+  chart.data.datasets[0].data = d.data;
+  chart.data.datasets[0].backgroundColor = d.color;
+  chart.update();
+}
+
+document.getElementById('btn-winrate').addEventListener('click', function() {
+  setActive(this); switchChart('winrate');
+});
+document.getElementById('btn-rr').addEventListener('click', function() {
+  setActive(this); switchChart('rr');
+});
+document.getElementById('btn-drawdown').addEventListener('click', function() {
+  setActive(this); switchChart('drawdown');
+});
+
+function setActive(btn) {
+  document.querySelectorAll('.chart-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
