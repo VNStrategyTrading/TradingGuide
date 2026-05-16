@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquidity Scalping System v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080b0f; --bg2:#0d1117; --bg3:#111622; --surface:#161c27;
+  --surface2:#1a2130; --surface3:#1e2638;
+  --border:rgba(255,255,255,0.06); --border2:rgba(255,255,255,0.11); --border3:rgba(255,255,255,0.18);
+  --text:#dde1eb; --text2:#8e97ad; --text3:#5a6275;
+  --gold:#f5c842; --gold2:#c9970f;
+  --green:#22c55e; --green2:#15803d; --green3:rgba(34,197,94,0.08);
+  --red:#ef4444; --red2:#b91c1c; --red3:rgba(239,68,68,0.08);
+  --blue:#3b82f6; --blue2:#1d4ed8; --blue3:rgba(59,130,246,0.08);
+  --purple:#a855f7; --purple3:rgba(168,85,247,0.08);
+  --cyan:#06b6d4; --orange:#f97316;
+  --font:'Space Grotesk',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.7;overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{position:relative;padding:56px 0 44px;border-bottom:1px solid var(--border2);overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:48px 48px}
+.hero-glow{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(245,200,66,0.055) 0%,transparent 70%);pointer-events:none}
+.hero-inner{position:relative;max-width:1120px;margin:0 auto;padding:0 40px}
+.v-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.22);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:18px}
+.v-badge .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+h1{font-size:clamp(30px,4.5vw,50px);font-weight:700;letter-spacing:-0.022em;line-height:1.1;margin-bottom:14px}
+h1 .accent{color:var(--gold)}
+h1 .v2{font-size:.55em;vertical-align:super;color:var(--text3);font-weight:500;letter-spacing:.05em}
+.hero-desc{font-size:16px;color:var(--text2);max-width:620px;margin-bottom:28px}
+.hero-kpi{display:flex;gap:28px;flex-wrap:wrap}
+.kpi{display:flex;flex-direction:column;gap:2px}
+.kpi-val{font-size:20px;font-weight:700;color:var(--gold)}
+.kpi-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
+.hero-tag{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.htag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px;border:1px solid}
+.htag-g{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:var(--green)}
+.htag-r{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:var(--red)}
+.htag-b{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.25);color:var(--blue)}
+.htag-y{background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.25);color:var(--gold)}
+
+/* ── LAYOUT ── */
+.page{max-width:1120px;margin:0 auto;padding:0 40px 80px}
+.section{margin-top:60px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.sec-num{width:30px;height:30px;border-radius:7px;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);flex-shrink:0}
+.sec-title{font-size:22px;font-weight:700}
+.sec-sub{font-size:12px;color:var(--text3);margin-left:auto;text-align:right;line-height:1.4}
+
+/* ── LOGIC FLOW BAR ── */
+.logic-flow{display:flex;align-items:center;gap:0;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px 24px;overflow-x:auto;margin-bottom:20px}
+.lf-step{display:flex;align-items:center;gap:0;white-space:nowrap}
+.lf-box{padding:8px 14px;border-radius:7px;font-size:12px;font-weight:700;letter-spacing:.05em;border:1px solid}
+.lf-arr{padding:0 8px;color:var(--text3);font-size:16px}
+.lf-eql{background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.3);color:var(--gold)}
+.lf-sw{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)}
+.lf-choch{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:var(--blue);outline:2px solid rgba(59,130,246,.25)}
+.lf-bos{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--green)}
+.lf-fvg{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)}
+.lf-entry{background:rgba(245,200,66,.18);border-color:rgba(245,200,66,.5);color:var(--gold);font-size:13px}
+.lf-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;text-align:center;margin-top:5px}
+
+/* ── CATALYST GRID ── */
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.cat-card:hover{border-color:var(--border3);transform:translateY(-2px)}
+.cat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.cat-card.c-gold::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.cat-card.c-green::after{background:linear-gradient(90deg,var(--green),transparent)}
+.cat-card.c-blue::after{background:linear-gradient(90deg,var(--blue),transparent)}
+.cat-card.c-purple::after{background:linear-gradient(90deg,var(--purple),transparent)}
+.cat-card.c-red::after{background:linear-gradient(90deg,var(--red),transparent)}
+.cat-card.c-cyan::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.cat-card.c-orange::after{background:linear-gradient(90deg,var(--orange),transparent)}
+.cat-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-bottom:8px}
+.cat-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.cat-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.cat-tag{display:inline-block;margin-top:10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:3px 8px;border-radius:4px}
+.tg{background:rgba(245,200,66,.1);color:var(--gold)}
+.tgn{background:rgba(34,197,94,.1);color:var(--green)}
+.tb{background:rgba(59,130,246,.1);color:var(--blue)}
+.tp{background:rgba(168,85,247,.1);color:var(--purple)}
+.tr{background:rgba(239,68,68,.1);color:var(--red)}
+.tc{background:rgba(6,182,212,.1);color:var(--cyan)}
+.to{background:rgba(249,115,22,.1);color:var(--orange)}
+
+/* ── CHART WRAP ── */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;overflow:hidden}
+
+/* ── LONG / SHORT TABS ── */
+.ls-tabs{display:flex;gap:0;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.ls-tab{flex:1;padding:10px 20px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:.2s;border:none;background:transparent}
+.ls-tab.long{color:var(--green)}
+.ls-tab.short{color:var(--red)}
+.ls-tab.long.active{background:rgba(34,197,94,.1);border-bottom:2px solid var(--green)}
+.ls-tab.short.active{background:rgba(239,68,68,.1);border-bottom:2px solid var(--red)}
+
+/* ── LONG/SHORT 2-COL ── */
+.ls-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ls-box{border-radius:12px;padding:22px}
+.ls-long-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.18)}
+.ls-short-box{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.18)}
+.ls-head{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ls-long-box .ls-head{color:var(--green)}
+.ls-short-box .ls-head{color:var(--red)}
+.ls-step{display:flex;gap:8px;font-size:12px;color:var(--text2);margin-bottom:7px;line-height:1.5}
+.ls-step .sn{width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ls-long-box .sn{background:rgba(34,197,94,.15);color:var(--green)}
+.ls-short-box .sn{background:rgba(239,68,68,.15);color:var(--red)}
+.ls-params{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+.ls-param{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:11px}
+.ls-pl{color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.ls-pv{font-weight:700;font-family:var(--mono);font-size:11px}
+
+/* ── 6-STEP FLOW (LONG SPECIFIC) ── */
+.step6{display:flex;flex-direction:column;gap:10px}
+.s6row{display:grid;grid-template-columns:44px 1fr;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.s6-num{display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;font-family:var(--mono);border-right:1px solid var(--border)}
+.s6-body{padding:14px 18px}
+.s6-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.s6-sub{font-size:12px;color:var(--text2);line-height:1.55}
+.s6-checks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.s6-chk{font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text2)}
+.entry-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:4px}
+.eb-choch{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.3)}
+.eb-bos{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.eb-fvg{background:rgba(245,200,66,.15);color:var(--gold);border:1px solid rgba(245,200,66,.3)}
+
+/* ── 3-TIER SECTION ── */
+.tier-header{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.th-box{border-radius:10px;padding:16px 20px;text-align:center}
+.th1{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3)}
+.th2{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3)}
+.th3{background:rgba(245,200,66,.15);border:1px solid rgba(245,200,66,.35)}
+.th-pct{font-size:36px;font-weight:700;line-height:1}
+.th1 .th-pct{color:var(--blue)}
+.th2 .th-pct{color:var(--green)}
+.th3 .th-pct{color:var(--gold)}
+.th-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-top:4px;margin-bottom:2px}
+.th1 .th-name{color:var(--blue)}
+.th2 .th-name{color:var(--green)}
+.th3 .th-name{color:var(--gold)}
+.th-desc{font-size:11px;color:var(--text3)}
+
+.tier-cards{display:flex;flex-direction:column;gap:10px}
+.tier-card{display:grid;grid-template-columns:150px 1fr 80px;align-items:stretch;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.tier-card.tc1{border-left:3px solid var(--blue)}
+.tier-card.tc2{border-left:3px solid var(--green)}
+.tier-card.tc3{border-left:3px solid var(--gold)}
+.tc-label{padding:18px 16px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)}
+.tc-big{font-size:26px;font-weight:700;line-height:1}
+.tc1 .tc-big{color:var(--blue)}
+.tc2 .tc-big{color:var(--green)}
+.tc3 .tc-big{color:var(--gold)}
+.tc-sub{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);margin-top:4px}
+.tc-body{padding:18px 22px}
+.tc-headline{font-size:13px;font-weight:700;margin-bottom:10px}
+.tc1 .tc-headline{color:var(--blue)}
+.tc2 .tc-headline{color:var(--green)}
+.tc3 .tc-headline{color:var(--gold)}
+.tc-steps{display:flex;flex-direction:column;gap:5px}
+.tc-step{display:flex;gap:7px;font-size:12px;color:var(--text2);line-height:1.5}
+.tsn{width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tc1 .tsn{background:rgba(59,130,246,.15);color:var(--blue)}
+.tc2 .tsn{background:rgba(34,197,94,.15);color:var(--green)}
+.tc3 .tsn{background:rgba(245,200,66,.15);color:var(--gold)}
+.tc-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.tc-met{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:11px}
+.tc-ml{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:2px}
+.tc-mv{font-weight:700;font-family:var(--mono)}
+.tc-pct{padding:18px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-left:1px solid var(--border);text-align:center}
+.tc-pnum{font-size:22px;font-weight:700}
+.tc1 .tc-pnum{color:var(--blue)}
+.tc2 .tc-pnum{color:var(--green)}
+.tc3 .tc-pnum{color:var(--gold)}
+.tc-plbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)}
+
+/* ── LONG vs SHORT 3-TIER separate ── */
+.ls3-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ls3-col{border-radius:12px;padding:0;overflow:hidden;border:1px solid}
+.ls3-long{border-color:rgba(34,197,94,.2)}
+.ls3-short{border-color:rgba(239,68,68,.2)}
+.ls3-colhead{padding:14px 20px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;border-bottom:1px solid}
+.ls3-long .ls3-colhead{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.18);color:var(--green)}
+.ls3-short .ls3-colhead{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.18);color:var(--red)}
+.ls3-tiers{padding:14px}
+.ls3-tier{border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:12px}
+.ls3-tier:last-child{margin-bottom:0}
+.ls3-t1{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2)}
+.ls3-t2{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18)}
+.ls3-t3{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2)}
+.ls3-tname{font-weight:700;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ls3-t1 .ls3-tname .tn{color:var(--blue)}
+.ls3-t2 .ls3-tname .tn{color:var(--green)}
+.ls3-t3 .ls3-tname .tn{color:var(--gold)}
+.ls3-rows{display:flex;flex-direction:column;gap:3px;color:var(--text2)}
+.ls3-row{display:flex;gap:6px}
+.ls3-row::before{content:'›';color:var(--text3);flex-shrink:0}
+
+/* ── KILL ZONE ── */
+.kz-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.kz-box{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:18px 20px}
+.kz-time{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--gold);margin-bottom:4px}
+.kz-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px}
+.kz-desc{font-size:12px;color:var(--text2)}
+.kz-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;animation:blink 2s infinite}
+
+/* ── CHECKLIST ── */
+.chk-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chk-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text2)}
+.chk-item.bad{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03)}
+.chk-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* ── A+ SETUP ── */
+.aplus-box{background:rgba(245,200,66,.04);border:1px solid rgba(245,200,66,.2);border-radius:12px;padding:24px}
+.aplus-head{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.aplus-tags{display:flex;flex-wrap:wrap;gap:8px}
+.aplus-tag{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25);color:var(--gold)}
+
+/* ── RISK GRID ── */
+.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.risk-num{font-size:26px;font-weight:700;margin-bottom:4px}
+.risk-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3)}
+.risk-sub{font-size:11px;color:var(--text2);margin-top:3px}
+
+/* ── ERROR TABLE ── */
+.err-list{display:flex;flex-direction:column;gap:7px}
+.err-item{display:flex;align-items:flex-start;gap:10px;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--text2)}
+.err-x{color:var(--red);font-size:14px;font-weight:700;flex-shrink:0;margin-top:1px}
+
+/* ── SUMMARY FLOW ── */
+.summary-wrap{background:linear-gradient(135deg,rgba(245,200,66,.04),rgba(168,85,247,.04));border:1px solid rgba(245,200,66,.18);border-radius:16px;padding:32px;text-align:center}
+.summary-quote{font-size:18px;font-weight:700;color:var(--text);max-width:680px;margin:0 auto 24px;line-height:1.5}
+.summary-quote em{font-style:normal}
+.flow-pills{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.fp{padding:9px 14px;border-radius:8px;font-size:11px;font-weight:700;border:1px solid}
+.fp-arr{padding:0 6px;font-size:15px;color:var(--text3)}
+.fp1{background:rgba(245,200,66,.1);border-color:rgba(245,200,66,.3);color:var(--gold)}
+.fp2{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--red)}
+.fp3{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--blue)}
+.fp4{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--green)}
+.fp5{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)}
+.fp6{background:rgba(245,200,66,.15);border-color:rgba(245,200,66,.4);color:var(--gold)}
+
+/* ── MTF FRAMEWORK ── */
+.mtf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);border-radius:12px;overflow:hidden}
+.mtf-col{background:var(--surface);padding:18px 14px}
+.mtf-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.mtf-row{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border)}
+.mtf-row:last-child{border-bottom:none}
+.mtf-dot{width:5px;height:5px;border-radius:50%;margin-top:7px;flex-shrink:0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:820px){
+  .page,.hero-inner{padding-left:20px;padding-right:20px}
+  .cat-grid{grid-template-columns:1fr 1fr}
+  .ls-cols,.ls3-wrap,.kz-grid,.chk-grid{grid-template-columns:1fr}
+  .mtf-grid{grid-template-columns:1fr 1fr}
+  .tier-card{grid-template-columns:110px 1fr}
+  .tc-pct{display:none}
+  .tier-header{grid-template-columns:1fr}
+  .risk-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="v-badge"><span class="dot"></span>Professional Trading Framework · Updated v2.0</div>
+    <h1>Liquidity <span class="accent">Scalping</span> System <span class="v2">v2.0</span></h1>
+    <p class="hero-desc">Chiến lược hoàn chỉnh dựa trên cơ chế quét thanh khoản — EQL → Sweep → CHoCH → BOS → FVG. Vào lệnh theo 3 tầng tỷ trọng tối ưu: T1 CHoCH 20% · T2 BOS 30% · T3 FVG 50%.</p>
+    <div class="hero-kpi">
+      <div class="kpi"><span class="kpi-val">3</span><span class="kpi-lbl">Entry Tiers</span></div>
+      <div class="kpi"><span class="kpi-val">6</span><span class="kpi-lbl">Bước LONG/SHORT</span></div>
+      <div class="kpi"><span class="kpi-val">1:2+</span><span class="kpi-lbl">Min R:R</span></div>
+      <div class="kpi"><span class="kpi-val">6</span><span class="kpi-lbl">Checklist Points</span></div>
+      <div class="kpi"><span class="kpi-val">VN30</span><span class="kpi-lbl">KillZone Optimized</span></div>
+    </div>
+    <div class="hero-tag">
+      <span class="htag htag-g">▲ Long: SSL Sweep</span>
+      <span class="htag htag-r">▼ Short: BSL Sweep</span>
+      <span class="htag htag-b">EQL · CHoCH · BOS · FVG</span>
+      <span class="htag htag-y">T3 FVG = Money Maker 50%</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ═══════════ S1: CHUỖI LOGIC ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <div><div class="sec-title">Chuỗi Logic Chuẩn — Liquidity → Entry</div></div>
+    <div class="sec-sub">Core Signal Chain · v2.0</div>
+  </div>
+
+  <div class="logic-flow">
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-eql">EQL / EQH</div>
+        <div class="lf-label">Liquidity Zone</div>
+      </div>
+      <div class="lf-arr">→</div>
+    </div>
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-sw">⚡ Sweep</div>
+        <div class="lf-label">Stop Hunt</div>
+      </div>
+      <div class="lf-arr">→</div>
+    </div>
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-choch">CHoCH — đổi cấu trúc</div>
+        <div class="lf-label">Entry 1 · 20%</div>
+      </div>
+      <div class="lf-arr">→</div>
+    </div>
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-bos">BOS — xác nhận</div>
+        <div class="lf-label">Entry 2 · 30%</div>
+      </div>
+      <div class="lf-arr">→</div>
+    </div>
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-fvg">FVG</div>
+        <div class="lf-label">Entry 3 · 50%</div>
+      </div>
+      <div class="lf-arr">→</div>
+    </div>
+    <div class="lf-step">
+      <div>
+        <div class="lf-box lf-entry">ENTRY — 50% FVG</div>
+        <div class="lf-label">Execute · TP → SL</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATALYST GRID -->
+  <div class="cat-grid">
+    <div class="cat-card c-gold">
+      <div class="cat-num">Catalyst #01</div>
+      <div class="cat-name">EQL / EQH — Equal Low/High</div>
+      <div class="cat-desc">Vùng Equal Low (EQL) / Equal High (EQH) — nơi tập trung stop loss của đám đông. Ít nhất 2 đáy/đỉnh bằng nhau, thanh khoản dồn lớn. Đây là "mồi ngon" cho Smart Money trước khi move thật sự.</div>
+      <span class="cat-tag tg">Catalyst #1 · Liquidity Pool</span>
+    </div>
+    <div class="cat-card c-red">
+      <div class="cat-num">Catalyst #02</div>
+      <div class="cat-name">Liquidity Sweep — Stop Hunt</div>
+      <div class="cat-desc">Giá fake breakdown/breakout qua EQL/EQH bằng wick dài — đây là cú "stop hunt". Smart Money thu thanh khoản từ retail. Wick dài + nến đóng cửa ngược chiều là tín hiệu mạnh nhất.</div>
+      <span class="cat-tag tr">Catalyst #2 · Trigger Signal</span>
+    </div>
+    <div class="cat-card c-blue">
+      <div class="cat-num">Catalyst #03</div>
+      <div class="cat-name">CHoCH — Change of Character</div>
+      <div class="cat-desc">Giá phá lên trên Lower High gần nhất (LONG) hoặc phá xuống dưới Higher Low (SHORT) — dấu hiệu đầu tiên đảo chiều kết thúc. Entry sớm nhất, RR cao nhất nhưng rủi ro cao. Vào 20% size.</div>
+      <span class="cat-tag tb">Catalyst #3 · Entry 1 · 20%</span>
+    </div>
+    <div class="cat-card c-green">
+      <div class="cat-num">Catalyst #04</div>
+      <div class="cat-name">BOS — Break of Structure</div>
+      <div class="cat-desc">Giá tạo Higher High đầu tiên (LONG) hoặc Lower Low (SHORT) — cấu trúc chính thức chuyển trend. Entry an toàn nhất trong 3 điểm, win rate cao. Close > Higher High / Lower Low rõ ràng.</div>
+      <span class="cat-tag tgn">Catalyst #4 · Entry 2 · 30%</span>
+    </div>
+    <div class="cat-card c-purple">
+      <div class="cat-num">Catalyst #05</div>
+      <div class="cat-name">FVG — Fair Value Gap 50%</div>
+      <div class="cat-desc">Sau BOS xuất hiện FVG — vùng mất cân bằng Smart Money chưa fill đủ lệnh. Giá thường hồi về đây trước khi tiếp tục. Limit order tại 50% FVG là điểm entry đẹp nhất + RR tốt nhất. Vào 50% size.</div>
+      <span class="cat-tag tp">Catalyst #5 · Entry 3 · 50% ★</span>
+    </div>
+    <div class="cat-card c-orange">
+      <div class="cat-num">Catalyst #06</div>
+      <div class="cat-name">Session Kill Zone — VN30</div>
+      <div class="cat-desc">VN30: 9:00–10:30 (Open Session — sweep thường xảy ra đầu phiên, sweep low/high phiên trước) và 13:00–14:00 (Afternoon — FVG hoạt động rất tốt M5, momentum thường mạnh).</div>
+      <span class="cat-tag to">Catalyst #6 · VN30 Timing</span>
+    </div>
+    <div class="cat-card c-cyan">
+      <div class="cat-num">Catalyst #07</div>
+      <div class="cat-name">Premium / Discount Zones</div>
+      <div class="cat-desc">Trong uptrend: chỉ mua ở Discount (dưới 50% của swing). Trong downtrend: chỉ bán ở Premium (trên 50% của swing). Không mua cao — không bán thấp so với cấu trúc HTF.</div>
+      <span class="cat-tag tc">Catalyst #7 · HTF Bias Filter</span>
+    </div>
+    <div class="cat-card c-gold">
+      <div class="cat-num">Catalyst #08</div>
+      <div class="cat-name">Order Block (OB) — Institutional</div>
+      <div class="cat-desc">Nến cuối cùng ngược chiều trước khi giá di chuyển mạnh — dấu vết Institutional. Bullish OB = last bearish candle trước impulse up. Dùng kết hợp với FVG để xác nhận zone entry T2/T3.</div>
+      <span class="cat-tag tg">Catalyst #8 · OB + FVG Confluence</span>
+    </div>
+    <div class="cat-card c-green">
+      <div class="cat-num">Catalyst #09 · NEW</div>
+      <div class="cat-name">RSI Divergence — Xác nhận thêm</div>
+      <div class="cat-desc">RSI Divergence tại vùng sweep: giá tạo low mới nhưng RSI không tạo low mới (bullish div) — thêm 1 điểm xác nhận cho A+ Setup. Không bắt buộc nhưng tăng độ tin cậy cao.</div>
+      <span class="cat-tag tgn">Catalyst #9 · A+ Signal</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S2: MARKET STRUCTURE CHART ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div><div class="sec-title">Liquidity Map — Minh Hoạ Cấu Trúc Thị Trường</div></div>
+    <div class="sec-sub">EQL → Sweep → CHoCH → BOS → FVG</div>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 1060 500" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <rect width="1060" height="500" fill="#0d1117"/>
+
+      <!-- EQL line (bottom) -->
+      <line x1="20" y1="440" x2="280" y2="440" stroke="#22c55e" stroke-width="1" stroke-dasharray="5 4" opacity=".5"/>
+      <line x1="20" y1="410" x2="200" y2="410" stroke="#22c55e" stroke-width="1" stroke-dasharray="5 4" opacity=".3"/>
+      <text x="22" y="435" fill="#22c55e" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">EQL — Equal Low (SSL)</text>
+
+      <!-- EQH line (top) -->
+      <line x1="460" y1="58" x2="620" y2="58" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 4" opacity=".5"/>
+      <text x="462" y="53" fill="#ef4444" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">EQH — Equal High (BSL)</text>
+
+      <!-- Phase 1: Downtrend creating EQL -->
+      <g opacity=".85">
+        <line x1="55" y1="140" x2="55" y2="225" stroke="#ef4444" stroke-width="1.5"/><rect x="49" y="158" width="12" height="52" fill="#ef4444" rx="1"/>
+        <line x1="83" y1="175" x2="83" y2="265" stroke="#ef4444" stroke-width="1.5"/><rect x="77" y="192" width="12" height="55" fill="#ef4444" rx="1"/>
+        <line x1="111" y1="220" x2="111" y2="318" stroke="#ef4444" stroke-width="1.5"/><rect x="105" y="238" width="12" height="62" fill="#ef4444" rx="1"/>
+        <!-- Touch EQL 1 -->
+        <line x1="139" y1="260" x2="139" y2="412" stroke="#ef4444" stroke-width="1.8"/><rect x="133" y="278" width="12" height="60" fill="#ef4444" rx="1"/>
+        <!-- small bounce -->
+        <line x1="167" y1="318" x2="167" y2="378" stroke="#22c55e" stroke-width="1.2"/><rect x="161" y="328" width="12" height="38" fill="#22c55e" rx="1"/>
+        <!-- Touch EQL 2 (equal low) -->
+        <line x1="195" y1="275" x2="195" y2="444" stroke="#ef4444" stroke-width="2"/><rect x="189" y="295" width="12" height="65" fill="#ef4444" rx="1"/>
+      </g>
+
+      <!-- EQL labels -->
+      <circle cx="139" cy="412" r="5" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+      <circle cx="195" cy="444" r="7" fill="none" stroke="#22c55e" stroke-width="2"/>
+      <text x="208" y="447" fill="#22c55e" font-size="10" font-family="JetBrains Mono,monospace" font-weight="700">⚡ SWEEP</text>
+
+      <!-- CHoCH candle -->
+      <line x1="228" y1="260" x2="228" y2="415" stroke="#22c55e" stroke-width="2.2"/><rect x="222" y="272" width="12" height="115" fill="#22c55e" rx="1"/>
+      <text x="213" y="265" fill="#3b82f6" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">CHoCH ▲</text>
+      <!-- CHoCH line marker -->
+      <line x1="210" y1="278" x2="228" y2="278" stroke="#3b82f6" stroke-width="1" stroke-dasharray="3 2" opacity=".7"/>
+      <!-- Entry badge -->
+      <rect x="235" y="270" width="55" height="16" fill="rgba(59,130,246,.2)" stroke="rgba(59,130,246,.4)" stroke-width=".5" rx="3"/>
+      <text x="262" y="281" fill="#3b82f6" font-size="8" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">ENTRY 1 20%</text>
+
+      <!-- Consolidation after CHoCH -->
+      <rect x="244" y="285" width="95" height="75" fill="rgba(245,200,66,.03)" stroke="rgba(245,200,66,.12)" stroke-width=".8" rx="4"/>
+      <text x="291" y="328" fill="rgba(245,200,66,.5)" font-size="8" font-family="JetBrains Mono,monospace" text-anchor="middle">Range</text>
+      <g opacity=".65">
+        <line x1="258" y1="298" x2="258" y2="350" stroke="#22c55e" stroke-width="1"/><rect x="253" y="308" width="10" height="28" fill="#22c55e" rx="1"/>
+        <line x1="278" y1="295" x2="278" y2="352" stroke="#ef4444" stroke-width="1"/><rect x="273" y="308" width="10" height="27" fill="#ef4444" rx="1"/>
+        <line x1="298" y1="300" x2="298" y2="348" stroke="#22c55e" stroke-width="1"/><rect x="293" y="310" width="10" height="26" fill="#22c55e" rx="1"/>
+        <line x1="318" y1="298" x2="318" y2="350" stroke="#ef4444" stroke-width="1"/><rect x="313" y="310" width="10" height="26" fill="#ef4444" rx="1"/>
+      </g>
+
+      <!-- BOS — impulse breaks LH -->
+      <line x1="345" y1="220" x2="345" y2="355" stroke="#22c55e" stroke-width="2.2"/><rect x="339" y="235" width="12" height="98" fill="#22c55e" rx="1"/>
+      <!-- BOS horizontal line -->
+      <line x1="167" y1="318" x2="360" y2="318" stroke="#22c55e" stroke-width=".8" stroke-dasharray="4 3" opacity=".4"/>
+      <text x="344" y="228" fill="#22c55e" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">BOS ▲</text>
+      <rect x="352" y="226" width="55" height="16" fill="rgba(34,197,94,.15)" stroke="rgba(34,197,94,.35)" stroke-width=".5" rx="3"/>
+      <text x="379" y="237" fill="#22c55e" font-size="8" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">ENTRY 2 30%</text>
+
+      <!-- FVG zone -->
+      <rect x="330" y="235" width="30" height="32" fill="rgba(168,85,247,.2)" stroke="rgba(168,85,247,.5)" stroke-width=".8" rx="3"/>
+      <text x="318" y="257" fill="#a855f7" font-size="8" font-family="JetBrains Mono,monospace">FVG</text>
+
+      <!-- Pullback to FVG -->
+      <line x1="375" y1="250" x2="375" y2="310" stroke="#ef4444" stroke-width="1.5"/><rect x="369" y="260" width="12" height="38" fill="#ef4444" rx="1"/>
+      <line x1="403" y1="230" x2="403" y2="295" stroke="#ef4444" stroke-width="1.2"/><rect x="397" y="245" width="12" height="34" fill="#ef4444" rx="1"/>
+      <!-- Arrow to FVG entry -->
+      <line x1="410" y1="265" x2="362" y2="255" stroke="#a855f7" stroke-width="1" marker-end="url(#arr)" stroke-dasharray="3 2"/>
+      <text x="412" y="260" fill="#a855f7" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">ENTRY 3</text>
+      <text x="412" y="272" fill="#a855f7" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">50% FVG ★</text>
+
+      <!-- Impulse after FVG entry -->
+      <g opacity=".9">
+        <line x1="435" y1="185" x2="435" y2="295" stroke="#22c55e" stroke-width="2"/><rect x="429" y="198" width="12" height="78" fill="#22c55e" rx="1"/>
+        <line x1="463" y1="148" x2="463" y2="230" stroke="#22c55e" stroke-width="2"/><rect x="457" y="162" width="12" height="58" fill="#22c55e" rx="1"/>
+        <line x1="491" y1="112" x2="491" y2="200" stroke="#22c55e" stroke-width="2"/><rect x="485" y="126" width="12" height="62" fill="#22c55e" rx="1"/>
+      </g>
+      <!-- HH label -->
+      <text x="485" y="108" fill="#22c55e" font-size="8" font-family="JetBrains Mono,monospace">HH</text>
+
+      <!-- TP labels -->
+      <line x1="228" y1="380" x2="520" y2="380" stroke="rgba(245,200,66,.2)" stroke-width=".5" stroke-dasharray="3 3"/>
+      <text x="524" y="383" fill="rgba(245,200,66,.5)" font-size="8" font-family="JetBrains Mono,monospace">TP1 · EQL / Liq gần nhất</text>
+
+      <!-- ===== SHORT SIDE ===== -->
+      <!-- Run up to EQH -->
+      <g opacity=".9">
+        <line x1="520" y1="88" x2="520" y2="165" stroke="#22c55e" stroke-width="1.8"/><rect x="514" y="102" width="12" height="55" fill="#22c55e" rx="1"/>
+        <!-- Sweep EQH -->
+        <line x1="548" y1="56" x2="548" y2="138" stroke="#ef4444" stroke-width="2.5"/><rect x="542" y="70" width="12" height="52" fill="#ef4444" rx="1"/>
+      </g>
+      <circle cx="548" cy="58" r="7" fill="none" stroke="#ef4444" stroke-width="2"/>
+      <text x="562" y="62" fill="#ef4444" font-size="10" font-family="JetBrains Mono,monospace" font-weight="700">⚡ SWEEP BSL</text>
+
+      <!-- CHoCH short -->
+      <line x1="580" y1="100" x2="580" y2="178" stroke="#ef4444" stroke-width="2.2"/><rect x="574" y="110" width="12" height="60" fill="#ef4444" rx="1"/>
+      <text x="570" y="96" fill="#3b82f6" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">CHoCH ▼</text>
+      <rect x="590" y="108" width="55" height="16" fill="rgba(59,130,246,.15)" stroke="rgba(59,130,246,.35)" stroke-width=".5" rx="3"/>
+      <text x="617" y="119" fill="#3b82f6" font-size="8" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">ENTRY 1 20%</text>
+
+      <!-- Bearish OB -->
+      <rect x="542" y="70" width="12" height="52" fill="none" stroke="#f5c842" stroke-width="1.5" rx="1" stroke-dasharray="3 2"/>
+      <text x="560" y="90" fill="#f5c842" font-size="8" font-family="JetBrains Mono,monospace">OB</text>
+
+      <!-- BOS short -->
+      <line x1="612" y1="155" x2="612" y2="232" stroke="#ef4444" stroke-width="2"/><rect x="606" y="165" width="12" height="58" fill="#ef4444" rx="1"/>
+      <text x="604" y="150" fill="#ef4444" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">BOS ▼</text>
+      <rect x="622" y="162" width="55" height="16" fill="rgba(239,68,68,.15)" stroke="rgba(239,68,68,.35)" stroke-width=".5" rx="3"/>
+      <text x="649" y="173" fill="#ef4444" font-size="8" font-family="JetBrains Mono,monospace" text-anchor="middle" font-weight="700">ENTRY 2 30%</text>
+
+      <!-- Bearish FVG -->
+      <rect x="600" y="163" width="28" height="26" fill="rgba(168,85,247,.2)" stroke="rgba(168,85,247,.5)" stroke-width=".8" rx="3"/>
+      <text x="586" y="180" fill="#a855f7" font-size="8" font-family="JetBrains Mono,monospace">FVG</text>
+
+      <!-- Pullback to bearish FVG -->
+      <line x1="644" y1="145" x2="644" y2="200" stroke="#22c55e" stroke-width="1.2"/><rect x="638" y="154" width="12" height="33" fill="#22c55e" rx="1"/>
+      <!-- Arrow to FVG -->
+      <line x1="638" y1="170" x2="630" y2="178" stroke="#a855f7" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="648" y="142" fill="#a855f7" font-size="9" font-family="JetBrains Mono,monospace" font-weight="700">ENTRY 3 50% FVG ★</text>
+
+      <!-- Bearish impulse -->
+      <g opacity=".9">
+        <line x1="675" y1="200" x2="675" y2="285" stroke="#ef4444" stroke-width="2"/><rect x="669" y="210" width="12" height="65" fill="#ef4444" rx="1"/>
+        <line x1="703" y1="242" x2="703" y2="330" stroke="#ef4444" stroke-width="2"/><rect x="697" y="252" width="12" height="68" fill="#ef4444" rx="1"/>
+        <line x1="731" y1="278" x2="731" y2="375" stroke="#ef4444" stroke-width="2"/><rect x="725" y="290" width="12" height="74" fill="#ef4444" rx="1"/>
+      </g>
+      <!-- LL -->
+      <text x="726" y="380" fill="#ef4444" font-size="8" font-family="JetBrains Mono,monospace">LL</text>
+
+      <!-- SL / TP annotations SHORT -->
+      <line x1="548" y1="42" x2="800" y2="42" stroke="rgba(239,68,68,.2)" stroke-width=".5" stroke-dasharray="3 3"/>
+      <text x="752" y="38" fill="rgba(239,68,68,.4)" font-size="8" font-family="JetBrains Mono,monospace">SL above sweep wick</text>
+
+      <!-- TP short level -->
+      <line x1="580" y1="345" x2="800" y2="345" stroke="rgba(245,200,66,.2)" stroke-width=".5" stroke-dasharray="3 3"/>
+      <text x="752" y="340" fill="rgba(245,200,66,.4)" font-size="8" font-family="JetBrains Mono,monospace">TP1 · EQH / Liq gần nhất</text>
+
+      <!-- Swing High annotation -->
+      <line x1="760" y1="60" x2="1040" y2="60" stroke="rgba(239,68,68,.12)" stroke-width=".5" stroke-dasharray="4 3"/>
+
+      <!-- More bearish candles -->
+      <g opacity=".75">
+        <line x1="762" y1="316" x2="762" y2="395" stroke="#ef4444" stroke-width="1.5"/><rect x="756" y="328" width="12" height="55" fill="#ef4444" rx="1"/>
+        <line x1="790" y1="355" x2="790" y2="430" stroke="#ef4444" stroke-width="1.5"/><rect x="784" y="368" width="12" height="50" fill="#ef4444" rx="1"/>
+        <!-- 2nd EQL sweep - LONG opportunity -->
+        <line x1="820" y1="388" x2="820" y2="475" stroke="#ef4444" stroke-width="2"/><rect x="814" y="402" width="12" height="62" fill="#ef4444" rx="1"/>
+      </g>
+
+      <!-- Second sweep → LONG -->
+      <circle cx="820" cy="474" r="7" fill="none" stroke="#22c55e" stroke-width="2"/>
+      <text x="835" y="477" fill="#22c55e" font-size="10" font-family="JetBrains Mono,monospace" font-weight="700">⚡ SWEEP → LONG Again</text>
+
+      <!-- Reversal candles -->
+      <g opacity=".9">
+        <line x1="852" y1="355" x2="852" y2="466" stroke="#22c55e" stroke-width="2.2"/><rect x="846" y="367" width="12" height="87" fill="#22c55e" rx="1"/>
+        <line x1="880" y1="308" x2="880" y2="400" stroke="#22c55e" stroke-width="2"/><rect x="874" y="320" width="12" height="72" fill="#22c55e" rx="1"/>
+        <line x1="908" y1="272" x2="908" y2="355" stroke="#22c55e" stroke-width="1.8"/><rect x="902" y="285" width="12" height="60" fill="#22c55e" rx="1"/>
+        <line x1="936" y1="238" x2="936" y2="320" stroke="#22c55e" stroke-width="1.8"/><rect x="930" y="250" width="12" height="58" fill="#22c55e" rx="1"/>
+        <line x1="964" y1="205" x2="964" y2="285" stroke="#22c55e" stroke-width="1.8"/><rect x="958" y="218" width="12" height="56" fill="#22c55e" rx="1"/>
+        <line x1="992" y1="175" x2="992" y2="252" stroke="#22c55e" stroke-width="1.8"/><rect x="986" y="188" width="12" height="54" fill="#22c55e" rx="1"/>
+        <line x1="1020" y1="148" x2="1020" y2="222" stroke="#22c55e" stroke-width="2"/><rect x="1014" y="160" width="12" height="52" fill="#22c55e" rx="1"/>
+      </g>
+      <text x="1010" y="144" fill="#22c55e" font-size="8" font-family="JetBrains Mono,monospace">HH</text>
+      <text x="886" y="316" fill="#22c55e" font-size="8" font-family="JetBrains Mono,monospace">HL</text>
+
+      <!-- LEGEND -->
+      <rect x="760" y="128" width="240" height="110" fill="rgba(13,17,23,.92)" rx="8" stroke="rgba(255,255,255,.08)" stroke-width=".5"/>
+      <rect x="772" y="141" width="10" height="10" fill="#22c55e" rx="1"/><text x="788" y="151" fill="#8e97ad" font-size="9" font-family="Space Grotesk,sans-serif">Bullish Candle</text>
+      <rect x="772" y="158" width="10" height="10" fill="#ef4444" rx="1"/><text x="788" y="168" fill="#8e97ad" font-size="9" font-family="Space Grotesk,sans-serif">Bearish Candle</text>
+      <rect x="860" y="141" width="10" height="8" fill="rgba(168,85,247,.18)" stroke="#a855f7" stroke-width=".8" rx="1"/><text x="876" y="151" fill="#8e97ad" font-size="9" font-family="Space Grotesk,sans-serif">FVG Zone</text>
+      <rect x="860" y="157" width="10" height="8" fill="rgba(245,200,66,.12)" stroke="#f5c842" stroke-width="1" rx="1" stroke-dasharray="2 1"/><text x="876" y="167" fill="#8e97ad" font-size="9" font-family="Space Grotesk,sans-serif">Order Block</text>
+      <circle cx="867" cy="183" r="5" fill="none" stroke="#22c55e" stroke-width="1.5"/><text x="876" y="186" fill="#8e97ad" font-size="9" font-family="Space Grotesk,sans-serif">⚡ Sweep</text>
+      <rect x="772" y="178" width="80" height="8" fill="rgba(59,130,246,.12)" stroke="rgba(59,130,246,.3)" stroke-width=".5" rx="2"/><text x="858" y="186" fill="#3b82f6" font-size="8" font-family="JetBrains Mono,monospace">  CHoCH</text>
+      <rect x="772" y="196" width="80" height="8" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.25)" stroke-width=".5" rx="2"/><text x="858" y="204" fill="#22c55e" font-size="8" font-family="JetBrains Mono,monospace">  BOS</text>
+      <line x1="772" y1="224" x2="852" y2="224" stroke="#22c55e" stroke-width=".8" stroke-dasharray="4 3" opacity=".4"/><text x="858" y="227" fill="#8e97ad" font-size="8" font-family="Space Grotesk,sans-serif">TP Level</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ═══════════ S3: 6-BƯỚC LONG SETUP ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div><div class="sec-title">Flow 6 Bước — LONG Setup Chi Tiết</div></div>
+    <div class="sec-sub">B1→B6 · EQL → Entry → TP/SL</div>
+  </div>
+
+  <div class="step6">
+    <div class="s6row" style="border-left:3px solid #22c55e">
+      <div class="s6-num" style="color:#22c55e;background:rgba(34,197,94,.06)">B1</div>
+      <div class="s6-body">
+        <div class="s6-title">Xác định EQL — Liquidity phía dưới <span style="font-size:10px;font-weight:600;color:#ef4444;background:rgba(239,68,68,.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(239,68,68,.25)">BẮT BUỘC</span></div>
+        <div class="s6-sub">Tìm vùng Equal Low hoặc Liquidity/Support mạnh. Đây là nơi tập trung stop loss của buyer — "mồi ngon" cho Smart Money. Ít nhất 2 đáy bằng nhau, thanh khoản dồn lớn.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">✓ Có ít nhất 2 đáy bằng nhau (EQL)</span>
+          <span class="s6-chk">✓ Hoặc swing low rõ ràng</span>
+          <span class="s6-chk">✓ Stop loss retail nằm phía dưới</span>
+        </div>
+      </div>
+    </div>
+    <div class="s6row" style="border-left:3px solid #ef4444">
+      <div class="s6-num" style="color:#ef4444;background:rgba(239,68,68,.06)">B2</div>
+      <div class="s6-body">
+        <div class="s6-title">Liquidity Sweep — Giá phá xuống dưới EQL <span style="font-size:10px;font-weight:600;color:#f97316;background:rgba(249,115,22,.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(249,115,22,.25)">TRIGGER</span></div>
+        <div class="s6-sub">Giá fake breakdown xuống dưới EQL bằng wick dài — đây là "stop hunt". Smart Money thu thanh khoản từ retail. Nến phải đóng cửa lại trên EQL, tốc độ reversal phải nhanh.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">✓ Wick dài xuyên qua EQL</span>
+          <span class="s6-chk">✓ Nến đóng cửa trở lại trên EQL</span>
+          <span class="s6-chk">✓ Tốc độ reversal nhanh</span>
+        </div>
+      </div>
+    </div>
+    <div class="s6row" style="border-left:3px solid #3b82f6">
+      <div class="s6-num" style="color:#3b82f6;background:rgba(59,130,246,.06)">B3</div>
+      <div class="s6-body">
+        <div class="s6-title">CHoCH — Đổi bản chất cấu trúc <span class="entry-badge eb-choch">ENTRY 1 · 20%</span></div>
+        <div class="s6-sub">Giá phá lên trên Lower High gần nhất — dấu hiệu đầu tiên downtrend kết thúc. Đây là entry sớm nhất, rủi ro cao hơn nhưng RR lớn nhất. Vào 20% size, SL dưới đáy sweep.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">✓ Close > Lower High gần nhất</span>
+          <span class="s6-chk">✓ SL: Dưới đáy sweep</span>
+          <span class="s6-chk">✓ Vào 20% size</span>
+        </div>
+      </div>
+    </div>
+    <div class="s6row" style="border-left:3px solid #22c55e">
+      <div class="s6-num" style="color:#22c55e;background:rgba(34,197,94,.06)">B4</div>
+      <div class="s6-body">
+        <div class="s6-title">BOS — Xác nhận uptrend <span class="entry-badge eb-bos">ENTRY 2 · 30%</span></div>
+        <div class="s6-sub">Giá tạo Higher High đầu tiên — cấu trúc chính thức chuyển sang uptrend. Entry an toàn nhất trong 3 điểm. Win rate cao nhất. Vào khi break hoặc retest nhe vùng BOS.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">✓ Close > Higher High gần nhất</span>
+          <span class="s6-chk">✓ Hoặc retest nhẹ vùng BOS</span>
+          <span class="s6-chk">✓ Vào 30% size</span>
+        </div>
+      </div>
+    </div>
+    <div class="s6row" style="border-left:3px solid #a855f7">
+      <div class="s6-num" style="color:#a855f7;background:rgba(168,85,247,.06)">B5</div>
+      <div class="s6-body">
+        <div class="s6-title">Bullish FVG — Vùng mất cân bằng <span class="entry-badge eb-fvg">ENTRY 3 · 50% ★</span></div>
+        <div class="s6-sub">Sau BOS xuất hiện FVG lớn — vùng Smart Money chưa fill đủ lệnh. Giá thường hồi về đây trước khi tiếp tục tăng. Limit order tại 50% FVG. Đây là entry đẹp nhất + RR tốt nhất. Allocate nhiều nhất.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">✓ FVG hình thành sau BOS</span>
+          <span class="s6-chk">✓ Limit order tại 50% FVG</span>
+          <span class="s6-chk">✓ Đây là entry đẹp nhất · RR tốt nhất</span>
+          <span class="s6-chk">✓ Vào 50% size còn lại</span>
+        </div>
+      </div>
+    </div>
+    <div class="s6row" style="border-left:3px solid #f5c842">
+      <div class="s6-num" style="color:#f5c842;background:rgba(245,200,66,.06)">B6</div>
+      <div class="s6-body">
+        <div class="s6-title">Entry hoàn tất — Quản lý vị thế toàn phần</div>
+        <div class="s6-sub">Sau khi vào đủ 100% size tại 3 điểm, quản lý theo quy tắc: đóng 50% tại TP1, move SL về Break-Even, trail 50% còn lại về TP2 / Swing High tiếp theo.</div>
+        <div class="s6-checks">
+          <span class="s6-chk">TP1: EQL / Liquidity gần nhất</span>
+          <span class="s6-chk">TP2: Swing High trước đó</span>
+          <span class="s6-chk">SL chung: Dưới đáy sweep</span>
+          <span class="s6-chk">Trail 50% còn lại theo BOS / EMA50</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S4: LONG vs SHORT SETUP ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div><div class="sec-title">LONG vs SHORT — Điều Kiện Đầy Đủ</div></div>
+    <div class="sec-sub">Mirror Logic · SSL vs BSL</div>
+  </div>
+
+  <div class="ls-cols">
+    <div class="ls-box ls-long-box">
+      <div class="ls-head">▲ LONG SETUP — SSL Sweep</div>
+      <div class="ls-step"><div class="sn">1</div><div><strong style="color:var(--text)">HTF Bias Bullish:</strong> Daily/4H đang HH/HL — không bao giờ long khi HTF bearish</div></div>
+      <div class="ls-step"><div class="sn">2</div><div><strong style="color:var(--text)">EQL xác định:</strong> Tìm Equal Low hoặc Swing Low rõ — nơi stop loss buyer tập trung phía dưới</div></div>
+      <div class="ls-step"><div class="sn">3</div><div><strong style="color:var(--text)">Sweep EQL:</strong> Wick dài xuyên qua EQL, nến đóng cửa ngược lại trên EQL — Smart Money thu lệnh</div></div>
+      <div class="ls-step"><div class="sn">4</div><div><strong style="color:var(--text)">CHoCH Bullish:</strong> Phá lên Lower High gần nhất — Entry 1 20% với SL dưới wick sweep</div></div>
+      <div class="ls-step"><div class="sn">5</div><div><strong style="color:var(--text)">BOS Confirm:</strong> Giá tạo HH — Entry 2 30%. Cấu trúc chính thức đổi chiều</div></div>
+      <div class="ls-step"><div class="sn">6</div><div><strong style="color:var(--text)">FVG Retest:</strong> Limit tại 50% FVG sau BOS — Entry 3 50%. RR tốt nhất, win rate cao</div></div>
+      <div class="ls-params">
+        <div class="ls-param"><div class="ls-pl">SL chung</div><div class="ls-pv" style="color:var(--red)">Below EQL wick</div></div>
+        <div class="ls-param"><div class="ls-pl">TP1</div><div class="ls-pv" style="color:var(--green)">EQH / Liq gần</div></div>
+        <div class="ls-param"><div class="ls-pl">TP2</div><div class="ls-pv" style="color:var(--green)">Swing High trước</div></div>
+        <div class="ls-param"><div class="ls-pl">Min R:R</div><div class="ls-pv" style="color:var(--gold)">1 : 2</div></div>
+      </div>
+    </div>
+    <div class="ls-box ls-short-box">
+      <div class="ls-head">▼ SHORT SETUP — BSL Sweep</div>
+      <div class="ls-step"><div class="sn">1</div><div><strong style="color:var(--text)">HTF Bias Bearish:</strong> Daily/4H đang LH/LL — không bao giờ short khi HTF bullish</div></div>
+      <div class="ls-step"><div class="sn">2</div><div><strong style="color:var(--text)">EQH xác định:</strong> Tìm Equal High hoặc Swing High rõ — nơi stop loss seller tập trung phía trên</div></div>
+      <div class="ls-step"><div class="sn">3</div><div><strong style="color:var(--text)">Sweep EQH:</strong> Wick dài xuyên qua EQH, nến đóng cửa ngược lại dưới EQH — Smart Money thu lệnh</div></div>
+      <div class="ls-step"><div class="sn">4</div><div><strong style="color:var(--text)">CHoCH Bearish:</strong> Phá xuống Higher Low gần nhất — Entry 1 20% với SL trên wick sweep</div></div>
+      <div class="ls-step"><div class="sn">5</div><div><strong style="color:var(--text)">BOS Confirm:</strong> Giá tạo LL — Entry 2 30%. Cấu trúc chính thức đổi chiều bearish</div></div>
+      <div class="ls-step"><div class="sn">6</div><div><strong style="color:var(--text)">FVG Retest:</strong> Limit tại 50% FVG bearish sau BOS — Entry 3 50%. RR tốt nhất</div></div>
+      <div class="ls-params">
+        <div class="ls-param"><div class="ls-pl">SL chung</div><div class="ls-pv" style="color:var(--red)">Above EQH wick</div></div>
+        <div class="ls-param"><div class="ls-pl">TP1</div><div class="ls-pv" style="color:var(--red)">EQL / Liq gần</div></div>
+        <div class="ls-param"><div class="ls-pl">TP2</div><div class="ls-pv" style="color:var(--red)">Swing Low trước</div></div>
+        <div class="ls-param"><div class="ls-pl">Min R:R</div><div class="ls-pv" style="color:var(--gold)">1 : 2</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S5: 3-TIER ENTRY — LONG vs SHORT ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div><div class="sec-title">Chiến Lược 3-Tier Entry — Tỷ Trọng LONG & SHORT</div></div>
+    <div class="sec-sub">Position Sizing · Step by Step</div>
+  </div>
+
+  <!-- Weight bar -->
+  <div class="chart-wrap" style="margin-bottom:16px;padding:16px 20px">
+    <svg viewBox="0 0 1020 130" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1020" height="130" fill="#111622" rx="6"/>
+      <text x="510" y="20" fill="#5a6275" font-size="9" font-family="Space Grotesk,sans-serif" text-anchor="middle" font-weight="700" text-decoration="none">PHÂN BỔ 3 TẦNG ENTRY — TỶ TRỌNG CHUẨN</text>
+      <!-- T1 CHoCH 20% -->
+      <rect x="20" y="32" width="192" height="58" fill="rgba(59,130,246,.1)" stroke="rgba(59,130,246,.35)" stroke-width="1" rx="6"/>
+      <text x="40" y="58" fill="#3b82f6" font-size="12" font-weight="700" font-family="Space Grotesk,sans-serif">ENTRY 1 — CHoCH</text>
+      <text x="40" y="74" fill="rgba(59,130,246,.6)" font-size="10" font-family="JetBrains Mono,monospace">Thăm dò sớm · Rủi ro cao</text>
+      <text x="186" y="66" fill="#3b82f6" font-size="24" font-weight="700" font-family="JetBrains Mono,monospace" text-anchor="middle">20%</text>
+      <!-- T2 BOS 30% -->
+      <rect x="224" y="32" width="288" height="58" fill="rgba(34,197,94,.1)" stroke="rgba(34,197,94,.35)" stroke-width="1" rx="6"/>
+      <text x="244" y="58" fill="#22c55e" font-size="12" font-weight="700" font-family="Space Grotesk,sans-serif">ENTRY 2 — BOS</text>
+      <text x="244" y="74" fill="rgba(34,197,94,.6)" font-size="10" font-family="JetBrains Mono,monospace">An toàn nhất · Win rate cao</text>
+      <text x="368" y="66" fill="#22c55e" font-size="24" font-weight="700" font-family="JetBrains Mono,monospace" text-anchor="middle">30%</text>
+      <!-- T3 FVG 50% -->
+      <rect x="524" y="32" width="476" height="58" fill="rgba(245,200,66,.12)" stroke="rgba(245,200,66,.4)" stroke-width="1.5" rx="6"/>
+      <text x="544" y="58" fill="#f5c842" font-size="12" font-weight="700" font-family="Space Grotesk,sans-serif">ENTRY 3 — FVG 50% ★ MONEY MAKER</text>
+      <text x="544" y="74" fill="rgba(245,200,66,.6)" font-size="10" font-family="JetBrains Mono,monospace">Tối ưu nhất · Entry đẹp · RR tốt nhất · Allocate nhiều nhất</text>
+      <text x="980" y="66" fill="#f5c842" font-size="24" font-weight="700" font-family="JetBrains Mono,monospace" text-anchor="middle">50%</text>
+      <!-- labels -->
+      <text x="116" y="112" fill="rgba(59,130,246,.6)" font-size="9" font-family="Space Grotesk,sans-serif" text-anchor="middle">Rủi ro cao nhất</text>
+      <text x="368" y="112" fill="rgba(34,197,94,.6)" font-size="9" font-family="Space Grotesk,sans-serif" text-anchor="middle">Win rate cao nhất</text>
+      <text x="762" y="112" fill="rgba(245,200,66,.6)" font-size="9" font-family="Space Grotesk,sans-serif" text-anchor="middle">RR tốt nhất + Win rate cao</text>
+    </svg>
+  </div>
+
+  <!-- Header cards -->
+  <div class="tier-header">
+    <div class="th-box th1">
+      <div class="th-pct">20%</div>
+      <div class="th-name">Entry 1 — CHoCH</div>
+      <div class="th-desc">Thăm dò sớm · Rủi ro cao hơn · RR lớn nhất</div>
+    </div>
+    <div class="th-box th2">
+      <div class="th-pct">30%</div>
+      <div class="th-name">Entry 2 — BOS</div>
+      <div class="th-desc">An toàn nhất · Win rate cao nhất · Cấu trúc xác nhận</div>
+    </div>
+    <div class="th-box th3">
+      <div class="th-pct">50%</div>
+      <div class="th-name">Entry 3 — FVG ★</div>
+      <div class="th-desc">Money Maker · RR tốt nhất · Limit tại 50% FVG</div>
+    </div>
+  </div>
+
+  <!-- LONG Tier Cards -->
+  <div style="margin:20px 0 8px;font-size:13px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:8px">
+    <span style="width:4px;height:18px;background:var(--green);border-radius:2px;display:inline-block"></span>
+    LONG — 3-Tier Entry Step by Step
+  </div>
+  <div class="tier-cards">
+    <div class="tier-card tc1">
+      <div class="tc-label">
+        <div class="tc-big">T1</div>
+        <div class="tc-sub">CHoCH · 20%</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline">Entry 1 — CHoCH Breakout · 20% position size</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn">1</div><div>Sweep EQL đã xảy ra — wick dài xuyên qua đáy bằng nhau, nến đóng cửa ngược trở lại</div></div>
+          <div class="tc-step"><div class="tsn">2</div><div>Nến đóng cửa phá lên trên Lower High gần nhất (CHoCH bullish xác nhận trên 5m/15m)</div></div>
+          <div class="tc-step"><div class="tsn">3</div><div>Vào lệnh LONG ngay khi CHoCH close — Market order hoặc Limit tại 50% nến CHoCH</div></div>
+          <div class="tc-step"><div class="tsn">4</div><div>SL: Buffer 3–5 điểm VN30 dưới đáy wick sweep. Dùng ATR × 1.5 làm tham chiếu</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--blue)">20% của vốn</div></div>
+          <div class="tc-met"><div class="tc-ml">Timeframe</div><div class="tc-mv" style="color:var(--blue)">5m / 15m</div></div>
+          <div class="tc-met"><div class="tc-ml">TP riêng</div><div class="tc-mv" style="color:var(--green)">Hold → TP1</div></div>
+          <div class="tc-met"><div class="tc-ml">SL đặt</div><div class="tc-mv" style="color:var(--red)">Below wick sweep</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum">20%</div><div class="tc-plbl">size</div></div>
+    </div>
+
+    <div class="tier-card tc2">
+      <div class="tc-label">
+        <div class="tc-big">T2</div>
+        <div class="tc-sub">BOS · 30%</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline">Entry 2 — BOS Confirmation · 30% position size</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn">1</div><div>T1 đã active. Giá tạo Higher High đầu tiên — BOS bullish xác nhận uptrend chính thức bắt đầu</div></div>
+          <div class="tc-step"><div class="tsn">2</div><div>Vào lệnh LONG khi nến đóng cửa trên BOS level, hoặc chờ retest nhẹ về vùng BOS (1–2 nến)</div></div>
+          <div class="tc-step"><div class="tsn">3</div><div>SL T2: Đặt dưới đáy BOS bar hoặc dưới Higher Low vừa tạo — SL hẹp hơn T1 đáng kể</div></div>
+          <div class="tc-step"><div class="tsn">4</div><div>Sau khi T2 vào: Move SL của T1 về BE. Tổng vị thế đang 50%, risk-free trên T1</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--green)">30% của vốn</div></div>
+          <div class="tc-met"><div class="tc-ml">Điều kiện</div><div class="tc-mv" style="color:var(--green)">T1 đang active</div></div>
+          <div class="tc-met"><div class="tc-ml">SL T2</div><div class="tc-mv" style="color:var(--red)">Below BOS bar low</div></div>
+          <div class="tc-met"><div class="tc-ml">Action T1</div><div class="tc-mv" style="color:var(--gold)">Move SL → BE</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum">30%</div><div class="tc-plbl">size</div></div>
+    </div>
+
+    <div class="tier-card tc3">
+      <div class="tc-label">
+        <div class="tc-big">T3</div>
+        <div class="tc-sub">FVG 50% ★</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline">Entry 3 — FVG 50% Limit · 50% position size ★ MONEY MAKER</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn">1</div><div>Sau BOS, xác định FVG lớn hình thành trong impulse — vùng imbalance 3 nến rõ ràng trên 5m/15m</div></div>
+          <div class="tc-step"><div class="tsn">2</div><div>Đặt Limit order tại 50% của FVG (mid-point). Đây là vị trí entry chính xác nhất của hệ thống</div></div>
+          <div class="tc-step"><div class="tsn">3</div><div>Khi giá pullback chạm limit: T3 tự động fill. Kiểm tra không có close dưới FVG (invalid signal)</div></div>
+          <div class="tc-step"><div class="tsn">4</div><div>SL T3: Dưới đáy FVG. TP1 đóng 50% tại EQL/Liq gần, trail 50% còn lại theo BOS / EMA50</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--gold)">50% của vốn ★</div></div>
+          <div class="tc-met"><div class="tc-ml">Entry type</div><div class="tc-mv" style="color:var(--gold)">Limit at FVG 50%</div></div>
+          <div class="tc-met"><div class="tc-ml">SL T3</div><div class="tc-mv" style="color:var(--red)">Below FVG low</div></div>
+          <div class="tc-met"><div class="tc-ml">Min R:R</div><div class="tc-mv" style="color:var(--gold)">1 : 2 bắt buộc</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum">50%</div><div class="tc-plbl">size ★</div></div>
+    </div>
+  </div>
+
+  <!-- SHORT Tier Cards -->
+  <div style="margin:28px 0 8px;font-size:13px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:8px">
+    <span style="width:4px;height:18px;background:var(--red);border-radius:2px;display:inline-block"></span>
+    SHORT — 3-Tier Entry Step by Step
+  </div>
+  <div class="tier-cards">
+    <div class="tier-card tc1" style="border-left-color:var(--blue)">
+      <div class="tc-label">
+        <div class="tc-big" style="color:var(--blue)">T1</div>
+        <div class="tc-sub">CHoCH · 20%</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline" style="color:var(--blue)">Short Entry 1 — CHoCH Bearish · 20% position size</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn">1</div><div>Sweep EQH đã xảy ra — wick dài xuyên qua đỉnh bằng nhau, nến đóng cửa ngược trở lại dưới EQH</div></div>
+          <div class="tc-step"><div class="tsn">2</div><div>Nến đóng cửa phá xuống dưới Higher Low gần nhất (CHoCH bearish xác nhận trên 5m/15m)</div></div>
+          <div class="tc-step"><div class="tsn">3</div><div>Vào lệnh SHORT ngay khi CHoCH bearish close xác nhận</div></div>
+          <div class="tc-step"><div class="tsn">4</div><div>SL: Buffer 3–5 điểm VN30 trên đỉnh wick sweep</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--blue)">20% của vốn</div></div>
+          <div class="tc-met"><div class="tc-ml">SL đặt</div><div class="tc-mv" style="color:var(--red)">Above wick sweep</div></div>
+          <div class="tc-met"><div class="tc-ml">TP riêng</div><div class="tc-mv" style="color:var(--red)">Hold → TP1</div></div>
+          <div class="tc-met"><div class="tc-ml">Risk type</div><div class="tc-mv" style="color:var(--blue)">Cao · chấp nhận</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum" style="color:var(--blue)">20%</div><div class="tc-plbl">size</div></div>
+    </div>
+
+    <div class="tier-card tc2" style="border-left-color:var(--red)">
+      <div class="tc-label">
+        <div class="tc-big" style="color:var(--red)">T2</div>
+        <div class="tc-sub">BOS · 30%</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline" style="color:var(--red)">Short Entry 2 — BOS Bearish Confirm · 30% position size</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn" style="background:rgba(239,68,68,.15);color:var(--red)">1</div><div>T1 SHORT đang active. Giá tạo Lower Low đầu tiên — BOS bearish xác nhận downtrend bắt đầu</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(239,68,68,.15);color:var(--red)">2</div><div>Vào SHORT khi nến đóng cửa dưới BOS level, hoặc retest nhẹ về vùng BOS trước khi tiếp tục giảm</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(239,68,68,.15);color:var(--red)">3</div><div>SL T2: Trên đỉnh của BOS bar hoặc trên Lower High vừa tạo. SL hẹp hơn T1</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(239,68,68,.15);color:var(--red)">4</div><div>Move SL T1 về BE sau khi T2 active. Tổng 50%, T1 risk-free</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--red)">30% của vốn</div></div>
+          <div class="tc-met"><div class="tc-ml">Điều kiện</div><div class="tc-mv" style="color:var(--red)">T1 active trước</div></div>
+          <div class="tc-met"><div class="tc-ml">SL T2</div><div class="tc-mv" style="color:var(--red)">Above BOS bar high</div></div>
+          <div class="tc-met"><div class="tc-ml">Action T1</div><div class="tc-mv" style="color:var(--gold)">Move SL → BE</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum" style="color:var(--red)">30%</div><div class="tc-plbl">size</div></div>
+    </div>
+
+    <div class="tier-card tc3" style="border-left-color:var(--gold)">
+      <div class="tc-label">
+        <div class="tc-big" style="color:var(--gold)">T3</div>
+        <div class="tc-sub">FVG 50% ★</div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-headline" style="color:var(--gold)">Short Entry 3 — Bearish FVG 50% Limit · 50% position size ★</div>
+        <div class="tc-steps">
+          <div class="tc-step"><div class="tsn" style="background:rgba(245,200,66,.15);color:var(--gold)">1</div><div>Sau bearish BOS, xác định FVG bearish — vùng imbalance 3 nến rõ ràng trên 5m/15m đi xuống</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(245,200,66,.15);color:var(--gold)">2</div><div>Đặt Limit SHORT tại 50% của FVG bearish (mid-point). Chờ giá bounce lên chạm limit</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(245,200,66,.15);color:var(--gold)">3</div><div>Nếu giá close trên FVG bearish → FVG bị invalidate → cancel limit, chờ setup mới</div></div>
+          <div class="tc-step"><div class="tsn" style="background:rgba(245,200,66,.15);color:var(--gold)">4</div><div>SL: Trên đỉnh FVG. TP1 đóng 50% tại EQL/Swing Low gần, trail 50% còn lại</div></div>
+        </div>
+        <div class="tc-meta">
+          <div class="tc-met"><div class="tc-ml">Position</div><div class="tc-mv" style="color:var(--gold)">50% của vốn ★</div></div>
+          <div class="tc-met"><div class="tc-ml">Entry type</div><div class="tc-mv" style="color:var(--gold)">Limit at FVG 50%</div></div>
+          <div class="tc-met"><div class="tc-ml">SL T3</div><div class="tc-mv" style="color:var(--red)">Above FVG high</div></div>
+          <div class="tc-met"><div class="tc-ml">Min R:R</div><div class="tc-mv" style="color:var(--gold)">1 : 2 bắt buộc</div></div>
+        </div>
+      </div>
+      <div class="tc-pct"><div class="tc-pnum" style="color:var(--gold)">50%</div><div class="tc-plbl">size ★</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S6: MTF FRAMEWORK ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <div><div class="sec-title">Multi-Timeframe Confluence Framework</div></div>
+    <div class="sec-sub">HTF → MTF → LTF → Execute</div>
+  </div>
+  <div class="mtf-grid">
+    <div class="mtf-col">
+      <div class="mtf-head" style="color:var(--gold)">🌐 HTF — Bias</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--gold)"></div>Daily / Weekly trend direction</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--gold)"></div>Bullish = HH/HL còn nguyên</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--gold)"></div>Premium / Discount xác định</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--gold)"></div>Key HTF liquidity levels</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--gold)"></div>Không trade counter HTF bias</div>
+    </div>
+    <div class="mtf-col">
+      <div class="mtf-head" style="color:var(--blue)">📐 MTF — Setup</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--blue)"></div>4H / 1H — tìm EQL / EQH</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--blue)"></div>Xác định vùng Sweep chờ</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--blue)"></div>Order Block 1H-4H quan trọng</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--blue)"></div>FVG lớn trên 1H chờ fill</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--blue)"></div>Đánh dấu BOS/CHoCH lớn</div>
+    </div>
+    <div class="mtf-col">
+      <div class="mtf-head" style="color:var(--purple)">🎯 LTF — Entry</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--purple)"></div>15m / 5m — confirm entry</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--purple)"></div>Chờ Sweep xảy ra trong KZ</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--purple)"></div>CHoCH 5m = T1 20%</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--purple)"></div>BOS 5m = T2 30%</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--purple)"></div>FVG 5m 50% = T3 50% limit</div>
+    </div>
+    <div class="mtf-col">
+      <div class="mtf-head" style="color:var(--green)">✅ Execute</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--green)"></div>VN30 KillZone: 9–10:30 / 13–14h</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--green)"></div>TP1: đóng 50% lệnh → BE</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--green)"></div>Trail 50% còn lại theo BOS</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--green)"></div>Max 2 lệnh / phiên VN30</div>
+      <div class="mtf-row"><div class="mtf-dot" style="background:var(--green)"></div>Score ≥ 8/12 mới vào lệnh</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S7: KILL ZONE + CHECKLIST ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <div><div class="sec-title">Kill Zone VN30 & Checklist 6 Yếu Tố</div></div>
+    <div class="sec-sub">Timing · Execution Filter</div>
+  </div>
+
+  <div class="kz-grid" style="margin-bottom:20px">
+    <div class="kz-box">
+      <div class="kz-time"><span class="kz-dot"></span>9:00 — 10:30</div>
+      <div class="kz-name">Open Session — VN30</div>
+      <div class="kz-desc">Sweep thường xảy ra ngay đầu phiên. Giá sweep low/high phiên trước. Momentum mạnh nhất trong ngày. Ưu tiên setup này cao nhất.</div>
+    </div>
+    <div class="kz-box">
+      <div class="kz-time"><span class="kz-dot"></span>13:00 — 14:00</div>
+      <div class="kz-name">Afternoon Session — VN30</div>
+      <div class="kz-desc">FVG hoạt động rất tốt trên M5. Momentum thường mạnh sau giờ nghỉ trưa. Thường là continuation của setup buổi sáng.</div>
+    </div>
+  </div>
+
+  <div class="chk-grid">
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">EQL/EQH rõ ràng</strong> — ít nhất 2 đỉnh/đáy bằng nhau, thanh khoản dồn lớn</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">Sweep rõ ràng</strong> — wick dài, fake break, đóng nến ngược chiều mạnh</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">CHoCH xuất hiện</strong> — phá lower high (long) hoặc higher low (short) rõ ràng</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">BOS xác nhận</strong> — higher high (long) hoặc lower low (short) rõ ràng</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">FVG hình thành</strong> — sau BOS, vùng imbalance chưa được fill trên 5m/15m</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">R:R ≥ 1:2</strong> — tính từ entry FVG đến SL và TP trước khi vào lệnh</div></div>
+    <div class="chk-item"><div class="chk-ico">✅</div><div><strong style="color:var(--text)">Đang trong Kill Zone</strong> — 9:00–10:30 hoặc 13:00–14:00 VN30</div></div>
+    <div class="chk-item bad"><div class="chk-ico">⛔</div><div><strong style="color:var(--red)">Không trade counter HTF</strong> — HTF bearish thì không tìm long, và ngược lại</div></div>
+    <div class="chk-item bad"><div class="chk-ico">⛔</div><div><strong style="color:var(--red)">Không vào T2/T3 khi T1 lỗ</strong> — không averaging down, không rescue lệnh xấu</div></div>
+    <div class="chk-item bad"><div class="chk-ico">⛔</div><div><strong style="color:var(--red)">FVG không có liquidity context</strong> — FVG phải sau sweep + CHoCH + BOS, không phải random</div></div>
+  </div>
+
+  <!-- A+ SETUP -->
+  <div class="aplus-box" style="margin-top:16px">
+    <div class="aplus-head">⭐ A+ Setup — Tỷ Lệ Thắng Cao Nhất Khi Đủ Combo</div>
+    <div class="aplus-tags">
+      <span class="aplus-tag">EQL/EQH rõ</span>
+      <span class="aplus-tag">Sweep mạnh</span>
+      <span class="aplus-tag">CHoCH + BOS rõ</span>
+      <span class="aplus-tag">FVG đẹp</span>
+      <span class="aplus-tag">RSI Divergence</span>
+      <span class="aplus-tag">Volume Spike</span>
+      <span class="aplus-tag">KillZone 9–10:30 hoặc 13–14h</span>
+      <span class="aplus-tag">Score ≥ 8/12</span>
+      <span class="aplus-tag" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--purple)">HTF Confluence Bullish/Bearish</span>
+      <span class="aplus-tag" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--cyan)">Session Timing Aligned</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ S8: RISK MANAGEMENT ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <div><div class="sec-title">Risk Management — Capital Preservation</div></div>
+    <div class="sec-sub">Position Sizing · Daily Limits</div>
+  </div>
+  <div class="risk-grid" style="margin-bottom:16px">
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--gold)">1–2%</div>
+      <div class="risk-lbl">Max Risk / Trade</div>
+      <div class="risk-sub">Tổng T1 + T2 + T3</div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--red)">5%</div>
+      <div class="risk-lbl">Daily Loss Limit</div>
+      <div class="risk-sub">Dừng ngay khi chạm</div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--green)">1:2+</div>
+      <div class="risk-lbl">Min Risk:Reward</div>
+      <div class="risk-sub">Bắt buộc từ FVG entry</div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--blue)">2</div>
+      <div class="risk-lbl">Max Trades / Phiên</div>
+      <div class="risk-sub">Quality over quantity</div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--purple)">BE</div>
+      <div class="risk-lbl">Move SL to Break-Even</div>
+      <div class="risk-sub">Sau TP1 hit (50% close)</div>
+    </div>
+    <div class="risk-card">
+      <div class="risk-num" style="color:var(--cyan)">50%</div>
+      <div class="risk-lbl">Partial Close TP1</div>
+      <div class="risk-sub">Lock profit → trail runners</div>
+    </div>
+  </div>
+
+  <!-- ERRORS -->
+  <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+    <span style="width:4px;height:16px;background:var(--red);border-radius:2px;display:inline-block"></span>
+    Sai Lầm Phổ Biến — Tránh Tuyệt Đối
+  </div>
+  <div class="err-list">
+    <div class="err-item"><div class="err-x">✕</div><div>Vào lệnh ngay khi thấy sweep — chưa có CHoCH là chưa có tín hiệu đảo chiều thực sự</div></div>
+    <div class="err-item"><div class="err-x">✕</div><div>Nhầm BOS nhỏ với BOS thật — break phải vượt swing high/low rõ ràng, không phải noise nhỏ</div></div>
+    <div class="err-item"><div class="err-x">✕</div><div>Trade FVG không có liquidity context — FVG phải sau sweep + CHoCH + BOS mới có giá trị</div></div>
+    <div class="err-item"><div class="err-x">✕</div><div>Không cho retest FVG — vào breakout ngay khi BOS là anti-pattern của hệ thống này</div></div>
+    <div class="err-item"><div class="err-x">✕</div><div>FOMO khi thấy sweep đã đi xa — bỏ qua lệnh, chờ setup tiếp theo trong Kill Zone tiếp theo</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ S9: SUMMARY ═══════════ -->
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-num">09</div>
+    <div><div class="sec-title">System Summary v2.0</div></div>
+  </div>
+  <div class="summary-wrap">
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text3);margin-bottom:14px">Liquidity Scalping System v2.0 · Core Logic</div>
+    <div class="summary-quote">
+      <em style="color:var(--gold)">Smart Money quét thanh khoản</em> tại EQL/EQH trước khi move thật sự.<br>
+      Nhiệm vụ: <em style="color:var(--green)">Nhận diện Sweep → Theo CHoCH → Confirm BOS → Limit FVG</em>.<br>
+      <span style="font-size:.85em;color:var(--text2)">T3 FVG 50% là "Money Maker" — entry đẹp nhất + RR tốt nhất của hệ thống.</span>
+    </div>
+    <div class="flow-pills">
+      <div class="fp fp1">HTF Bias</div><div class="fp-arr">→</div>
+      <div class="fp fp1">EQL/EQH</div><div class="fp-arr">→</div>
+      <div class="fp fp2">⚡ Sweep</div><div class="fp-arr">→</div>
+      <div class="fp fp3">CHoCH T1 20%</div><div class="fp-arr">→</div>
+      <div class="fp fp4">BOS T2 30%</div><div class="fp-arr">→</div>
+      <div class="fp fp6">FVG T3 50% ★</div><div class="fp-arr">→</div>
+      <div class="fp fp4">TP1 50% close → BE</div><div class="fp-arr">→</div>
+      <div class="fp fp6">Trail → HTF Target</div>
+    </div>
+    <div style="margin-top:24px;font-size:12px;color:var(--text3)">
+      Patience · Precision · Process · Kill Zone Only · Score ≥ 8/12 · Max 2 lệnh/phiên
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
