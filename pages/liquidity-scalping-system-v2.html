@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Money Concepts — Hệ Thống Chiến Lược Đầu Tư Chuyên Nghiệp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070a0e;
+  --bg2: #0a0e14;
+  --bg3: #0e1318;
+  --surface: #111720;
+  --surface2: #141c26;
+  --surface3: #18212e;
+  --border: rgba(255,255,255,0.055);
+  --border2: rgba(255,255,255,0.10);
+  --border3: rgba(255,255,255,0.16);
+  --text: #e2e8f0;
+  --text2: #8899b0;
+  --text3: #4a5568;
+  --gold: #f0b429;
+  --gold2: #c9870a;
+  --gold-glow: rgba(240,180,41,0.12);
+  --green: #10d07e;
+  --green-dim: rgba(16,208,126,0.08);
+  --red: #f05252;
+  --red-dim: rgba(240,82,82,0.08);
+  --blue: #4da6ff;
+  --blue-dim: rgba(77,166,255,0.08);
+  --purple: #b07bff;
+  --purple-dim: rgba(176,123,255,0.08);
+  --cyan: #00d1d1;
+  --cyan-dim: rgba(0,209,209,0.08);
+  --orange: #ff8c42;
+  --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'DM Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border3); border-radius: 3px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,10,14,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.nav-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.nav-name span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.nav-links a:hover { color: var(--text); background: var(--surface); }
+
+.nav-cta {
+  background: rgba(240,180,41,0.1) !important;
+  border: 1px solid rgba(240,180,41,0.3);
+  color: var(--gold) !important;
+  padding: 6px 14px !important;
+}
+
+.nav-cta:hover { background: rgba(240,180,41,0.18) !important; }
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  padding: 80px 40px 72px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.hero-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.hero-glow-top {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(240,180,41,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-glow-left {
+  position: absolute;
+  top: 20%;
+  left: -200px;
+  width: 500px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(77,166,255,0.04) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(240,180,41,0.08);
+  border: 1px solid rgba(240,180,41,0.2);
+  border-radius: 20px;
+  padding: 4px 14px 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.hero-title {
+  font-size: clamp(34px, 4.5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin-bottom: 8px;
+}
+
+.hero-title .accent { color: var(--gold); }
+.hero-title .dim { color: var(--text2); font-weight: 400; }
+
+.hero-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.hero-desc {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 540px;
+  margin-bottom: 32px;
+  line-height: 1.75;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+.hstat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 28px;
+  border-right: 1px solid var(--border2);
+}
+.hstat:last-child { border-right: none; }
+
+.hstat-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: var(--mono);
+}
+
+.hstat-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.htag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid;
+}
+
+.htag-g { background: var(--green-dim); border-color: rgba(16,208,126,0.25); color: var(--green); }
+.htag-r { background: var(--red-dim); border-color: rgba(240,82,82,0.25); color: var(--red); }
+.htag-b { background: var(--blue-dim); border-color: rgba(77,166,255,0.25); color: var(--blue); }
+.htag-y { background: var(--gold-glow); border-color: rgba(240,180,41,0.3); color: var(--gold); }
+.htag-p { background: var(--purple-dim); border-color: rgba(176,123,255,0.25); color: var(--purple); }
+
+/* ─── HERO CHART SVG ─── */
+.hero-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--green), transparent);
+}
+
+.chart-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.chart-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.live-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+/* ─── LAYOUT ─── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+
+.section { padding: 72px 0; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+
+.sec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.sec-num {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--gold-glow);
+  border: 1px solid rgba(240,180,41,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: var(--mono);
+  margin-top: 3px;
+}
+
+.sec-meta { flex: 1; }
+.sec-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 6px; }
+.sec-desc { font-size: 14px; color: var(--text2); max-width: 600px; }
+
+/* ─── LOGIC CHAIN ─── */
+.logic-chain {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.chain-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+.chain-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.chain-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.chain-box {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid;
+  letter-spacing: 0.04em;
+}
+
+.chain-sub {
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.chain-arr {
+  padding: 0 8px;
+  color: var(--text3);
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.cb-eql { background: var(--gold-glow); border-color: rgba(240,180,41,0.3); color: var(--gold); }
+.cb-sweep { background: var(--red-dim); border-color: rgba(240,82,82,0.3); color: var(--red); }
+.cb-choch { background: var(--blue-dim); border-color: rgba(77,166,255,0.4); color: var(--blue); box-shadow: 0 0 0 2px rgba(77,166,255,0.15); }
+.cb-bos { background: var(--green-dim); border-color: rgba(16,208,126,0.3); color: var(--green); }
+.cb-fvg { background: var(--purple-dim); border-color: rgba(176,123,255,0.3); color: var(--purple); }
+.cb-entry { background: rgba(240,180,41,0.18); border-color: rgba(240,180,41,0.5); color: var(--gold); font-size: 13px; }
+
+/* ─── CONCEPT GRID ─── */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.concept-card:hover {
+  border-color: var(--border3);
+  transform: translateY(-2px);
+}
+
+.concept-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.cc-gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+.cc-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+.cc-blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+.cc-purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+.cc-red::before { background: linear-gradient(90deg, var(--red), transparent); }
+.cc-cyan::before { background: linear-gradient(90deg, var(--cyan), transparent); }
+
+.cc-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.cc-gold .cc-icon { background: var(--gold-glow); }
+.cc-green .cc-icon { background: var(--green-dim); }
+.cc-blue .cc-icon { background: var(--blue-dim); }
+.cc-purple .cc-icon { background: var(--purple-dim); }
+.cc-red .cc-icon { background: var(--red-dim); }
+.cc-cyan .cc-icon { background: var(--cyan-dim); }
+
+.cc-id {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+
+.cc-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.cc-en {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+
+.cc-desc {
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+
+.cc-points {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cc-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 11.5px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.cc-point::before {
+  content: '→';
+  color: var(--text3);
+  flex-shrink: 0;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.cc-insight {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.cc-gold .cc-insight { background: rgba(240,180,41,0.06); color: rgba(240,180,41,0.7); border-left: 2px solid rgba(240,180,41,0.3); }
+.cc-green .cc-insight { background: rgba(16,208,126,0.06); color: rgba(16,208,126,0.7); border-left: 2px solid rgba(16,208,126,0.3); }
+.cc-blue .cc-insight { background: rgba(77,166,255,0.06); color: rgba(77,166,255,0.7); border-left: 2px solid rgba(77,166,255,0.3); }
+.cc-purple .cc-insight { background: rgba(176,123,255,0.06); color: rgba(176,123,255,0.7); border-left: 2px solid rgba(176,123,255,0.3); }
+.cc-red .cc-insight { background: rgba(240,82,82,0.06); color: rgba(240,82,82,0.7); border-left: 2px solid rgba(240,82,82,0.3); }
+.cc-cyan .cc-insight { background: rgba(0,209,209,0.06); color: rgba(0,209,209,0.7); border-left: 2px solid rgba(0,209,209,0.3); }
+
+/* ─── CATALYST SECTION ─── */
+.catalyst-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.cat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.cat-card:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+}
+
+.cat-rank {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cat-num-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+}
+
+.strength-bar {
+  display: flex;
+  gap: 3px;
+}
+
+.sb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--surface3);
+}
+
+.sb-dot.on-gold { background: var(--gold); }
+.sb-dot.on-green { background: var(--green); }
+.sb-dot.on-blue { background: var(--blue); }
+
+.cat-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.cat-en { font-size: 10px; color: var(--text3); margin-bottom: 8px; font-family: var(--mono); }
+.cat-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+.cat-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.cb-y { background: rgba(240,180,41,0.1); color: var(--gold); }
+.cb-g { background: rgba(16,208,126,0.1); color: var(--green); }
+.cb-b { background: rgba(77,166,255,0.1); color: var(--blue); }
+.cb-r { background: rgba(240,82,82,0.1); color: var(--red); }
+.cb-p { background: rgba(176,123,255,0.1); color: var(--purple); }
+.cb-c { background: rgba(0,209,209,0.1); color: var(--cyan); }
+.cb-o { background: rgba(255,140,66,0.1); color: var(--orange); }
+
+/* ─── ENTRY TIERS ─── */
+.tier-header {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.th-card {
+  border-radius: 12px;
+  padding: 22px;
+  text-align: center;
+  border: 1px solid;
+}
+
+.th-t1 { background: rgba(77,166,255,0.07); border-color: rgba(77,166,255,0.25); }
+.th-t2 { background: rgba(16,208,126,0.07); border-color: rgba(16,208,126,0.25); }
+.th-t3 { background: rgba(240,180,41,0.1); border-color: rgba(240,180,41,0.3); }
+
+.th-pct { font-size: 40px; font-weight: 700; line-height: 1; font-family: var(--mono); }
+.th-t1 .th-pct { color: var(--blue); }
+.th-t2 .th-pct { color: var(--green); }
+.th-t3 .th-pct { color: var(--gold); }
+
+.th-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; margin: 6px 0 4px; }
+.th-t1 .th-name { color: var(--blue); }
+.th-t2 .th-name { color: var(--green); }
+.th-t3 .th-name { color: var(--gold); }
+
+.th-note { font-size: 11px; color: var(--text3); }
+
+.tier-cards { display: flex; flex-direction: column; gap: 12px; }
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 90px;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.tier-row:hover { border-color: var(--border2); }
+
+.tr-t1 { border-left: 3px solid var(--blue); }
+.tr-t2 { border-left: 3px solid var(--green); }
+.tr-t3 { border-left: 3px solid var(--gold); }
+
+.tr-label {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--border);
+}
+
+.tr-big { font-size: 28px; font-weight: 700; line-height: 1; font-family: var(--mono); }
+.tr-t1 .tr-big { color: var(--blue); }
+.tr-t2 .tr-big { color: var(--green); }
+.tr-t3 .tr-big { color: var(--gold); }
+
+.tr-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text3); margin-top: 4px; }
+
+.tr-body { padding: 20px 24px; }
+
+.tr-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.tr-t1 .tr-title { color: var(--blue); }
+.tr-t2 .tr-title { color: var(--green); }
+.tr-t3 .tr-title { color: var(--gold); }
+
+.tr-steps { display: flex; flex-direction: column; gap: 5px; }
+
+.tr-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.tr-sn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.tr-t1 .tr-sn { background: rgba(77,166,255,0.15); color: var(--blue); }
+.tr-t2 .tr-sn { background: rgba(16,208,126,0.15); color: var(--green); }
+.tr-t3 .tr-sn { background: rgba(240,180,41,0.15); color: var(--gold); }
+
+.tr-params {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.tr-param {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+
+.tr-pl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 2px; }
+.tr-pv { font-size: 11px; font-weight: 700; font-family: var(--mono); }
+
+.tr-win {
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border);
+  text-align: center;
+}
+
+.tr-win-num { font-size: 22px; font-weight: 700; font-family: var(--mono); }
+.tr-t1 .tr-win-num { color: var(--blue); }
+.tr-t2 .tr-win-num { color: var(--green); }
+.tr-t3 .tr-win-num { color: var(--gold); }
+
+.tr-win-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+
+/* ─── LONG SHORT SECTION ─── */
+.ls-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.ls-col {
+  border-radius: 14px;
+  border: 1px solid;
+  overflow: hidden;
+}
+
+.ls-long { border-color: rgba(16,208,126,0.2); }
+.ls-short { border-color: rgba(240,82,82,0.2); }
+
+.ls-colhead {
+  padding: 16px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid;
+}
+
+.ls-long .ls-colhead { background: rgba(16,208,126,0.07); border-color: rgba(16,208,126,0.18); color: var(--green); }
+.ls-short .ls-colhead { background: rgba(240,82,82,0.07); border-color: rgba(240,82,82,0.18); color: var(--red); }
+
+.ls-body { padding: 20px 22px; }
+
+.ls-step-row {
+  display: flex;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--text2);
+  margin-bottom: 10px;
+  line-height: 1.55;
+  align-items: flex-start;
+}
+
+.ls-step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ls-long .ls-step-num { background: rgba(16,208,126,0.15); color: var(--green); }
+.ls-short .ls-step-num { background: rgba(240,82,82,0.15); color: var(--red); }
+
+.ls-params {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.ls-param {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 11px;
+}
+
+.ls-pl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 3px; }
+.ls-pv { font-size: 12px; font-weight: 700; font-family: var(--mono); }
+
+/* ─── MTF FRAMEWORK ─── */
+.mtf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mtf-col { background: var(--surface); padding: 20px 16px; }
+
+.mtf-head {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mtf-col:nth-child(1) .mtf-head { color: var(--text3); }
+.mtf-col:nth-child(2) .mtf-head { color: var(--blue); }
+.mtf-col:nth-child(3) .mtf-head { color: var(--green); }
+.mtf-col:nth-child(4) .mtf-head { color: var(--gold); }
+
+.mtf-tf {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--mono);
+  margin-bottom: 4px;
+}
+
+.mtf-col:nth-child(1) .mtf-tf { color: var(--text3); }
+.mtf-col:nth-child(2) .mtf-tf { color: var(--blue); }
+.mtf-col:nth-child(3) .mtf-tf { color: var(--green); }
+.mtf-col:nth-child(4) .mtf-tf { color: var(--gold); }
+
+.mtf-role {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+.mtf-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text2);
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+.mtf-item:last-child { border-bottom: none; }
+
+.mtf-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.mtf-col:nth-child(1) .mtf-dot { background: var(--text3); }
+.mtf-col:nth-child(2) .mtf-dot { background: var(--blue); }
+.mtf-col:nth-child(3) .mtf-dot { background: var(--green); }
+.mtf-col:nth-child(4) .mtf-dot { background: var(--gold); }
+
+/* ─── KILL ZONE ─── */
+.kz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+.kz-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.kz-card:hover { border-color: var(--border3); }
+
+.kz-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.kz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+
+.kz-time {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--mono);
+  color: var(--gold);
+}
+
+.kz-active {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.kz-active .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+.kz-active .dot-off { background: var(--text3); animation: none; }
+
+.kz-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.kz-session { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 10px; }
+.kz-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+.kz-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+.kz-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(240,180,41,0.08);
+  border: 1px solid rgba(240,180,41,0.2);
+  color: var(--gold);
+}
+
+/* ─── CHECKLIST ─── */
+.checklist-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checklist-col-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.do-title { color: var(--green); }
+.dont-title { color: var(--red); }
+
+.chk-list { display: flex; flex-direction: column; gap: 8px; }
+
+.chk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.chk-do { border-color: rgba(16,208,126,0.15); background: rgba(16,208,126,0.03); }
+.chk-dont { border-color: rgba(240,82,82,0.15); background: rgba(240,82,82,0.03); }
+
+.chk-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── RISK SECTION ─── */
+.risk-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.risk-stat {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 22px;
+  text-align: center;
+}
+
+.risk-stat-val {
+  font-size: 30px;
+  font-weight: 700;
+  font-family: var(--mono);
+  margin-bottom: 4px;
+}
+
+.risk-stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); }
+.risk-stat-note { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+.risk-rules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.risk-rule {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.rr-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  background: var(--gold-glow);
+}
+
+.rr-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.rr-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+/* ─── COMPARISON TABLE ─── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.compare-table th {
+  background: var(--surface2);
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border2);
+}
+
+.compare-table th:first-child { color: var(--text3); }
+.compare-table th:nth-child(2) { color: var(--blue); }
+.compare-table th:nth-child(3) { color: var(--green); }
+.compare-table th:nth-child(4) { color: var(--gold); }
+
+.compare-table td {
+  padding: 12px 18px;
+  font-size: 12.5px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; color: var(--text); font-size: 12px; }
+
+.compare-table tr:hover td { background: rgba(255,255,255,0.01); }
+
+/* ─── A+ SETUP BOX ─── */
+.aplus-box {
+  background: rgba(240,180,41,0.04);
+  border: 1px solid rgba(240,180,41,0.2);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-top: 24px;
+}
+
+.aplus-head {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aplus-formula {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  font-size: 12px;
+}
+
+.af-item {
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+.af-arr { padding: 0 8px; color: var(--text3); font-size: 16px; }
+
+.af-y { background: var(--gold-glow); border-color: rgba(240,180,41,0.3); color: var(--gold); }
+.af-r { background: var(--red-dim); border-color: rgba(240,82,82,0.3); color: var(--red); }
+.af-b { background: var(--blue-dim); border-color: rgba(77,166,255,0.3); color: var(--blue); }
+.af-g { background: var(--green-dim); border-color: rgba(16,208,126,0.3); color: var(--green); }
+.af-p { background: var(--purple-dim); border-color: rgba(176,123,255,0.3); color: var(--purple); }
+
+.aplus-note {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* ─── SCORING ─── */
+.scoring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+}
+
+.score-val { font-size: 28px; font-weight: 700; font-family: var(--mono); }
+.score-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin: 4px 0; }
+.score-desc { font-size: 11px; color: var(--text2); }
+
+/* ─── SUMMARY ─── */
+.summary-wrap {
+  background: linear-gradient(135deg, rgba(240,180,41,0.04), rgba(176,123,255,0.04));
+  border: 1px solid rgba(240,180,41,0.18);
+  border-radius: 16px;
+  padding: 40px 48px;
+  text-align: center;
+}
+
+.summary-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  max-width: 640px;
+  margin: 0 auto 8px;
+  line-height: 1.4;
+}
+
+.summary-sub {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 28px;
+}
+
+.summary-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.sf-pill {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+.sf-arr { padding: 0 6px; font-size: 16px; color: var(--text3); }
+
+.sf-y { background: var(--gold-glow); border-color: rgba(240,180,41,0.35); color: var(--gold); }
+.sf-r { background: var(--red-dim); border-color: rgba(240,82,82,0.3); color: var(--red); }
+.sf-b { background: var(--blue-dim); border-color: rgba(77,166,255,0.35); color: var(--blue); }
+.sf-g { background: var(--green-dim); border-color: rgba(16,208,126,0.3); color: var(--green); }
+.sf-p { background: var(--purple-dim); border-color: rgba(176,123,255,0.3); color: var(--purple); }
+.sf-gd { background: rgba(240,180,41,0.18); border-color: rgba(240,180,41,0.5); color: var(--gold); }
+
+.cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.cta-btn {
+  padding: 13px 28px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cta-primary {
+  background: var(--gold);
+  color: #000;
+  border: 1px solid var(--gold);
+}
+
+.cta-primary:hover {
+  background: var(--gold2);
+  border-color: var(--gold2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(240,180,41,0.3);
+}
+
+.cta-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border2);
+}
+
+.cta-secondary:hover {
+  background: var(--surface);
+  border-color: var(--border3);
+}
+
+/* ─── 5 QUESTIONS ─── */
+.five-q { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.q-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--gold);
+}
+
+.q-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 6px; }
+.q-q { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+.q-a { font-size: 12px; color: var(--gold); font-weight: 600; }
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-brand { font-size: 13px; font-weight: 700; color: var(--text2); }
+.footer-brand span { color: var(--gold); }
+
+.footer-note { font-size: 11px; color: var(--text3); text-align: right; }
+
+/* ─── SVG DATA VIZ ─── */
+.svg-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.svg-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-chart-card { display: none; }
+  .container { padding: 0 20px; }
+  .hero { padding: 50px 20px; }
+  .concept-grid { grid-template-columns: 1fr 1fr; }
+  .catalyst-grid { grid-template-columns: 1fr 1fr; }
+  .tier-header { grid-template-columns: 1fr; }
+  .tier-row { grid-template-columns: 100px 1fr; }
+  .tr-win { display: none; }
+  .ls-wrap { grid-template-columns: 1fr; }
+  .mtf-grid { grid-template-columns: 1fr 1fr; }
+  .kz-grid { grid-template-columns: 1fr; }
+  .checklist-cols { grid-template-columns: 1fr; }
+  .risk-stats { grid-template-columns: 1fr 1fr; }
+  .risk-rules { grid-template-columns: 1fr; }
+  .five-q { grid-template-columns: 1fr 1fr; }
+  .scoring-grid { grid-template-columns: 1fr; }
+  .footer { flex-direction: column; gap: 10px; text-align: center; }
+  .footer-note { text-align: center; }
+  .summary-wrap { padding: 28px 20px; }
+  .hero-stats { flex-wrap: wrap; gap: 16px; }
+  .hstat { border-right: none; padding-right: 0; }
+}
+
+@media (max-width: 600px) {
+  .concept-grid { grid-template-columns: 1fr; }
+  .catalyst-grid { grid-template-columns: 1fr; }
+  .risk-stats { grid-template-columns: 1fr; }
+  .five-q { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav class="nav">
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">S</div>
+    <span class="nav-name"><span>SMC</span> Framework</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#concepts">Khái Niệm Cốt Lõi</a></li>
+    <li><a href="#catalysts">Catalyst</a></li>
+    <li><a href="#entry">Entry Tiers</a></li>
+    <li><a href="#execution">Thực Thi</a></li>
+    <li><a href="#risk">Risk Management</a></li>
+    <li><a href="#summary" class="nav-cta">Tóm Tắt</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow-top"></div>
+  <div class="hero-glow-left"></div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        Smart Money Concepts · Hệ Thống Chuyên Nghiệp · v2.0
+      </div>
+
+      <h1 class="hero-title">
+        Hệ Thống Chiến Lược<br>
+        <span class="accent">Smart Money</span><br>
+        <span class="dim">Concepts</span>
+      </h1>
+
+      <p class="hero-subtitle">Đầu tư theo dòng tiền tổ chức — không phải theo cảm tính</p>
+
+      <p class="hero-desc">
+        SMC không phải là tập hợp indicator. Đây là framework giải mã <strong>logic dòng tiền lớn</strong> — ai đang điều khiển thị trường, họ vào lệnh ở đâu, và tại sao giá di chuyển theo cách đó.
+      </p>
+
+      <div class="hero-stats">
+        <div class="hstat">
+          <span class="hstat-val">6</span>
+          <span class="hstat-lbl">Khái niệm cốt lõi</span>
+        </div>
+        <div class="hstat">
+          <span class="hstat-val">3</span>
+          <span class="hstat-lbl">Entry Tiers</span>
+        </div>
+        <div class="hstat">
+          <span class="hstat-val">1:3+</span>
+          <span class="hstat-lbl">Risk / Reward</span>
+        </div>
+        <div class="hstat">
+          <span class="hstat-val">9</span>
+          <span class="hstat-lbl">Catalyst Signals</span>
+        </div>
+      </div>
+
+      <div class="hero-tags">
+        <span class="htag htag-g">▲ LONG · SSL Sweep</span>
+        <span class="htag htag-r">▼ SHORT · BSL Sweep</span>
+        <span class="htag htag-b">BOS · CHoCH · FVG</span>
+        <span class="htag htag-y">Order Block · Liquidity</span>
+        <span class="htag htag-p">Kill Zone · MTF</span>
+      </div>
+    </div>
+
+    <!-- Hero Chart Card -->
+    <div class="hero-chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Chuỗi Logic SMC</div>
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          Live Framework
+        </div>
+      </div>
+
+      <!-- SVG Market Structure Visualization -->
+      <svg viewBox="0 0 380 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <linearGradient id="bullGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#10d07e" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#10d07e" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="bearGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f05252" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#f05252" stop-opacity="0.25"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Background grid -->
+        <rect width="380" height="260" fill="none"/>
+        <line x1="0" y1="52" x2="380" y2="52" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="0" y1="104" x2="380" y2="104" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="0" y1="156" x2="380" y2="156" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+        <line x1="0" y1="208" x2="380" y2="208" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+        <!-- EQL Zone (Equal Lows) -->
+        <rect x="20" y="185" width="80" height="2" fill="#f0b429" fill-opacity="0.4" rx="1"/>
+        <text x="22" y="178" font-family="DM Mono" font-size="8" fill="#f0b429" fill-opacity="0.7">EQL</text>
+
+        <!-- Price path going down to sweep -->
+        <!-- Initial range -->
+        <polyline points="20,160 55,150 80,165 110,145 140,170" fill="none" stroke="#8899b0" stroke-width="1.5" stroke-dasharray="0"/>
+
+        <!-- Equal Low touches -->
+        <circle cx="80" cy="186" r="2.5" fill="#f0b429" fill-opacity="0.6"/>
+        <circle cx="140" cy="186" r="2.5" fill="#f0b429" fill-opacity="0.6"/>
+        <line x1="80" y1="186" x2="140" y2="186" stroke="#f0b429" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="3,3"/>
+
+        <!-- Sweep wick below EQL -->
+        <line x1="155" y1="145" x2="155" y2="210" stroke="#f05252" stroke-width="1.5"/>
+        <rect x="148" y="145" width="14" height="30" fill="#f05252" fill-opacity="0.15" rx="2"/>
+        <text x="168" y="215" font-family="DM Mono" font-size="8" fill="#f05252">⚡ SWEEP</text>
+
+        <!-- CHoCH break -->
+        <polyline points="155,148 175,170 195,115" fill="none" stroke="#4da6ff" stroke-width="2"/>
+        <text x="198" y="112" font-family="DM Mono" font-size="8" fill="#4da6ff">CHoCH</text>
+        <text x="198" y="122" font-family="DM Mono" font-size="7" fill="#4da6ff" opacity="0.6">Entry 1 · 20%</text>
+
+        <!-- BOS -->
+        <polyline points="195,115 218,125 248,80" fill="none" stroke="#10d07e" stroke-width="2"/>
+        <line x1="170" y1="115" x2="290" y2="115" stroke="#10d07e" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4,3"/>
+        <text x="252" y="78" font-family="DM Mono" font-size="8" fill="#10d07e">BOS ▲</text>
+        <text x="252" y="88" font-family="DM Mono" font-size="7" fill="#10d07e" opacity="0.6">Entry 2 · 30%</text>
+
+        <!-- FVG Zone -->
+        <rect x="200" y="95" width="44" height="20" fill="rgba(176,123,255,0.12)" stroke="#b07bff" stroke-width="1" stroke-opacity="0.4" rx="2"/>
+        <text x="204" y="108" font-family="DM Mono" font-size="7" fill="#b07bff">FVG</text>
+
+        <!-- Retrace to FVG -->
+        <polyline points="248,80 258,100 272,92" fill="none" stroke="#b07bff" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <circle cx="258" cy="104" r="3" fill="#b07bff" fill-opacity="0.8"/>
+        <text x="275" y="90" font-family="DM Mono" font-size="8" fill="#f0b429">Entry 3</text>
+        <text x="275" y="100" font-family="DM Mono" font-size="7" fill="#f0b429" opacity="0.8">50% FVG ★</text>
+
+        <!-- Final bullish move -->
+        <polyline points="272,92 300,55 340,35" fill="none" stroke="#10d07e" stroke-width="2.5"/>
+        <polygon points="340,35 330,40 333,30" fill="#10d07e"/>
+
+        <!-- Target label -->
+        <line x1="20" y1="35" x2="345" y2="35" stroke="#10d07e" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="5,4"/>
+        <text x="22" y="30" font-family="DM Mono" font-size="8" fill="#10d07e" opacity="0.7">TARGET · BSL</text>
+
+        <!-- Entry zone marker -->
+        <rect x="252" y="94" width="8" height="20" fill="#f0b429" fill-opacity="0.15" rx="1"/>
+
+        <!-- SL marker -->
+        <line x1="135" y1="215" x2="175" y2="215" stroke="#f05252" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="3,3"/>
+        <text x="178" y="218" font-family="DM Mono" font-size="7" fill="#f05252" opacity="0.7">SL</text>
+      </svg>
+
+      <!-- Mini stats under chart -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:var(--blue);font-family:var(--mono);">CHoCH</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);">20% Size</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:var(--green);font-family:var(--mono);">BOS</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);">30% Size</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;">
+          <div style="font-size:14px;font-weight:700;color:var(--gold);font-family:var(--mono);">FVG 50%</div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);">Money Maker</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 1: LOGIC CHAIN ─── -->
+<section class="section" id="logic">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">01</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Chuỗi Logic Cốt Lõi</h2>
+        <p class="sec-desc">5 bước bắt buộc trước khi vào lệnh — đây là "xương sống" của toàn bộ hệ thống SMC.</p>
+      </div>
+    </div>
+
+    <div class="logic-chain">
+      <div class="chain-label">Chuỗi tín hiệu tiêu chuẩn · Core Signal Chain v2.0</div>
+      <div class="chain-flow">
+        <div class="chain-step">
+          <div class="chain-box cb-eql">EQL / EQH</div>
+          <div class="chain-sub">Liquidity Pool</div>
+        </div>
+        <div class="chain-arr">→</div>
+        <div class="chain-step">
+          <div class="chain-box cb-sweep">⚡ Sweep</div>
+          <div class="chain-sub">Stop Hunt</div>
+        </div>
+        <div class="chain-arr">→</div>
+        <div class="chain-step">
+          <div class="chain-box cb-choch">CHoCH ↑</div>
+          <div class="chain-sub">Entry 1 · 20%</div>
+        </div>
+        <div class="chain-arr">→</div>
+        <div class="chain-step">
+          <div class="chain-box cb-bos">BOS ▲</div>
+          <div class="chain-sub">Entry 2 · 30%</div>
+        </div>
+        <div class="chain-arr">→</div>
+        <div class="chain-step">
+          <div class="chain-box cb-fvg">FVG Pullback</div>
+          <div class="chain-sub">Entry 3 · 50%</div>
+        </div>
+        <div class="chain-arr">→</div>
+        <div class="chain-step">
+          <div class="chain-box cb-entry">★ ENTRY</div>
+          <div class="chain-sub">Execute · TP → SL</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Questions -->
+    <div style="margin-bottom:20px;">
+      <div class="sec-desc" style="margin-bottom:14px;font-size:13px;font-weight:600;color:var(--text);">Một hệ thống SMC chuẩn phải trả lời được 5 câu hỏi này:</div>
+      <div class="five-q">
+        <div class="q-card">
+          <div class="q-num">Câu hỏi 01</div>
+          <div class="q-q">Xu hướng là gì?</div>
+          <div class="q-a">→ Market Structure</div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Câu hỏi 02</div>
+          <div class="q-q">Thanh khoản nằm ở đâu?</div>
+          <div class="q-a">→ Liquidity Pool</div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Câu hỏi 03</div>
+          <div class="q-q">Smart Money vào ở đâu?</div>
+          <div class="q-a">→ OB / FVG</div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Câu hỏi 04</div>
+          <div class="q-q">Khi nào vào lệnh?</div>
+          <div class="q-a">→ Sweep + CHoCH</div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Câu hỏi 05</div>
+          <div class="q-q">Vào lệnh như thế nào?</div>
+          <div class="q-a">→ Pullback Entry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 2: CORE CONCEPTS ─── -->
+<section class="section" id="concepts">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">02</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Các Khái Niệm Cốt Lõi</h2>
+        <p class="sec-desc">6 trụ cột xây dựng nên toàn bộ hệ thống — hiểu đúng từng khái niệm trước khi trade.</p>
+      </div>
+    </div>
+
+    <div class="concept-grid">
+      <!-- Market Structure -->
+      <div class="concept-card cc-blue">
+        <div class="cc-icon">📊</div>
+        <div class="cc-id">Concept 01 · Nền tảng</div>
+        <div class="cc-name">Cấu Trúc Thị Trường</div>
+        <div class="cc-en">Market Structure</div>
+        <p class="cc-desc">Chuỗi swing high / swing low xác định xu hướng. Mọi khái niệm SMC khác đều ngồi trên nền tảng này.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>BOS</strong> (Break of Structure) — xác nhận continuation. Giá tiếp tục xu hướng.</div>
+          <div class="cc-point"><strong>CHoCH</strong> (Change of Character) — tín hiệu đảo chiều sớm nhất. Xác nhận chuyển xu hướng.</div>
+          <div class="cc-point"><strong>Internal vs External Structure</strong> — HTF bias > LTF entry signal.</div>
+        </div>
+        <div class="cc-insight">"Không trade nếu chưa xác định rõ structure — CHoCH = tín hiệu sớm, BOS = xác nhận"</div>
+      </div>
+
+      <!-- Liquidity -->
+      <div class="concept-card cc-gold">
+        <div class="cc-icon">💧</div>
+        <div class="cc-id">Concept 02 · Trái tim SMC</div>
+        <div class="cc-name">Thanh Khoản</div>
+        <div class="cc-en">Liquidity</div>
+        <p class="cc-desc">Pool lệnh stop-loss của retail traders. Đây là "mồi câu" mà Smart Money luôn tìm kiếm trước khi đi đúng hướng.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>Buy-Side Liquidity (BSL)</strong> — stop loss nằm trên đỉnh cao.</div>
+          <div class="cc-point"><strong>Sell-Side Liquidity (SSL)</strong> — stop loss nằm dưới đáy thấp.</div>
+          <div class="cc-point"><strong>Equal High (EQH) / Equal Low (EQL)</strong> — vùng tập trung liquidity mạnh nhất.</div>
+          <div class="cc-point"><strong>Stop Hunt / Liquidity Sweep</strong> — cú quét thu gom trước khi move thật.</div>
+        </div>
+        <div class="cc-insight">"Giá luôn đi tìm thanh khoản trước khi đi đúng hướng — Retail vào lệnh = Smart money exit"</div>
+      </div>
+
+      <!-- Order Block -->
+      <div class="concept-card cc-green">
+        <div class="cc-icon">📦</div>
+        <div class="cc-id">Concept 03 · Dấu vết tổ chức</div>
+        <div class="cc-name">Order Block</div>
+        <div class="cc-en">OB · Institutional Footprint</div>
+        <p class="cc-desc">Nến cuối cùng ngược chiều trước khi giá di chuyển mạnh — dấu vết nơi tổ chức đã đặt lệnh lớn.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>Bullish OB</strong> = last bearish candle trước impulse tăng.</div>
+          <div class="cc-point"><strong>Bearish OB</strong> = last bullish candle trước impulse giảm.</div>
+          <div class="cc-point"><strong>Breaker Block</strong> — OB thất bại flip thành resistance/support.</div>
+          <div class="cc-point"><strong>Mitigation Block</strong> — OB thất bại không có sweep trước.</div>
+        </div>
+        <div class="cc-insight">"OB không phải vùng S/R thông thường — là dấu vết nơi tổ chức đã vào lệnh"</div>
+      </div>
+
+      <!-- FVG -->
+      <div class="concept-card cc-purple">
+        <div class="cc-icon">🔲</div>
+        <div class="cc-id">Concept 04 · Vùng mất cân bằng</div>
+        <div class="cc-name">Fair Value Gap</div>
+        <div class="cc-en">FVG · Imbalance Zone</div>
+        <p class="cc-desc">Vùng giá thị trường chưa được cân bằng — giá di chuyển quá nhanh, tạo gap 3 nến. Thị trường luôn quay về fill.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>Bullish FVG</strong> — high nến 1 không chồng với low nến 3.</div>
+          <div class="cc-point"><strong>Bearish FVG</strong> — low nến 1 không chồng với high nến 3.</div>
+          <div class="cc-point"><strong>Consequent Encroachment (CE)</strong> = 50% midpoint của FVG.</div>
+          <div class="cc-point"><strong>IFVG</strong> — FVG thất bại flip polarity, vẫn có giá trị.</div>
+        </div>
+        <div class="cc-insight">"FVG = vùng giá smart money quay lại fill — Entry T3 tại 50% FVG là điểm đẹp nhất"</div>
+      </div>
+
+      <!-- Premium / Discount -->
+      <div class="concept-card cc-red">
+        <div class="cc-icon">📐</div>
+        <div class="cc-id">Concept 05 · Framework định giá</div>
+        <div class="cc-name">Premium / Discount</div>
+        <div class="cc-en">PD Array · Equilibrium Framework</div>
+        <p class="cc-desc">Hệ thống xác định giá "đắt" hay "rẻ" trong một dealing range. Mọi entry phải theo chiều từ đúng zone.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>Premium (>50%)</strong> — giá đắt, ưu tiên Short.</div>
+          <div class="cc-point"><strong>Discount (<50%)</strong> — giá rẻ, ưu tiên Long.</div>
+          <div class="cc-point"><strong>Equilibrium (50%)</strong> — điểm cân bằng, không trade.</div>
+        </div>
+        <div class="cc-insight">"Không short ở discount — không long ở premium. Đây là quy tắc bất biến"</div>
+      </div>
+
+      <!-- MTF -->
+      <div class="concept-card cc-cyan">
+        <div class="cc-icon">🔭</div>
+        <div class="cc-id">Concept 06 · Logic từ lớn → nhỏ</div>
+        <div class="cc-name">Multi-Timeframe Logic</div>
+        <div class="cc-en">Top-Down Analysis</div>
+        <p class="cc-desc">Luôn phân tích từ khung thời gian lớn xuống nhỏ. HTF quyết định hướng — LTF quyết định điểm vào.</p>
+        <div class="cc-points">
+          <div class="cc-point"><strong>Weekly</strong> → Bias tổng thể + liquidity target.</div>
+          <div class="cc-point"><strong>Daily</strong> → POI (OB / FVG) chính.</div>
+          <div class="cc-point"><strong>H4 / H1</strong> → Xác nhận zone vào lệnh.</div>
+          <div class="cc-point"><strong>M15 / M5</strong> → Entry precision.</div>
+        </div>
+        <div class="cc-insight">"HTF quyết định hướng, LTF quyết định điểm vào — không bao giờ ngược lại"</div>
+      </div>
+    </div>
+
+    <!-- OB Quick Compare -->
+    <div style="margin-top:24px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;overflow:hidden;">
+      <div style="padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border2);">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);">Bullish OB vs Bearish OB — So Sánh Nhanh</span>
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Tiêu chí</th>
+            <th>Bullish OB</th>
+            <th>Bearish OB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Xu hướng</td>
+            <td style="color:var(--green);">Tăng (Uptrend)</td>
+            <td style="color:var(--red);">Giảm (Downtrend)</td>
+          </tr>
+          <tr>
+            <td>Nến OB</td>
+            <td>Nến giảm cuối trước impulse lên</td>
+            <td>Nến tăng cuối trước impulse xuống</td>
+          </tr>
+          <tr>
+            <td>Entry</td>
+            <td style="color:var(--green);font-weight:700;">Long</td>
+            <td style="color:var(--red);font-weight:700;">Short</td>
+          </tr>
+          <tr>
+            <td>Stop Loss</td>
+            <td>Dưới low OB</td>
+            <td>Trên high OB</td>
+          </tr>
+          <tr>
+            <td>Take Profit</td>
+            <td>Liquidity phía trên (BSL)</td>
+            <td>Liquidity phía dưới (SSL)</td>
+          </tr>
+          <tr>
+            <td>Xác nhận</td>
+            <td>Liquidity sweep + CHoCH/BOS</td>
+            <td>Liquidity sweep + CHoCH/BOS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 3: CATALYSTS ─── -->
+<section class="section" id="catalysts">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">03</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Catalyst — Trigger Vào Lệnh</h2>
+        <p class="sec-desc">Đây là phần phân biệt hệ thống "lý thuyết" và "kiếm tiền". Catalyst là điều kiện kích hoạt — không có catalyst, không trade.</p>
+      </div>
+    </div>
+
+    <div class="catalyst-grid">
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #01 · Mạnh nhất</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div>
+          </div>
+        </div>
+        <div class="cat-name">Liquidity Sweep</div>
+        <div class="cat-en">STOP HUNT · QUÉT THANH KHOẢN</div>
+        <div class="cat-desc">Giá fake breakdown/breakout qua EQL/EQH — wick dài + nến đóng cửa ngược chiều là tín hiệu mạnh nhất. Xác nhận Smart Money đã "gom thanh khoản".</div>
+        <div>
+          <span class="cat-badge cb-r">Sweep EQL → tìm Long</span>
+          <span class="cat-badge cb-g" style="margin-left:5px;">Sweep EQH → tìm Short</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #02 · Điều kiện bắt buộc</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-blue"></div><div class="sb-dot on-blue"></div><div class="sb-dot on-blue"></div>
+          </div>
+        </div>
+        <div class="cat-name">CHoCH Sau Sweep</div>
+        <div class="cat-en">CHANGE OF CHARACTER · ĐẢO CHIỀU</div>
+        <div class="cat-desc">Sau khi sweep xảy ra, CHoCH xác nhận momentum thay đổi. Chuỗi logic chuẩn: Liquidity Sweep → CHoCH → Entry tại OB/FVG. Setup xác suất cao nhất.</div>
+        <div>
+          <span class="cat-badge cb-b">Entry 1 · 20% size</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #03 · Điểm vào tối ưu</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div><div class="sb-dot" style="background:var(--surface3);"></div>
+          </div>
+        </div>
+        <div class="cat-name">Return to OB / FVG</div>
+        <div class="cat-en">PULLBACK ENTRY · RETEST ZONE</div>
+        <div class="cat-desc">Sau BOS hoặc CHoCH, giá quay lại OB hoặc FVG — điểm vào lệnh không nằm ở breakout mà nằm ở pullback. Limit order tại 50% FVG = RR tốt nhất.</div>
+        <div>
+          <span class="cat-badge cb-p">Entry 2/3 · 30–50% size</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #04 · Xác nhận momentum</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-green"></div><div class="sb-dot on-green"></div><div class="sb-dot" style="background:var(--surface3);"></div>
+          </div>
+        </div>
+        <div class="cat-name">Imbalance + Momentum Expansion</div>
+        <div class="cat-en">DISPLACEMENT · FVG FORMATION</div>
+        <div class="cat-desc">Nến displacement mạnh tạo FVG lớn — xác nhận "smart money đang đẩy giá". Đây là tín hiệu dòng tiền lớn đang tham gia thị trường.</div>
+        <div>
+          <span class="cat-badge cb-y">Xác nhận dòng tiền</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #05 · Timing</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div>
+          </div>
+        </div>
+        <div class="cat-name">Session Kill Zone</div>
+        <div class="cat-en">TIMING · PHIÊN GIAO DỊCH</div>
+        <div class="cat-desc">80% move mạnh xảy ra trong Kill Zone. VN30: 9:00–10:30 (sweep đầu phiên) và 13:00–14:00 (FVG M5 hoạt động tốt). Forex: London 2–5am, NY 7–10am EST.</div>
+        <div>
+          <span class="cat-badge cb-c">80% Moves Happen Here</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #06 · Bộ lọc vị thế</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div><div class="sb-dot" style="background:var(--surface3);"></div>
+          </div>
+        </div>
+        <div class="cat-name">Premium / Discount Filter</div>
+        <div class="cat-en">HTF BIAS · PD ARRAY</div>
+        <div class="cat-desc">Chỉ Long ở Discount (dưới 50% của swing) và chỉ Short ở Premium (trên 50%). Đây là bộ lọc bắt buộc — vi phạm quy tắc này là đang trade ngược dòng tiền tổ chức.</div>
+        <div>
+          <span class="cat-badge cb-y">Buy Discount · Sell Premium</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #07 · Entry tổ chức</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-green"></div><div class="sb-dot on-green"></div><div class="sb-dot" style="background:var(--surface3);"></div>
+          </div>
+        </div>
+        <div class="cat-name">Order Block Confluence</div>
+        <div class="cat-en">OB + FVG · ZONE CONFLUENCE</div>
+        <div class="cat-desc">OB kết hợp với FVG = zone có xác suất cao nhất. OB đơn lẻ có giá trị, nhưng khi OB + FVG trùng nhau trong vùng Discount/Premium → setup A+.</div>
+        <div>
+          <span class="cat-badge cb-g">A+ Confluence Zone</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #08 · Hội tụ tín hiệu</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div><div class="sb-dot on-gold"></div>
+          </div>
+        </div>
+        <div class="cat-name">Confluence Layering</div>
+        <div class="cat-en">SCORING SYSTEM · 5 ĐIỀU KIỆN</div>
+        <div class="cat-desc">Setup mạnh phải có ≥3 yếu tố hội tụ. Scoring system: Sweep ✅ + CHoCH ✅ + OB/FVG ✅ + PD Zone ✅ + Session ✅ = High Probability Setup.</div>
+        <div>
+          <span class="cat-badge cb-y">≥3 → Trade · ≥4 → A+</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="cat-rank">
+          <span class="cat-num-badge">Catalyst #09 · Xác nhận thêm</span>
+          <div class="strength-bar">
+            <div class="sb-dot on-blue"></div><div class="sb-dot" style="background:var(--surface3);"></div><div class="sb-dot" style="background:var(--surface3);"></div>
+          </div>
+        </div>
+        <div class="cat-name">RSI Divergence</div>
+        <div class="cat-en">OPTIONAL · A+ SIGNAL</div>
+        <div class="cat-desc">RSI Divergence tại vùng sweep: giá tạo low mới nhưng RSI không tạo low mới (bullish div) — thêm 1 điểm xác nhận. Không bắt buộc nhưng tăng độ tin cậy.</div>
+        <div>
+          <span class="cat-badge cb-b">Optional A+ Confirmation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- A+ Setup Box -->
+    <div class="aplus-box">
+      <div class="aplus-head">★ Công Thức A+ Setup — Xác Suất Cao Nhất</div>
+      <div class="aplus-formula">
+        <div class="af-item af-y">Liquidity Sweep</div>
+        <div class="af-arr">+</div>
+        <div class="af-item af-b">CHoCH</div>
+        <div class="af-arr">+</div>
+        <div class="af-item af-g">OB / FVG</div>
+        <div class="af-arr">+</div>
+        <div class="af-item af-r">Discount Zone</div>
+        <div class="af-arr">+</div>
+        <div class="af-item af-p">Kill Zone</div>
+        <div class="af-arr">=</div>
+        <div class="af-item" style="background:rgba(240,180,41,0.2);border:1px solid rgba(240,180,41,0.5);color:var(--gold);font-size:13px;">★ A+ Entry</div>
+      </div>
+      <div class="aplus-note">
+        Khi đủ cả 5 điều kiện trên — đây là setup có xác suất cao nhất trong toàn bộ hệ thống SMC. 
+        Vào lệnh full size (hoặc bổ sung tới max size nếu đã partial từ T1/T2). 
+        <strong style="color:var(--gold);">Không thiếu bất kỳ điều kiện nào — đặc biệt là Liquidity Sweep và Kill Zone.</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 4: ENTRY TIERS ─── -->
+<section class="section" id="entry">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">04</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Hệ Thống 3 Tầng Entry</h2>
+        <p class="sec-desc">Phân bổ vốn theo 3 điểm vào — cân bằng giữa Risk/Reward và Win Rate. Không chọn một điểm, chọn cả chiến lược.</p>
+      </div>
+    </div>
+
+    <!-- Tier Headers -->
+    <div class="tier-header">
+      <div class="th-card th-t1">
+        <div class="th-pct">20%</div>
+        <div class="th-name">Tier 1 · CHoCH</div>
+        <div class="th-note">Entry sớm nhất · RR cao nhất · Rủi ro cao hơn</div>
+      </div>
+      <div class="th-card th-t2">
+        <div class="th-pct">30%</div>
+        <div class="th-name">Tier 2 · BOS</div>
+        <div class="th-note">Entry an toàn nhất · Win rate cao nhất</div>
+      </div>
+      <div class="th-card th-t3">
+        <div class="th-pct">50%</div>
+        <div class="th-name">Tier 3 · FVG ★</div>
+        <div class="th-note">Money Maker · RR tốt nhất · Đa số lợi nhuận từ đây</div>
+      </div>
+    </div>
+
+    <!-- Tier Detail Cards -->
+    <div class="tier-cards">
+      <div class="tier-row tr-t1">
+        <div class="tr-label">
+          <div class="tr-big">T1</div>
+          <div class="tr-sub">CHoCH Entry</div>
+        </div>
+        <div class="tr-body">
+          <div class="tr-title">CHoCH — Tín Hiệu Đảo Chiều Sớm</div>
+          <div class="tr-steps">
+            <div class="tr-step"><div class="tr-sn">1</div>Xác định EQL/EQH và chờ liquidity sweep xảy ra</div>
+            <div class="tr-step"><div class="tr-sn">2</div>Giá phá Lower High gần nhất (LONG) hoặc Higher Low (SHORT) = CHoCH confirmed</div>
+            <div class="tr-step"><div class="tr-sn">3</div>Nến đóng cửa bên kia structural level với displacement rõ ràng</div>
+            <div class="tr-step"><div class="tr-sn">4</div>Vào 20% size tại đây — SL dưới sweep low, TP tạm thời tại BOS</div>
+          </div>
+          <div class="tr-params">
+            <div class="tr-param">
+              <div class="tr-pl">Size</div>
+              <div class="tr-pv" style="color:var(--blue);">20%</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Min RR</div>
+              <div class="tr-pv">1:3</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">SL</div>
+              <div class="tr-pv">Dưới sweep low</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Đặc điểm</div>
+              <div class="tr-pv">Sớm, RR cao</div>
+            </div>
+          </div>
+        </div>
+        <div class="tr-win">
+          <div class="tr-win-num">1:5+</div>
+          <div class="tr-win-lbl">Tiềm năng RR</div>
+        </div>
+      </div>
+
+      <div class="tier-row tr-t2">
+        <div class="tr-label">
+          <div class="tr-big">T2</div>
+          <div class="tr-sub">BOS Entry</div>
+        </div>
+        <div class="tr-body">
+          <div class="tr-title">BOS — Xác Nhận Cấu Trúc Chuyển Trend</div>
+          <div class="tr-steps">
+            <div class="tr-step"><div class="tr-sn">1</div>Sau CHoCH, giá tạo Higher High đầu tiên (LONG) hoặc Lower Low (SHORT)</div>
+            <div class="tr-step"><div class="tr-sn">2</div>Nến đóng cửa TRÊN Higher High (không chỉ wick) = BOS confirmed</div>
+            <div class="tr-step"><div class="tr-sn">3</div>Cấu trúc chính thức chuyển trend — win rate cao nhất trong 3 tier</div>
+            <div class="tr-step"><div class="tr-sn">4</div>Bổ sung 30% size — SL dưới CHoCH swing low</div>
+          </div>
+          <div class="tr-params">
+            <div class="tr-param">
+              <div class="tr-pl">Size</div>
+              <div class="tr-pv" style="color:var(--green);">30%</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Min RR</div>
+              <div class="tr-pv">1:2</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">SL</div>
+              <div class="tr-pv">Dưới CHoCH low</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Đặc điểm</div>
+              <div class="tr-pv">An toàn, win rate cao</div>
+            </div>
+          </div>
+        </div>
+        <div class="tr-win">
+          <div class="tr-win-num">1:3+</div>
+          <div class="tr-win-lbl">Tiêu chuẩn RR</div>
+        </div>
+      </div>
+
+      <div class="tier-row tr-t3">
+        <div class="tr-label">
+          <div class="tr-big">T3</div>
+          <div class="tr-sub">FVG ★ Entry</div>
+        </div>
+        <div class="tr-body">
+          <div class="tr-title">FVG — Money Maker · Điểm Entry Đẹp Nhất ★</div>
+          <div class="tr-steps">
+            <div class="tr-step"><div class="tr-sn">1</div>Sau BOS, quan sát FVG hình thành trong displacement candle</div>
+            <div class="tr-step"><div class="tr-sn">2</div>Đặt limit order tại 50% FVG (Consequent Encroachment) — điểm tối ưu nhất</div>
+            <div class="tr-step"><div class="tr-sn">3</div>SL dưới đáy FVG hoặc dưới sweep low — stop nhỏ, RR lớn</div>
+            <div class="tr-step"><div class="tr-sn">4</div>Vào 50% size tại đây — đây là điểm tạo ra phần lớn lợi nhuận</div>
+          </div>
+          <div class="tr-params">
+            <div class="tr-param">
+              <div class="tr-pl">Size</div>
+              <div class="tr-pv" style="color:var(--gold);">50% ★</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Min RR</div>
+              <div class="tr-pv">1:3+</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Entry</div>
+              <div class="tr-pv">Limit @ 50% FVG</div>
+            </div>
+            <div class="tr-param">
+              <div class="tr-pl">Đặc điểm</div>
+              <div class="tr-pv">RR tốt nhất · Primary</div>
+            </div>
+          </div>
+        </div>
+        <div class="tr-win">
+          <div class="tr-win-num">1:5+</div>
+          <div class="tr-win-lbl">Mục tiêu RR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entry Scoring -->
+    <div class="scoring-grid">
+      <div class="score-card" style="border-color:rgba(77,166,255,0.2);">
+        <div class="score-val" style="color:var(--blue);">≥3</div>
+        <div class="score-label">yếu tố hội tụ</div>
+        <div class="score-desc">Đủ điều kiện trade — kích hoạt T1 CHoCH</div>
+      </div>
+      <div class="score-card" style="border-color:rgba(16,208,126,0.2);">
+        <div class="score-val" style="color:var(--green);">≥4</div>
+        <div class="score-label">yếu tố hội tụ</div>
+        <div class="score-desc">High Probability — trade T2 BOS, tăng size</div>
+      </div>
+      <div class="score-card" style="border-color:rgba(240,180,41,0.3);">
+        <div class="score-val" style="color:var(--gold);">≥5</div>
+        <div class="score-label">yếu tố hội tụ</div>
+        <div class="score-desc">A+ Setup — full size, T3 FVG là primary entry ★</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 5: EXECUTION (LONG/SHORT) ─── -->
+<section class="section" id="execution">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">05</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Thực Thi Lệnh — Long vs Short</h2>
+        <p class="sec-desc">6 bước chuẩn cho cả hai chiều giao dịch. Không trade nếu chưa đi qua đủ các bước này.</p>
+      </div>
+    </div>
+
+    <div class="ls-wrap">
+      <!-- LONG -->
+      <div class="ls-col ls-long">
+        <div class="ls-colhead">▲ LONG · Mua — SSL Sweep Strategy</div>
+        <div class="ls-body">
+          <div class="ls-step-row"><div class="ls-step-num">1</div>Xác định HTF bias TĂNG (BOS sequence trên H4/Daily). Liquidity target = BSL phía trên.</div>
+          <div class="ls-step-row"><div class="ls-step-num">2</div>Tìm EQL / Equal Low trên chart. Đây là vùng tập trung SSL — mồi ngon cho sweep.</div>
+          <div class="ls-step-row"><div class="ls-step-num">3</div>Chờ giá sweep xuống dưới EQL bằng wick dài — liquidity collected. Nến đóng cửa lại trên là tín hiệu.</div>
+          <div class="ls-step-row"><div class="ls-step-num">4</div>Sau sweep: tìm CHoCH (giá phá Lower High gần nhất lên) = T1 entry 20%. Hoặc chờ BOS = T2 entry 30%.</div>
+          <div class="ls-step-row"><div class="ls-step-num">5</div>Sau BOS: đặt limit order tại 50% FVG hình thành trong displacement candle = T3 entry 50% ★</div>
+          <div class="ls-step-row"><div class="ls-step-num">6</div>SL: dưới sweep low wick. TP: BSL tiếp theo (Equal High / Previous High / Weekly target).</div>
+          <div class="ls-params">
+            <div class="ls-param">
+              <div class="ls-pl">Trigger</div>
+              <div class="ls-pv" style="color:var(--green);">SSL Sweep ↓</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Confirmation</div>
+              <div class="ls-pv">CHoCH + BOS</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Entry chính</div>
+              <div class="ls-pv">Limit @ FVG 50%</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">SL</div>
+              <div class="ls-pv">Dưới sweep low</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">TP Target</div>
+              <div class="ls-pv">BSL · Equal High</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Min RR</div>
+              <div class="ls-pv" style="color:var(--green);">1:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHORT -->
+      <div class="ls-col ls-short">
+        <div class="ls-colhead">▼ SHORT · Bán — BSL Sweep Strategy</div>
+        <div class="ls-body">
+          <div class="ls-step-row"><div class="ls-step-num">1</div>Xác định HTF bias GIẢM (BOS sequence xuống trên H4/Daily). Liquidity target = SSL phía dưới.</div>
+          <div class="ls-step-row"><div class="ls-step-num">2</div>Tìm EQH / Equal High trên chart. Đây là vùng tập trung BSL — mồi cho smart money sweep.</div>
+          <div class="ls-step-row"><div class="ls-step-num">3</div>Chờ giá sweep lên trên EQH bằng wick dài — BSL collected. Nến đóng cửa trở lại dưới là tín hiệu.</div>
+          <div class="ls-step-row"><div class="ls-step-num">4</div>Sau sweep: tìm CHoCH (giá phá Higher Low gần nhất xuống) = T1 entry 20%. Hoặc chờ BOS = T2 entry 30%.</div>
+          <div class="ls-step-row"><div class="ls-step-num">5</div>Sau BOS xuống: đặt limit order tại 50% Bearish FVG hình thành = T3 entry 50% ★</div>
+          <div class="ls-step-row"><div class="ls-step-num">6</div>SL: trên sweep high wick. TP: SSL tiếp theo (Equal Low / Previous Low / Weekly target).</div>
+          <div class="ls-params">
+            <div class="ls-param">
+              <div class="ls-pl">Trigger</div>
+              <div class="ls-pv" style="color:var(--red);">BSL Sweep ↑</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Confirmation</div>
+              <div class="ls-pv">CHoCH + BOS</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Entry chính</div>
+              <div class="ls-pv">Limit @ FVG 50%</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">SL</div>
+              <div class="ls-pv">Trên sweep high</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">TP Target</div>
+              <div class="ls-pv">SSL · Equal Low</div>
+            </div>
+            <div class="ls-param">
+              <div class="ls-pl">Min RR</div>
+              <div class="ls-pv" style="color:var(--red);">1:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checklist -->
+    <div style="margin-top:24px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:24px;">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;">✓ Pre-Trade Checklist — Kiểm tra trước khi vào lệnh</div>
+      <div class="checklist-cols">
+        <div>
+          <div class="checklist-col-title do-title">✅ CẦN LÀM — Điều kiện bắt buộc</div>
+          <div class="chk-list">
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>HTF bias đã xác định rõ (Bullish hoặc Bearish)</div>
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>Liquidity sweep (EQL/EQH) đã xảy ra rõ ràng</div>
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>CHoCH hoặc BOS đã confirm trên LTF</div>
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>Entry tại OB/FVG trong vùng Discount/Premium</div>
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>Đang trong Kill Zone (VN30: 9–10:30 hoặc 13–14h)</div>
+            <div class="chk-item chk-do"><span class="chk-ico">✅</span>RR ≥ 1:3 và SL đặt tại điểm invalidation thực sự</div>
+          </div>
+        </div>
+        <div>
+          <div class="checklist-col-title dont-title">❌ KHÔNG LÀM — Lỗi phổ biến nhất</div>
+          <div class="chk-list">
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>Trade ngược HTF bias dù LTF có setup đẹp</div>
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>Vào lệnh trước khi sweep xảy ra — chase entry</div>
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>Short ở Discount zone / Long ở Premium zone</div>
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>Trade ngoài Kill Zone với low-volume price action</div>
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>SL đặt tại round number thay vì điểm invalidation</div>
+            <div class="chk-item chk-dont"><span class="chk-ico">❌</span>Không có journal — không biết mình đang mắc lỗi gì</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 6: KILL ZONE & MTF ─── -->
+<section class="section" id="killzone">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">06</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Kill Zone & Multi-Timeframe</h2>
+        <p class="sec-desc">Khi nào trade quan trọng không kém gì ở đâu. Setup đúng + sai timing = thua.</p>
+      </div>
+    </div>
+
+    <!-- Kill Zones -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:14px;">Kill Zones theo Thị Trường</div>
+      <div class="kz-grid">
+        <div class="kz-card">
+          <div class="kz-top">
+            <div class="kz-time">9:00 – 10:30</div>
+            <div class="kz-active"><div class="dot"></div>Active</div>
+          </div>
+          <div class="kz-name">VN30 — Open Session Kill Zone</div>
+          <div class="kz-session">Phiên mở cửa · Sàn HOSE</div>
+          <div class="kz-desc">Sweep thường xảy ra đầu phiên — quét low/high phiên trước. Smart Money thiết lập hướng ngày. FVG hình thành nhanh và rõ ràng.</div>
+          <div class="kz-tags">
+            <span class="kz-tag">SSL/BSL Sweep</span>
+            <span class="kz-tag">CHoCH Primary</span>
+            <span class="kz-tag">VN30</span>
+          </div>
+        </div>
+
+        <div class="kz-card">
+          <div class="kz-top">
+            <div class="kz-time">13:00 – 14:00</div>
+            <div class="kz-active"><div class="dot"></div>Active</div>
+          </div>
+          <div class="kz-name">VN30 — Afternoon Kill Zone</div>
+          <div class="kz-session">Phiên chiều · Sàn HOSE</div>
+          <div class="kz-desc">FVG hoạt động rất tốt trên M5. Momentum thường mạnh hơn sáng. BOS confirmation sau lunch break — đây là session tốt cho T3 FVG entry.</div>
+          <div class="kz-tags">
+            <span class="kz-tag">FVG M5 Primary</span>
+            <span class="kz-tag">BOS Confirm</span>
+            <span class="kz-tag">Momentum</span>
+          </div>
+        </div>
+
+        <div class="kz-card">
+          <div class="kz-top">
+            <div class="kz-time">02:00 – 05:00</div>
+            <div class="kz-active"><div class="dot dot-off"></div>Forex/Crypto</div>
+          </div>
+          <div class="kz-name">London Kill Zone</div>
+          <div class="kz-session">London Open · GMT+7 = 09:00–12:00</div>
+          <div class="kz-desc">European banks online — sweep Asian range high/low. Judas Swing xảy ra ở đây. Hướng ngày thường được quyết định tại London Open. Pairs tốt: EUR/USD, GBP/USD.</div>
+          <div class="kz-tags">
+            <span class="kz-tag">Judas Swing</span>
+            <span class="kz-tag">Asian Sweep</span>
+            <span class="kz-tag">EUR/GBP</span>
+          </div>
+        </div>
+
+        <div class="kz-card">
+          <div class="kz-top">
+            <div class="kz-time">07:00 – 10:00</div>
+            <div class="kz-active"><div class="dot dot-off"></div>Forex/Indices</div>
+          </div>
+          <div class="kz-name">New York Kill Zone</div>
+          <div class="kz-session">NY Open · GMT+7 = 19:00–22:00</div>
+          <div class="kz-desc">Deepest liquidity session. Distribution phase của AMD. 8:30am EST: Economic data (NFP, CPI) tạo explosive FVG. NAS100, SPX, USD pairs có move mạnh nhất đây.</div>
+          <div class="kz-tags">
+            <span class="kz-tag">Distribution Phase</span>
+            <span class="kz-tag">NAS100 · SPX</span>
+            <span class="kz-tag">High Volume</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MTF Framework -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:14px;">Multi-Timeframe Framework — Bias → Zone → Entry</div>
+    <div class="mtf-grid">
+      <div class="mtf-col">
+        <div class="mtf-head">Layer 0 · Nền tảng</div>
+        <div class="mtf-tf" style="color:var(--text3);">W / M</div>
+        <div class="mtf-role">Macro Bias</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Xu hướng tổng thể dài hạn</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Major liquidity targets</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>20/40/60-day IPDA levels</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Premium/Discount vĩ mô</div>
+      </div>
+      <div class="mtf-col">
+        <div class="mtf-head">Layer 1 · Bias</div>
+        <div class="mtf-tf">D / H4</div>
+        <div class="mtf-role">Hướng giao dịch</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>BOS sequence xác nhận trend</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Key swing points</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Draw on Liquidity (DOL)</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Narrative tổng thể ngày</div>
+      </div>
+      <div class="mtf-col">
+        <div class="mtf-head">Layer 2 · Zone</div>
+        <div class="mtf-tf">H4 / H1</div>
+        <div class="mtf-role">Point of Interest</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>OB / FVG unmitigated</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Breaker / Mitigation block</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Grade POI quality (4 tiêu chí)</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Confirm Discount/Premium</div>
+      </div>
+      <div class="mtf-col">
+        <div class="mtf-head">Layer 3 · Entry</div>
+        <div class="mtf-tf">M15 / M5</div>
+        <div class="mtf-role">Precision Execution</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>LTF CHoCH tại POI</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>FVG / OB cho exact entry</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>SL tại invalidation thực</div>
+        <div class="mtf-item"><div class="mtf-dot"></div>Only in Kill Zone window</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start;">
+      <div style="font-size:20px;flex-shrink:0;">⚠️</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;">
+        <strong style="color:var(--text);">Quy tắc bất biến:</strong> HTF luôn có authority hơn LTF. Một OB hoàn hảo trên M15 nhưng ngược HTF bias = không trade. Bắt đầu từ Daily/Weekly xuống — không bao giờ ngược lại.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 7: RISK MANAGEMENT ─── -->
+<section class="section" id="risk">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">07</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Quản Lý Rủi Ro</h2>
+        <p class="sec-desc">Chiến lược tốt nhất cũng vô dụng nếu không có risk management. Đây là yếu tố quyết định sự tồn tại lâu dài.</p>
+      </div>
+    </div>
+
+    <!-- Risk Stats -->
+    <div class="risk-stats">
+      <div class="risk-stat">
+        <div class="risk-stat-val" style="color:var(--gold);">1–2%</div>
+        <div class="risk-stat-lbl">Risk per trade</div>
+        <div class="risk-stat-note">Không vượt qua rule này</div>
+      </div>
+      <div class="risk-stat">
+        <div class="risk-stat-val" style="color:var(--green);">1:3</div>
+        <div class="risk-stat-lbl">Min RR ratio</div>
+        <div class="risk-stat-note">Không trade nếu RR thấp hơn</div>
+      </div>
+      <div class="risk-stat">
+        <div class="risk-stat-val" style="color:var(--red);">3–5%</div>
+        <div class="risk-stat-lbl">Daily loss limit</div>
+        <div class="risk-stat-note">Dừng ngay khi chạm mức này</div>
+      </div>
+      <div class="risk-stat">
+        <div class="risk-stat-val" style="color:var(--blue);">50%</div>
+        <div class="risk-stat-lbl">Partial take profit</div>
+        <div class="risk-stat-note">Tại target 1 → move SL to BE</div>
+      </div>
+    </div>
+
+    <!-- Risk Rules -->
+    <div class="risk-rules">
+      <div class="risk-rule">
+        <div class="rr-icon">📐</div>
+        <div>
+          <div class="rr-title">Position Sizing Formula</div>
+          <div class="rr-desc">Size = (Account × Risk%) ÷ (Stop Loss pips × Pip value). Không bao giờ đặt size trước rồi ép SL — luôn để SL quyết định size.</div>
+        </div>
+      </div>
+      <div class="risk-rule">
+        <div class="rr-icon">🛡️</div>
+        <div>
+          <div class="rr-title">Stop Loss Placement</div>
+          <div class="rr-desc">SL = điểm invalidation thực sự (dưới sweep low cho LONG, trên sweep high cho SHORT). Không đặt ở round number hay "comfortable distance".</div>
+        </div>
+      </div>
+      <div class="risk-rule">
+        <div class="rr-icon">↔️</div>
+        <div>
+          <div class="rr-title">Move to Break-Even</div>
+          <div class="rr-desc">Sau khi giá clear structural level đầu tiên theo hướng lệnh → di chuyển SL về entry. Không di chuyển quá sớm — để lệnh có không gian thở.</div>
+        </div>
+      </div>
+      <div class="risk-rule">
+        <div class="rr-icon">⚡</div>
+        <div>
+          <div class="rr-title">Daily Loss Limit — Circuit Breaker</div>
+          <div class="rr-desc">Khi chạm daily loss limit 3–5%: đóng platform, không trade thêm trong ngày. Revenge trading sau thua = lỗi nghiêm trọng nhất. Market ngày mai vẫn còn đó.</div>
+        </div>
+      </div>
+      <div class="risk-rule">
+        <div class="rr-icon">📊</div>
+        <div>
+          <div class="rr-title">Partial Profit Strategy</div>
+          <div class="rr-desc">Lấy 50% lệnh tại Target 1 (liquidity gần nhất). Move SL về BE cho phần còn lại. Để runner chạy đến Target 2 (weekly liquidity). Đây là cách capture cả lời chắc chắn lẫn lợi nhuận lớn.</div>
+        </div>
+      </div>
+      <div class="risk-rule">
+        <div class="rr-icon">📖</div>
+        <div>
+          <div class="rr-title">Trading Journal — Bắt buộc</div>
+          <div class="rr-desc">Ghi lại mọi lệnh: entry, SL, TP, setup type, session, kết quả, screenshot trước/sau. Review hàng tuần. Không journal = không có data = không cải thiện được gì.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawdown Math Visualization -->
+    <div style="margin-top:24px;">
+      <div class="svg-wrap">
+        <div class="svg-title">Toán học Drawdown — Tại sao Capital Preservation quan trọng hơn Profit</div>
+        <svg viewBox="0 0 700 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <!-- Base line -->
+          <line x1="30" y1="130" x2="680" y2="130" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+          <!-- Bars -->
+          <!-- -10% loss needs 11.1% recovery -->
+          <rect x="50" y="90" width="70" height="40" fill="rgba(240,82,82,0.2)" stroke="rgba(240,82,82,0.4)" stroke-width="1" rx="3"/>
+          <rect x="130" y="104" width="70" height="26" fill="rgba(16,208,126,0.2)" stroke="rgba(16,208,126,0.4)" stroke-width="1" rx="3"/>
+          <text x="85" y="84" font-family="DM Sans" font-size="9" fill="#f05252" text-anchor="middle">-10%</text>
+          <text x="165" y="98" font-family="DM Sans" font-size="9" fill="#10d07e" text-anchor="middle">+11.1%</text>
+
+          <!-- -20% loss needs 25% recovery -->
+          <rect x="220" y="70" width="70" height="60" fill="rgba(240,82,82,0.2)" stroke="rgba(240,82,82,0.4)" stroke-width="1" rx="3"/>
+          <rect x="300" y="85" width="70" height="45" fill="rgba(16,208,126,0.2)" stroke="rgba(16,208,126,0.4)" stroke-width="1" rx="3"/>
+          <text x="255" y="64" font-family="DM Sans" font-size="9" fill="#f05252" text-anchor="middle">-20%</text>
+          <text x="335" y="79" font-family="DM Sans" font-size="9" fill="#10d07e" text-anchor="middle">+25%</text>
+
+          <!-- -50% loss needs 100% recovery -->
+          <rect x="390" y="30" width="70" height="100" fill="rgba(240,82,82,0.25)" stroke="rgba(240,82,82,0.5)" stroke-width="1" rx="3"/>
+          <rect x="470" y="50" width="70" height="80" fill="rgba(16,208,126,0.12)" stroke="rgba(16,208,126,0.3)" stroke-width="1" rx="3"/>
+          <text x="425" y="24" font-family="DM Sans" font-size="9" fill="#f05252" text-anchor="middle">-50%</text>
+          <text x="505" y="44" font-family="DM Sans" font-size="9" fill="#10d07e" text-anchor="middle">+100%</text>
+
+          <!-- Legend -->
+          <rect x="560" y="55" width="12" height="12" fill="rgba(240,82,82,0.4)" rx="2"/>
+          <text x="578" y="65" font-family="DM Sans" font-size="9" fill="#8899b0">Loss</text>
+          <rect x="560" y="75" width="12" height="12" fill="rgba(16,208,126,0.4)" rx="2"/>
+          <text x="578" y="85" font-family="DM Sans" font-size="9" fill="#8899b0">Recovery needed</text>
+
+          <!-- Key message -->
+          <text x="350" y="150" font-family="DM Sans" font-size="10" fill="rgba(240,180,41,0.7)" text-anchor="middle">Mất 50% vốn cần tăng 100% để hòa vốn — Preserve Capital First.</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 8: ICT vs SMC ─── -->
+<section class="section" id="compare">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">08</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">ICT vs SMC — Sự Khác Biệt Thực Sự</h2>
+        <p class="sec-desc">Cùng nền tảng, khác cách tiếp cận. Hiểu rõ để chọn đúng phương pháp phù hợp với bản thân.</p>
+      </div>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Tiêu chí</th>
+          <th>ICT (Inner Circle Trader)</th>
+          <th>SMC (Smart Money Concepts)</th>
+          <th>Hybrid — Kết hợp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nguồn gốc</td>
+          <td>Michael J. Huddleston — framework gốc, hoàn chỉnh</td>
+          <td>Community-derived từ ICT — đơn giản hóa</td>
+          <td>Dùng cả hai layer — phân tích SMC + timing ICT</td>
+        </tr>
+        <tr>
+          <td>Độ phức tạp</td>
+          <td style="color:var(--red);">Cao — learning curve dài 6–24 tháng</td>
+          <td style="color:var(--green);">Vừa — accessible hơn, trade được sớm</td>
+          <td style="color:var(--gold);">Cao — cần hiểu cả hai trước khi kết hợp</td>
+        </tr>
+        <tr>
+          <td>Time sensitivity</td>
+          <td style="color:var(--red);">Rất cứng — Kill Zone là BẮT BUỘC</td>
+          <td style="color:var(--green);">Linh hoạt — session timing là advisory</td>
+          <td>SMC cho phân tích, ICT Kill Zone cho entry</td>
+        </tr>
+        <tr>
+          <td>Entry method</td>
+          <td>Judas Swing → MSS + Displacement → FVG</td>
+          <td>Liquidity Sweep → CHoCH → OB/FVG</td>
+          <td>SMC POI + ICT Kill Zone + Displacement FVG</td>
+        </tr>
+        <tr>
+          <td>Tần suất trade</td>
+          <td>Ít hơn — filter nhiều hơn</td>
+          <td>Nhiều hơn — fewer mandatory conditions</td>
+          <td>Ít nhất — intersection của cả 2 filter</td>
+        </tr>
+        <tr>
+          <td>RR tiêu biểu</td>
+          <td style="color:var(--gold);">1:5 – 1:10 (entry rất tight)</td>
+          <td>1:3 – 1:5 (tiêu chuẩn)</td>
+          <td style="color:var(--gold);">1:5+ (highest probability)</td>
+        </tr>
+        <tr>
+          <td>Phù hợp với</td>
+          <td>Forex, Indices — trong Kill Zone cố định</td>
+          <td>Mọi thị trường — linh hoạt timezone</td>
+          <td>Trader có kinh nghiệm cả 2 framework</td>
+        </tr>
+        <tr>
+          <td>Phù hợp khi</td>
+          <td>Muốn hệ thống mechanical, rules-based chặt chẽ</td>
+          <td>Muốn flexibility, trade nhiều asset class</td>
+          <td>Muốn precision cao nhất + structural clarity</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:14px;background:var(--gold-glow);border:1px solid rgba(240,180,41,0.2);border-radius:10px;padding:16px 20px;font-size:13px;color:var(--text2);line-height:1.6;">
+      <strong style="color:var(--gold);">Kết luận thực tiễn:</strong> ICT và SMC không phải đối thủ — là hai cách diễn đạt của cùng một hiểu biết về thị trường. Người mới → bắt đầu SMC. Người muốn precision → thêm ICT timing. Hybrid → chỉ khi đã thành thục cả hai.
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 9: SUMMARY / CTA ─── -->
+<section class="section" id="summary" style="border-bottom:none;">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-num">09</div>
+      <div class="sec-meta">
+        <h2 class="sec-title">Tóm Tắt Hệ Thống</h2>
+        <p class="sec-desc">Toàn bộ framework SMC trong một chuỗi logic — từ liquidity hunting đến precision entry.</p>
+      </div>
+    </div>
+
+    <div class="summary-wrap">
+      <div class="summary-title">
+        "Không phải về indicator — là về việc đọc <em style="color:var(--gold);">logic dòng tiền lớn</em>"
+      </div>
+      <div class="summary-sub">Smart Money Concepts · Hệ thống giao dịch hoàn chỉnh · v2.0</div>
+
+      <div class="summary-flow">
+        <div class="sf-pill sf-y">HTF Bias</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-y">EQL / EQH</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-r">⚡ Sweep</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-b">CHoCH T1</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-g">BOS T2</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-p">FVG T3 ★</div>
+        <div class="sf-arr">→</div>
+        <div class="sf-pill sf-gd">EXECUTE</div>
+      </div>
+
+      <!-- Final 5 pillars summary -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:32px;max-width:800px;margin-left:auto;margin-right:auto;margin-bottom:32px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px;">Structure</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">BOS · CHoCH</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:var(--gold);margin-bottom:4px;">Liquidity</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">EQL · Sweep</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:var(--green);margin-bottom:4px;">Entry</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">OB · FVG</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:var(--purple);margin-bottom:4px;">Timing</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">Kill Zone</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;font-weight:700;color:var(--red);margin-bottom:4px;">Risk</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;">1–2% · 1:3</div>
+        </div>
+      </div>
+
+      <div class="cta-group">
+        <a href="#concepts" class="cta-btn cta-primary">Bắt Đầu Học Ngay →</a>
+        <a href="#logic" class="cta-btn cta-secondary">Xem Lại Logic Chain</a>
+      </div>
+
+      <div style="margin-top:20px;font-size:11px;color:var(--text3);">
+        Chọn một phương pháp. Commit 90 ngày. Journal mọi lệnh. Review hàng tuần. Không switch strategy khi gặp losing streak đầu tiên.
+      </div>
+    </div>
+
+    <!-- 7 Common Mistakes -->
+    <div style="margin-top:32px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;overflow:hidden;">
+      <div style="padding:16px 22px;background:var(--surface2);border-bottom:1px solid var(--border2);">
+        <span style="font-size:13px;font-weight:700;color:var(--text);">7 Lỗi Phổ Biến Nhất — Và Cách Khắc Phục</span>
+      </div>
+      <div style="padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Overcomplicate chart</strong><br><span style="font-size:11.5px;color:var(--text2);">Mark quá nhiều zone, không rõ đâu là trade → Chỉ dùng 3 tools: Structure, OB/FVG, Liquidity.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Bỏ qua HTF bias</strong><br><span style="font-size:11.5px;color:var(--text2);">OB đẹp trên M15 nhưng Daily đang downtrend → Viết bias xuống trước khi mở LTF chart.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Trade ngoài Kill Zone</strong><br><span style="font-size:11.5px;color:var(--text2);">Setup 2pm EST = same zone, lower probability → Chỉ execute trong high-volume sessions.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Chase price mid-move</strong><br><span style="font-size:11.5px;color:var(--text2);">FOMO entry không có OB/FVG → Missed trade = không mất gì. Chased trade = mất thật.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">SL ở round number</strong><br><span style="font-size:11.5px;color:var(--text2);">SL "comfortable" thay vì structural → SL phải ở điểm invalidation thực sự, không phải ép size.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Không có trading journal</strong><br><span style="font-size:11.5px;color:var(--text2);">Không data = không cải thiện → Ghi mọi lệnh + screenshot, review cuối tuần.</span></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(240,82,82,0.04);border:1px solid rgba(240,82,82,0.15);border-radius:8px;padding:12px 14px;grid-column:span 2;">
+          <span style="color:var(--red);font-weight:700;font-size:14px;flex-shrink:0;">✗</span>
+          <div><strong style="color:var(--text);font-size:12px;">Strategy-hopping</strong><br><span style="font-size:11.5px;color:var(--text2);">3 tuần OB, rồi chuyển FVG, rồi breaker... → Chọn 1 setup hoàn chỉnh. Commit 90 ngày có journal. Losing streak = execution error, không phải strategy error.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <div class="footer-brand"><span>SMC</span> Framework — Hệ Thống Chiến Lược Đầu Tư v2.0</div>
+  <div class="footer-note">
+    Tài liệu tổng hợp từ Smart Money Concepts, ICT Framework, và Liquidity Scalping System.<br>
+    Chỉ mang tính giáo dục — không phải lời khuyên đầu tư tài chính.
+  </div>
+</footer>
+
+<script>
+// Smooth active nav highlighting
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.style.color = '';
+        link.style.background = '';
+      });
+      const id = entry.target.getAttribute('id');
+      const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (activeLink && !activeLink.classList.contains('nav-cta')) {
+        activeLink.style.color = 'var(--text)';
+        activeLink.style.background = 'var(--surface)';
+      }
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => observer.observe(s));
+
+// Hover interactive on concept cards
+document.querySelectorAll('.concept-card, .cat-card, .tier-row').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    card.style.transition = 'all 0.2s';
+  });
+});
+</script>
+</body>
+</html>
